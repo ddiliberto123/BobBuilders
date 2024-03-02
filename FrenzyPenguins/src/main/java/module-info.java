@@ -1,9 +1,9 @@
-module com.example.FrenzyPenguins {
+module org.BobBuilders.FrenzyPenguins {
     requires javafx.controls;
     requires javafx.fxml;
 
     requires com.almasb.fxgl.all;
 
-    opens com.example.FrenzyPenguins to javafx.fxml;
-    exports com.example.FrenzyPenguins;
+    opens org.BobBuilders.FrenzyPenguins to javafx.fxml;
+    exports org.BobBuilders.FrenzyPenguins;
 }

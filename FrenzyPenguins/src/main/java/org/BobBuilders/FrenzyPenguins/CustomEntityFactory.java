@@ -1,4 +1,4 @@
-package com.example.FrenzyPenguins;
+package org.BobBuilders.FrenzyPenguins;
 
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
-import static com.example.FrenzyPenguins.EntityType.*;
+import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
 
