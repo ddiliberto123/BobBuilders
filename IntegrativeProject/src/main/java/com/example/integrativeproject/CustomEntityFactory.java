@@ -20,28 +20,32 @@ import static com.example.integrativeproject.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
 
-
-    @Spawns("block")
-    public Entity newCustomEntity(SpawnData data) {
+    @Spawns("rectangle")
+    public Entity newRectangle(SpawnData data){
         PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.DYNAMIC);
-        physics.setFixtureDef(new FixtureDef().density(0.1f));
-
-        Rectangle rectangular = new Rectangle(20,20,Color.BLACK);
-
-        return entityBuilder(data)
-                .type(PENGUIN)
-                .viewWithBBox(rectangular)
+        physics.setBodyType(BodyType.STATIC);
+        Rectangle view = new Rectangle(300,80);
+        view.setFill(Color.BLUEVIOLET);
+        double rotation = data.get("rotation");
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(view)
+                .rotate(rotation)
                 .collidable()
                 .with(physics)
                 .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
     }
     @Spawns("penguin")
     public Entity newPenguin(SpawnData data){
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
         physics.setFixtureDef(new FixtureDef().density(0.1f));
-        Rectangle view = new Rectangle(30,30,Color.PERU);
+        Rectangle view = new Rectangle(30,30,Color.BLACK);
         return entityBuilder(data)
                 .type(PENGUIN)
                 .viewWithBBox(view)
@@ -51,12 +55,12 @@ public class CustomEntityFactory implements EntityFactory {
     }
 
 
-    @Spawns("track1")
-    public Entity newTrack1(SpawnData data) {
+    @Spawns("begin")
+    public Entity newBegin(SpawnData data){
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(300,80);
-        view.setFill(Color.PURPLE);
+        Rectangle view = new Rectangle(200,500);
+        view.setFill(Color.BLUEVIOLET);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
@@ -64,85 +68,10 @@ public class CustomEntityFactory implements EntityFactory {
                 .collidable()
                 .with(physics)
                 .build();
-        entity.setRotation(25);
         FixtureDef fix = new FixtureDef();
         fix.setDensity(0.1f);
         physics.setFixtureDef(fix);
         return entity;
     }
 
-    @Spawns("track2")
-    public Entity newTrack2(SpawnData data){
-        PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(300,80);
-        view.setFill(Color.PURPLE);
-        Entity entity = entityBuilder()
-                .from(data)
-                .type(GROUND)
-                .viewWithBBox(view)
-                .collidable()
-                .with(physics)
-                .build();
-        FixtureDef fix = new FixtureDef();
-        fix.setDensity(0.1f);
-        physics.setFixtureDef(fix);
-        return entity;
-    }
-    @Spawns("track3")
-    public Entity newTrack3(SpawnData data){
-        PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(300,80);
-        view.setFill(Color.PURPLE);
-        Entity entity = entityBuilder()
-                .from(data)
-                .type(GROUND)
-                .viewWithBBox(view)
-                .collidable()
-                .with(physics)
-                .build();
-        entity.setRotation(-25);
-        FixtureDef fix = new FixtureDef();
-        fix.setDensity(0.1f);
-        physics.setFixtureDef(fix);
-        return entity;
-    }
-    @Spawns("begin")
-    public Entity newBegin(SpawnData data){
-        PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(200,500);
-        view.setFill(Color.PURPLE);
-        Entity entity = entityBuilder()
-                .from(data)
-                .type(GROUND)
-                .viewWithBBox(view)
-                .collidable()
-                .with(physics)
-                .build();
-        FixtureDef fix = new FixtureDef();
-        fix.setDensity(0.1f);
-        physics.setFixtureDef(fix);
-        return entity;
-    }
-    @Spawns("ground")
-    public Entity newGround(SpawnData data){
-        PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(300,80);
-        view.setFill(Color.PURPLE);
-        Entity entity = entityBuilder()
-                .from(data)
-                .type(GROUND)
-                .viewWithBBox(view)
-                .collidable()
-                .with(physics)
-                .build();
-        entity.setRotation(45);
-        FixtureDef fix = new FixtureDef();
-        fix.setDensity(0.1f);
-        physics.setFixtureDef(fix);
-        return entity;
-    }
 }

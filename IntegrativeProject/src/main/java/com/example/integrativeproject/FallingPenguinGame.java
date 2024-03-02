@@ -2,9 +2,11 @@ package com.example.integrativeproject;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
+import com.almasb.fxgl.entity.Spawns;
 import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.CollisionHandler;
@@ -38,8 +40,9 @@ public class FallingPenguinGame extends GameApplication {
     }
     @Override
     protected void initSettings(GameSettings gameSettings) {
-        gameSettings.setWidth(800);
-        gameSettings.setHeight(600);
+        gameSettings.setWidth(1200);
+        gameSettings.setHeight(800);
+        gameSettings.setMainMenuEnabled(true);
         gameSettings.setTitle("Game");
         gameSettings.setVersion("1.0");
     }
@@ -47,53 +50,73 @@ public class FallingPenguinGame extends GameApplication {
     protected void initGame() {
 
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
-//        FXGL.spawn("arc", 200, 100);
         penguin = FXGL.spawn("penguin",10,4);
-        FXGL.spawn("ground",120,300);
+
         FXGL.spawn("begin",0,100);
-        FXGL.spawn("track1",200,350);
-        FXGL.spawn("track2", 280,400);
-        FXGL.spawn("track3", 480,380);
-//        FXGL.spawn("line", 400,300);
+
+        addRectangle(90,250,45);
+        addRectangle(200,350,25);
+        addRectangle(280,400,0);
+        addRectangle(480,380,-25);
+
         distanceText = getUIFactoryService().newText("",Color.PURPLE,16);
         distanceText.setTranslateX(20);
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
-        if(penguin.getY() == getAppHeight()){
-            penguin.removeFromWorld();
-            penguin = FXGL.spawn("penguin",10,4);
-        }
+        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+        Vec2 forceful = new Vec2(0, -1.8);
+        physics.applyBodyForceToCenter(forceful);
+
     }
     protected void onUpdate(double tpf){
         distanceText.setText("Position: (" + penguin.getX() + ")");
+        if(penguin.getX()>700) {
+            double penguinX = penguin.getX();
+
+            // Get the width of the game window
+            double windowWidth = getAppWidth();
+
+            // Calculate the X position for the camera so that the penguin remains in the center
+            double cameraX = penguinX - windowWidth / 2;
+
+            // Set the X position of the viewport to keep the penguin centered
+            getGameScene().getViewport().setX(cameraX);
+        }
     }
 
     @Override
     protected void initInput() {
-        getInput().addAction(new UserAction("Spawn Block"){
-             @Override
-             protected void onActionBegin() {
-                 spawn("block", getInput().getMouseXWorld(),getInput().getMouseYWorld());
-             }
-         }, MouseButton.PRIMARY);
+
         onKey(KeyCode.RIGHT, ()->{
-            PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-            physics.setVelocityX(100);
+            if(penguin.getX() < 800) {
+                PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+                Vec2 forceful = new Vec2(0, -1.8);
+                Vec2 object = new Vec2(3, 0);
+                physics.applyBodyForceToCenter(object);
+                physics.applyBodyForceToCenter(forceful);
+            }
         });
         onKey(KeyCode.LEFT, ()->{
+            if(penguin.getX() < 800) {
+                PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+                Vec2 forceful = new Vec2(0, -1.8);
+                Vec2 object = new Vec2(-3, 0);
+                physics.applyBodyForceToCenter(object);
+
+            }
+        });
+        onKey(KeyCode.D, ()->{
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-            physics.setVelocityX(-100);
+            physics.setAngularVelocity(120);
+        });
+        onKey(KeyCode.A, ()->{
+            PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+            physics.setAngularVelocity(-120);
         });
     }
 
-    @Override
-    protected void initPhysics() {
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, EntityType.ARC) {
-            @Override
-            protected void onCollisionBegin(Entity block, Entity arc) {
-                // Add custom logic here for what happens when a block collides with the arc
-                System.out.println("Block collided with the arc!");
-            }
-        });
+    private void addRectangle(double x, double y, double rotation){
+        Entity rec = FXGL.spawn("rectangle",new SpawnData(x,y).put("rotation",rotation));
+
     }
 }
