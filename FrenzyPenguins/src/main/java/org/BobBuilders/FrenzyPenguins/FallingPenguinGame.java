@@ -1,4 +1,4 @@
-package com.example.integrativeproject;
+package org.BobBuilders.FrenzyPenguins;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
@@ -15,7 +15,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
-import static com.example.integrativeproject.EntityType.EXIT;
+import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
 
 
 public class FallingPenguinGame extends GameApplication {

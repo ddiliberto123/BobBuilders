@@ -1,22 +1,17 @@
-package com.example.integrativeproject;
+package org.BobBuilders.FrenzyPenguins;
 
-import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.dsl.components.ExpireCleanComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
-import com.almasb.fxgl.entity.components.CollidableComponent;
-import com.almasb.fxgl.entity.components.TypeComponent;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-import javafx.util.Duration;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
-import static com.example.integrativeproject.EntityType.*;
+import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
 
