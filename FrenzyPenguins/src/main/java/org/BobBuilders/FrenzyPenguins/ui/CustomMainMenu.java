@@ -92,14 +92,22 @@ public class CustomMainMenu extends FXGLMenu {
                     setFocused(false);
                 }
             });
+            //Checks if the button is focused before allowed it to be pressed
             setOnMouseClicked(e -> {
                 if(isFocused()){
                     action.run();
                 }
             });
 
+            setOnKeyPressed(e -> {
+                //Checks if the button is focused before allowing enter to work (incase mouse is broken)
+                if(isFocused() && e.getCode() == KeyCode.ENTER){
+                    action.run();
+                }
+            });
+
             setAlignment(Pos.CENTER_LEFT);
-//            setFocusTraversable(true);
+            setFocusTraversable(true);
             getChildren().addAll(selector, text);
 
         }
