@@ -35,6 +35,7 @@ public class CustomMainMenu extends FXGLMenu {
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
 
+        //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
         customMenuButton btnLogin = new customMenuButton("Login", () -> {});
         customMenuButton btnOptions = new customMenuButton("Options", () -> {});
@@ -44,6 +45,7 @@ public class CustomMainMenu extends FXGLMenu {
 //        FXGL.getAssetLoader().loadTexture("background/background.png");
 
 
+        //Creates a vbox to store the menu in
         var vbox = new VBox(10,
                 btnPlayGame,
                 btnLogin,
@@ -68,12 +70,16 @@ public class CustomMainMenu extends FXGLMenu {
             this.name = name;
             this.action = action;
 
+            //Calls the UI factory apart of FXGL to create a text box
             text = FXGL.getUIFactoryService().newText(name,Color.BLACK,20.0);
+            //This is the rectangle next to the buttons that show its been selected (color of button also changes)
             selector = new Rectangle(8,20, Color.BLACK);
             selector.setTranslateX(-20);
+            //Sets it visible if its focused
             selector.visibleProperty().bind(focusedProperty());
 
             text.setStrokeWidth(.5);
+            //Changes the colour if its focused
             text.fillProperty().bind(Bindings.when(focusedProperty())
                     .then(SELECTED_COLOR).otherwise(NOT_SELECTED_COLOR));
             text.strokeProperty().bind(
@@ -93,12 +99,13 @@ public class CustomMainMenu extends FXGLMenu {
             });
 
             setAlignment(Pos.CENTER_LEFT);
-            setFocusTraversable(true);
+//            setFocusTraversable(true);
             getChildren().addAll(selector, text);
 
         }
     }
 
+    //Used to create the line seperate (also fixes the issue of the text below it, defining its length)
     private static class LineSeparator extends Parent {
         private Rectangle line = new Rectangle(600,2);
         public LineSeparator(){
