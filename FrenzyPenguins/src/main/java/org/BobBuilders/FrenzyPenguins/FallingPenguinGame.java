@@ -16,6 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -49,6 +50,11 @@ public class FallingPenguinGame extends GameApplication {
             public FXGLMenu newMainMenu() {
                 return new CustomMainMenu();
             }
+
+            @Override
+            public FXGLMenu newGameMenu(){
+                return new CustomGameMenu();
+            }
         });
         gameSettings.setMainMenuEnabled(true);
         gameSettings.setTitle("Game");
@@ -58,6 +64,7 @@ public class FallingPenguinGame extends GameApplication {
     protected void initGame() {
 
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
+
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin",10,4);
 
