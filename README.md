@@ -14,3 +14,5 @@ The project will be developped using the following: <br>
 --- 
 
 ## [Documentation Hub](https://drive.google.com/drive/folders/12dh4yEBmR-g0VRZZQVp94-PDsZ_ONl8B?usp=sharing)
+
+![Class Diagram](https://github.com/ddiliberto123/BobBuilders/assets/114122493/5759c8c4-f1b7-4359-b912-d0b593a43743)
