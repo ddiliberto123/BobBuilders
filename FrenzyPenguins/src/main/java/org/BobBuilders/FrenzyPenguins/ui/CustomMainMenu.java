@@ -28,7 +28,6 @@ import java.util.Stack;
 
 
 public class CustomMainMenu extends FXGLMenu {
-
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
 //    private ObjectProperty<customMenuButton> selectedButton;
@@ -53,14 +52,13 @@ public class CustomMainMenu extends FXGLMenu {
                 btnQuit,
                 new Text(""),
                 new LineSeparator(),
-                FXGL.getUIFactoryService().newText("Not Logged in",Color.GRAY,15));
+                FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15));
         vbox.setTranslateX(100);
         vbox.setTranslateY(450);
         getContentRoot().getChildren().addAll(vbox);
     }
 
     private static class customMenuButton extends StackPane {
-
         private String name;
         private Runnable action;
 
@@ -71,9 +69,9 @@ public class CustomMainMenu extends FXGLMenu {
             this.action = action;
 
             //Calls the UI factory apart of FXGL to create a text box
-            text = FXGL.getUIFactoryService().newText(name,Color.BLACK,20.0);
+            text = FXGL.getUIFactoryService().newText(name, Color.BLACK, 20.0);
             //This is the rectangle next to the buttons that show its been selected (color of button also changes)
-            selector = new Rectangle(8,20, Color.BLACK);
+            selector = new Rectangle(8, 20, Color.BLACK);
             selector.setTranslateX(-20);
             //Sets it visible if its focused
             selector.visibleProperty().bind(focusedProperty());
@@ -86,22 +84,18 @@ public class CustomMainMenu extends FXGLMenu {
                     Bindings.when(focusedProperty()).then(SELECTED_COLOR).otherwise(NOT_SELECTED_COLOR)
             );
             hoverProperty().addListener((observableValue, aBoolean, isHovered) -> {
-                if (isHovered){
-                    setFocused(true);
-                } else {
-                    setFocused(false);
-                }
+                    setFocused(isHovered);
             });
             //Checks if the button is focused before allowed it to be pressed
             setOnMouseClicked(e -> {
-                if(isFocused()){
+                if (isFocused()){
                     action.run();
                 }
             });
 
             setOnKeyPressed(e -> {
-                //Checks if the button is focused before allowing enter to work (incase mouse is broken)
-                if(isFocused() && e.getCode() == KeyCode.ENTER){
+                //Checks if the button is focused before allowing enter to work (in case mouse is broken)
+                if (isFocused() && e.getCode() == KeyCode.ENTER){
                     action.run();
                 }
             });
@@ -109,7 +103,6 @@ public class CustomMainMenu extends FXGLMenu {
             setAlignment(Pos.CENTER_LEFT);
             setFocusTraversable(true);
             getChildren().addAll(selector, text);
-
         }
     }
 

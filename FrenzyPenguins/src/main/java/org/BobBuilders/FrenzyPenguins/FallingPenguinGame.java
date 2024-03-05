@@ -62,7 +62,6 @@ public class FallingPenguinGame extends GameApplication {
     }
     @Override
     protected void initGame() {
-
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
 
         //Spawning the penguin entity
@@ -86,8 +85,6 @@ public class FallingPenguinGame extends GameApplication {
                 .with(floor)
                 .buildAndAttach();
 
-
-
         //Displays the horizontal distance traveled by penguin
         distanceText = getUIFactoryService().newText("",Color.PURPLE,16);
         distanceText.setTranslateX(20);
@@ -98,14 +95,13 @@ public class FallingPenguinGame extends GameApplication {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -1.8);
         physics.applyBodyForceToCenter(forceful);
-
-
     }
+
     protected void onUpdate(double tpf){
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position: (" + penguin.getX() + ")");
 
-        if(penguin.getX()>700) {
+        if (penguin.getX()>700) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
 
@@ -141,20 +137,18 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initInput() {
         //Gives penguin the ability to move left and right in ramp vicinity
-        onKey(KeyCode.RIGHT, ()->{
-            if(penguin.getX() < 800) {
-
+        onKey(KeyCode.RIGHT, () -> {
+            if (penguin.getX() < 800) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                 Vec2 object = new Vec2(3, 0);
                 physics.applyBodyForceToCenter(object);
             }
         });
-        onKey(KeyCode.LEFT, ()->{
-            if(penguin.getX() < 800) {
+        onKey(KeyCode.LEFT, () -> {
+            if (penguin.getX() < 800) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                 Vec2 object = new Vec2(-3, 0);
                 physics.applyBodyForceToCenter(object);
-
             }
         });
 
@@ -171,6 +165,6 @@ public class FallingPenguinGame extends GameApplication {
     }
 
     private void addRectangle(double x, double y, double rotation){
-        Entity rec = FXGL.spawn("rectangle",new SpawnData(x,y).put("rotation",rotation));
+        FXGL.spawn("rectangle",new SpawnData(x,y).put("rotation",rotation));
     }
 }
