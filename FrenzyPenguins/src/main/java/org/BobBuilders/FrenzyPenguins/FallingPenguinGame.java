@@ -69,10 +69,11 @@ public class FallingPenguinGame extends GameApplication {
 
         //Creating the ramp
         FXGL.spawn("begin",0,100);
-        addRectangle(90,250,45);
-        addRectangle(200,350,25);
-        addRectangle(280,400,0);
-        addRectangle(480,380,-25);
+//        addRectangle(90,250,45);
+//        addRectangle(200,350,25);
+//        addRectangle(280,400,0);
+//        addRectangle(480,380,-25);
+        createRamp(250,200);
 
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
@@ -167,4 +168,9 @@ public class FallingPenguinGame extends GameApplication {
     private void addRectangle(double x, double y, double rotation){
         FXGL.spawn("rectangle",new SpawnData(x,y).put("rotation",rotation));
     }
+
+    private void createRamp(double spawnX, double spawnY){
+        FXGL.spawn("ramp", new SpawnData(spawnX,spawnY));
+    }
+
 }

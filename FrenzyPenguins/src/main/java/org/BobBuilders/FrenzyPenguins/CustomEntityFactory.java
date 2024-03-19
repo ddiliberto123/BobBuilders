@@ -35,6 +35,36 @@ public class CustomEntityFactory implements EntityFactory {
         physics.setFixtureDef(fix);
         return entity;
     }
+
+    @Spawns("ramp")
+    public Entity newRamp(SpawnData data){
+        final int offset = 300;
+
+        PhysicsComponent physics = new PhysicsComponent();
+        physics.setBodyType(BodyType.STATIC);
+        QuadCurve ramp = new QuadCurve();
+        ramp.setStartX(data.getX());
+        ramp.setStartY(data.getY());
+        ramp.setEndX(data.getX()+offset);
+        ramp.setEndY(data.getX()+offset);
+        ramp.setControlX(data.getX());
+        ramp.setControlY(data.getY()+offset);
+        ramp.setStroke(Color.BLACK);
+        ramp.setStrokeWidth(2);
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .view(ramp)
+                .collidable()
+                .with(physics)
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
+
+    
     @Spawns("penguin")
     public Entity newPenguin(SpawnData data){
         PhysicsComponent physics = new PhysicsComponent();
