@@ -11,14 +11,13 @@ import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 
 public class CustomGameMenu extends FXGLMenu {
@@ -28,17 +27,11 @@ public class CustomGameMenu extends FXGLMenu {
 
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
-
+        getContentRoot().setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY,null)));
         //Creates the buttons
         CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Resume", this::fireResume);
         CustomGameMenu.customMenuButton btnOptions = new CustomGameMenu.customMenuButton("Options", () -> {});
         CustomGameMenu.customMenuButton btnMainMenu = new CustomGameMenu.customMenuButton("Main Menu", this::fireExitToMainMenu);
-
-        Region region = new Region();
-        region.setStyle("-fx-background-radius: 20000; -fx-background-color: rgb(0,0,0);");
-        region.setEffect(new DropShadow(10,Color.GREY));
-        getContentRoot().setStyle("-fx-background-color: null;");
-        
         //Creates a vbox to store the menu in
         var vbox = new VBox(10,
                 btnResume,
@@ -49,7 +42,9 @@ public class CustomGameMenu extends FXGLMenu {
                 FXGL.getUIFactoryService().newText("Not Logged in",Color.GRAY,15));
         vbox.setTranslateX(150);
         vbox.setTranslateY(350);
+        vbox.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY,null)));
         getContentRoot().getChildren().addAll(vbox);
+
     }
 
     private static class customMenuButton extends StackPane {
@@ -108,7 +103,7 @@ public class CustomGameMenu extends FXGLMenu {
 
     //Used to create the line seperate (also fixes the issue of the text below it, defining its length)
     private static class LineSeparator extends Parent {
-        private Rectangle line = new Rectangle(600,2);
+        private Rectangle line = new Rectangle(600,200);
         public LineSeparator(){
             var gradient = new LinearGradient(0,0,0.5,0.5,true, CycleMethod.NO_CYCLE,
                     new Stop(0,Color.BLACK),

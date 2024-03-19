@@ -59,6 +59,7 @@ public class FallingPenguinGame extends GameApplication {
         gameSettings.setMainMenuEnabled(true);
         gameSettings.setTitle("Game");
         gameSettings.setVersion("1.0");
+
     }
     @Override
     protected void initGame() {
@@ -66,7 +67,6 @@ public class FallingPenguinGame extends GameApplication {
 
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin",10,4);
-
         //Creating the ramp
         FXGL.spawn("begin",0,100);
 //        addRectangle(90,250,45);
@@ -121,6 +121,7 @@ public class FallingPenguinGame extends GameApplication {
 
 
     }
+
 
     @Override
     protected void initPhysics(){

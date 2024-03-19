@@ -12,9 +12,18 @@ import javafx.scene.shape.*;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
-
 public class CustomEntityFactory implements EntityFactory {
-
+//double vx;
+//double vy;
+//PhysicsComponent physics = new PhysicsComponent();
+//public double getVx(){
+//    vx = physics.getVelocityX();
+//    return vx;
+//}
+//public double getVy(){
+//    vy = physics.getVelocityY();
+//    return vy;
+//}
     @Spawns("rectangle")
     public Entity newRectangle(SpawnData data){
         PhysicsComponent physics = new PhysicsComponent();
