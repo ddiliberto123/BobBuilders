@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
-
+import static org.BobBuilders.FrenzyPenguins.Physics.*;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
@@ -62,6 +62,7 @@ public class FallingPenguinGame extends GameApplication {
     }
     @Override
     protected void initGame() {
+
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
 
         //Spawning the penguin entity
