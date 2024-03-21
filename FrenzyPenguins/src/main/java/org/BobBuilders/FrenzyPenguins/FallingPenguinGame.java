@@ -18,14 +18,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
-
+import static org.BobBuilders.FrenzyPenguins.Physics.*;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
 
 
 public class FallingPenguinGame extends GameApplication {
-    private Entity penguin;
+    private static Entity penguin;
     private Entity bottom;
     private Text distanceText;
 
@@ -92,6 +92,7 @@ public class FallingPenguinGame extends GameApplication {
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
 
+
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -1.8);
@@ -119,7 +120,8 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setY(cameraY);
         }
 
-
+        //Lift(penguin.getRotation());
+        x_velocity();
     }
 
     @Override
@@ -172,5 +174,24 @@ public class FallingPenguinGame extends GameApplication {
     private void createRamp(double spawnX, double spawnY){
         FXGL.spawn("ramp", new SpawnData(spawnX,spawnY));
     }
+
+    public static double penguin_x_postition(){
+        return penguin.getX();
+    }
+
+//    public static void p_velocity() throws InterruptedException {
+//        double p1 = penguin_x_postition();
+//        FallingPenguinGame.class.wait(10);
+//        double p2 = penguin_x_postition();
+//        System.out.println("1: " + p1 + " 2: " + p2);
+//    }
+
+
+    public static double penguin_y_postition(){
+        return penguin.getY();
+    }
+
+
+
 
 }
