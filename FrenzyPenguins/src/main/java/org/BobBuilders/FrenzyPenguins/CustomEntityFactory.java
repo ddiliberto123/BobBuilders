@@ -49,32 +49,32 @@ public class CustomEntityFactory implements EntityFactory {
         Path path = new Path();
         LineTo horizontalLine = new LineTo(moveTo.getX() + horizontalRampLength, moveTo.getY());
         QuadCurveTo curveTo = new QuadCurveTo();
-        curveTo.setControlX(horizontalLine.getX()+curveOffset);
+        curveTo.setControlX(horizontalLine.getX() + curveOffset);
         curveTo.setControlY(horizontalLine.getY());
-        curveTo.setX(horizontalLine.getX()+curveOffset);
-        curveTo.setY(horizontalLine.getY()+curveOffset);
-        LineTo verticalLine = new LineTo(curveTo.getX(), curveTo.getY()+verticalRampLength);
+        curveTo.setX(horizontalLine.getX() + curveOffset);
+        curveTo.setY(horizontalLine.getY() + curveOffset);
+        LineTo verticalLine = new LineTo(curveTo.getX(), curveTo.getY() + verticalRampLength);
 
         QuadCurveTo leftCurveTo = new QuadCurveTo();
         leftCurveTo.setControlX(verticalLine.getX());
-        leftCurveTo.setControlY(verticalLine.getY()+curveOffset);
-        leftCurveTo.setX(verticalLine.getX()+curveOffset);
-        leftCurveTo.setY(verticalLine.getY()+curveOffset);
+        leftCurveTo.setControlY(verticalLine.getY() + curveOffset);
+        leftCurveTo.setX(verticalLine.getX() + curveOffset);
+        leftCurveTo.setY(verticalLine.getY() + curveOffset);
 
         LineTo lowerRampLine = new LineTo(leftCurveTo.getX() + lowerRampLength, leftCurveTo.getY());
 
         QuadCurveTo rightCurveTo = new QuadCurveTo();
-        rightCurveTo.setControlX(lowerRampLine.getX()+curveOffset);
+        rightCurveTo.setControlX(lowerRampLine.getX() + curveOffset);
         rightCurveTo.setControlY(lowerRampLine.getY());
-        rightCurveTo.setX(lowerRampLine.getX()+curveOffset);
-        rightCurveTo.setY(lowerRampLine.getY()-curveOffset);
+        rightCurveTo.setX(lowerRampLine.getX() + curveOffset);
+        rightCurveTo.setY(lowerRampLine.getY() - curveOffset);
 
-        LineTo rightBorder = new LineTo(rightCurveTo.getX(), rightCurveTo.getY()+curveOffset+borderLength);
-        LineTo bottomBorder = new LineTo(rightBorder.getX()-horizontalRampLength-curveOffset*3-borderLength, rightBorder.getY());
-        LineTo leftBorder = new LineTo(bottomBorder.getX(), bottomBorder.getY()-curveOffset*2-borderLength-verticalRampLength);
+        LineTo rightBorder = new LineTo(rightCurveTo.getX(), rightCurveTo.getY() + curveOffset + borderLength);
+        LineTo bottomBorder = new LineTo(rightBorder.getX() - horizontalRampLength - curveOffset * 3 - borderLength, rightBorder.getY());
+        LineTo leftBorder = new LineTo(bottomBorder.getX(), bottomBorder.getY() - curveOffset * 2 - borderLength - verticalRampLength);
 
-        path.getElements().addAll(moveTo, horizontalLine,curveTo,verticalLine,leftCurveTo,
-                lowerRampLine,rightCurveTo,rightBorder,bottomBorder,leftBorder);
+        path.getElements().addAll(moveTo, horizontalLine, curveTo, verticalLine, leftCurveTo,
+                lowerRampLine, rightCurveTo, rightBorder, bottomBorder, leftBorder);
         path.setFill(Color.RED);
         path.setStroke(Color.RED);
         Entity entity = entityBuilder()

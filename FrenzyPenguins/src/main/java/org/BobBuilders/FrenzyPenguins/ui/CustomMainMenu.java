@@ -30,14 +30,17 @@ import java.util.Stack;
 public class CustomMainMenu extends FXGLMenu {
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
-//    private ObjectProperty<customMenuButton> selectedButton;
+
+    //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
 
         //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
-        customMenuButton btnLogin = new customMenuButton("Login", () -> {});
-        customMenuButton btnOptions = new customMenuButton("Options", () -> {});
+        customMenuButton btnLogin = new customMenuButton("Login", () -> {
+        });
+        customMenuButton btnOptions = new customMenuButton("Options", () -> {
+        });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
 
 //        selectedButton = new SimpleObjectProperty<>(btnPlayGame);
@@ -64,7 +67,8 @@ public class CustomMainMenu extends FXGLMenu {
 
         private Text text;
         private Rectangle selector;
-        public customMenuButton(String name, Runnable action){
+
+        public customMenuButton(String name, Runnable action) {
             this.name = name;
             this.action = action;
 
@@ -84,18 +88,18 @@ public class CustomMainMenu extends FXGLMenu {
                     Bindings.when(focusedProperty()).then(SELECTED_COLOR).otherwise(NOT_SELECTED_COLOR)
             );
             hoverProperty().addListener((observableValue, aBoolean, isHovered) -> {
-                    setFocused(isHovered);
+                setFocused(isHovered);
             });
             //Checks if the button is focused before allowed it to be pressed
             setOnMouseClicked(e -> {
-                if (isFocused()){
+                if (isFocused()) {
                     action.run();
                 }
             });
 
             setOnKeyPressed(e -> {
                 //Checks if the button is focused before allowing enter to work (in case mouse is broken)
-                if (isFocused() && e.getCode() == KeyCode.ENTER){
+                if (isFocused() && e.getCode() == KeyCode.ENTER) {
                     action.run();
                 }
             });
@@ -108,12 +112,13 @@ public class CustomMainMenu extends FXGLMenu {
 
     //Used to create the line seperate (also fixes the issue of the text below it, defining its length)
     private static class LineSeparator extends Parent {
-        private Rectangle line = new Rectangle(600,2);
-        public LineSeparator(){
-            var gradient = new LinearGradient(0,0,0.5,0.5,true, CycleMethod.NO_CYCLE,
-                    new Stop(0,Color.BLACK),
+        private Rectangle line = new Rectangle(600, 2);
+
+        public LineSeparator() {
+            var gradient = new LinearGradient(0, 0, 0.5, 0.5, true, CycleMethod.NO_CYCLE,
+                    new Stop(0, Color.BLACK),
                     new Stop(0.5, Color.GRAY),
-                    new Stop(2.0,Color.TRANSPARENT));
+                    new Stop(2.0, Color.TRANSPARENT));
 
             line.setFill(gradient);
             getChildren().add(line);
