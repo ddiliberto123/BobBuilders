@@ -33,13 +33,6 @@ public class FallingPenguinGame extends GameApplication {
         launch(args);
     }
 
-//    @Override
-//    protected void initUI(){
-//        Text textpixels = new Text();
-//        textpixels.setTranslateX(50);
-//        textpixels.setTranslateY(150);
-//        FXGL.getGameScene().addUINode(textpixels);
-//    }
     @Override
     protected void initSettings(GameSettings gameSettings) {
         gameSettings.setWidth(1200);
