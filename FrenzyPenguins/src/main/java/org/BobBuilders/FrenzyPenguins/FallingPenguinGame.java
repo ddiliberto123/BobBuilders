@@ -194,12 +194,12 @@ public class FallingPenguinGame extends GameApplication {
         FXGL.spawn("rectangle", new SpawnData(horizontalRampLength / 2 + rampLength, spawnY + rampLength)
                 .put("width", lowerRampLength)
                 .put("height", 1000));
-        FXGL.spawn("triangle", new SpawnData(horizontalRampLength / 2 + rampLength + lowerRampLength,
-                spawnY + rampLength)
-                .put("endX", horizontalRampLength / 2 + rampLength + secondRampLength)
-                .put("endY", spawnY + rampLength - secondRampLength)
-                .put("controlX", horizontalRampLength / 2 + secondRampLength)
-                .put("controlY", spawnY + rampLength));
+        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength)/2 - 70 ,
+                (spawnY + rampLength)/2)
+                .put("endX", (horizontalRampLength + rampLength)/2 + secondRampLength)
+                .put("endY", ((spawnY + rampLength))/2 - secondRampLength)
+                .put("controlX", (horizontalRampLength + rampLength)/2  + secondRampLength)
+                .put("controlY", (spawnY + rampLength)/2));
     }
 
 }
