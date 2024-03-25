@@ -4,30 +4,56 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
+import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
 
+    //    @Spawns("rectangle")
+//    public Entity newRectangle(SpawnData data) {
+//        PhysicsComponent physics = new PhysicsComponent();
+//        physics.setBodyType(BodyType.STATIC);
+//        Rectangle view = new Rectangle(300, 80);
+//        view.setFill(Color.BLUEVIOLET);
+//        double rotation = data.get("rotation");
+//        Entity entity = entityBuilder()
+//                .from(data)
+//                .type(GROUND)
+//                .viewWithBBox(view)
+//                .rotate(rotation)
+//                .collidable()
+//                .with(physics)
+//                .build();
+//        FixtureDef fix = new FixtureDef();
+//        fix.setDensity(0.1f);
+//        physics.setFixtureDef(fix);
+//        return entity;
+//    }
     @Spawns("rectangle")
-    public Entity newRectangle(SpawnData data) {
+    public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(300, 80);
-        view.setFill(Color.BLUEVIOLET);
-        double rotation = data.get("rotation");
+        double width = Double.parseDouble(data.get("width").toString());
+        double height = Double.parseDouble(data.get("height").toString());
+        Rectangle rectangle = new Rectangle(width, height);
+        rectangle.setFill(Color.BLACK);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
-                .viewWithBBox(view)
-                .rotate(rotation)
-                .collidable()
+                .viewWithBBox(rectangle)
                 .with(physics)
                 .build();
         FixtureDef fix = new FixtureDef();
@@ -36,6 +62,63 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
+    @Spawns("circle")
+    public Entity createCircle(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        double radius = Double.parseDouble(data.get("radius").toString());
+        Circle circle = new Circle();
+        circle.setRadius(radius);
+        circle.setFill(Color.BLACK);
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(circle)
+                .with(physics)
+                .collidable()
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
+
+    @Spawns("triangle")
+    public Entity createTriangle(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        double endX = Double.parseDouble(data.get("endX").toString());
+        double endY = Double.parseDouble(data.get("endY").toString());
+        double controlX = Double.parseDouble(data.get("controlX").toString());
+        double controlY = Double.parseDouble(data.get("controlY").toString());
+        Polygon triangle = new Polygon();
+        triangle.getPoints().addAll(
+                data.getX(), data.getY(),
+                controlX, controlY,
+                endX, endY);
+        Point2D[] hitboxPoints = {
+                new Point2D(data.getX(), data.getY()),
+                new Point2D(controlX, controlY),
+                new Point2D(endX, endY)
+        };
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .view(triangle)
+                .bbox(new HitBox(BoundingShape.polygon(hitboxPoints)))
+                .with(physics)
+                .collidable()
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
+
+
+    /*
+
+        Left temporarily incase of reintroduction into code
+
+     */
     @Spawns("ramp")
     public Entity newRamp(SpawnData data) {
         int horizontalRampLength = 300;
@@ -43,6 +126,7 @@ public class CustomEntityFactory implements EntityFactory {
         int lowerRampLength = 50;
         int borderLength = 50;
         final int curveOffset = 50;
+
         PhysicsComponent physics = new PhysicsComponent();
         MoveTo moveTo = new MoveTo(0,
                 100);
@@ -77,8 +161,26 @@ public class CustomEntityFactory implements EntityFactory {
                 lowerRampLine, rightCurveTo, rightBorder, bottomBorder, leftBorder);
         path.setFill(Color.RED);
         path.setStroke(Color.RED);
+        Point2D[] hitboxPoints = {
+                new Point2D(0, 100),
+                new Point2D(horizontalLine.getX(), horizontalLine.getY()),
+                new Point2D(curveTo.getX(), curveTo.getY()),
+                new Point2D(verticalLine.getX(), verticalLine.getY()),
+                new Point2D(leftCurveTo.getX(), leftCurveTo.getY()),
+                new Point2D(lowerRampLine.getX(), lowerRampLine.getY()),
+                new Point2D(rightCurveTo.getX(), rightCurveTo.getY()),
+                new Point2D(rightBorder.getX(), rightBorder.getY()),
+                new Point2D(bottomBorder.getX(), bottomBorder.getY()),
+                new Point2D(leftBorder.getX(), leftBorder.getY())
+        };
+        for (Point2D e : hitboxPoints) {
+            int i = 0;
+            System.out.println(i + ":" + e.getX() + "," + e.getY());
+            i = i + 1;
+        }
         Entity entity = entityBuilder()
                 .type(GROUND)
+                .bbox(new HitBox(BoundingShape.polygon(hitboxPoints)))
                 .view(path)
                 .collidable()
                 .with(physics)
