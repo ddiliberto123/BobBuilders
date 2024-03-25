@@ -33,6 +33,13 @@ public class FallingPenguinGame extends GameApplication {
         launch(args);
     }
 
+    //    @Override
+//    protected void initUI(){
+//        Text textpixels = new Text();
+//        textpixels.setTranslateX(50);
+//        textpixels.setTranslateY(150);
+//        FXGL.getGameScene().addUINode(textpixels);
+//    }
     @Override
     protected void initSettings(GameSettings gameSettings) {
         gameSettings.setWidth(1200);
@@ -61,19 +68,26 @@ public class FallingPenguinGame extends GameApplication {
 
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin", 10, 4);
+
+        /*
+
+            Ramp creation is being redone, code left incase of errors etc.
+
+         */
         //Creating the ramp
-        FXGL.spawn("begin", 0, 100);
+//        FXGL.spawn("begin", 0, 100);
 //        addRectangle(90,250,45);
 //        addRectangle(200,350,25);
 //        addRectangle(280,400,0);
 //        addRectangle(480,380,-25);
-        createRamp(250, 200);
+//        createRamp(250, 200);
+        createEntireRamp(0, 100);
 
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
 
         bottom = FXGL.entityBuilder()
-                .at(300, 650)
+                .at(300, 10000)
                 .type(EXIT)
                 .viewWithBBox(new Rectangle(20000, 20))
                 .collidable()
@@ -125,7 +139,7 @@ public class FallingPenguinGame extends GameApplication {
             //This is temporary for us to build upon the surface which the penguin will eventually collide with
             @Override
             protected void onCollisionBegin(Entity penguin, Entity bottom) {
-                getGameController().exit();
+                getGameController().gotoMainMenu();
             }
         });
     }
@@ -164,8 +178,30 @@ public class FallingPenguinGame extends GameApplication {
         FXGL.spawn("rectangle", new SpawnData(x, y).put("rotation", rotation));
     }
 
-    private void createRamp(double spawnX, double spawnY) {
-        FXGL.spawn("ramp", new SpawnData(spawnX, spawnY));
+    private void createEntireRamp(double spawnX, double spawnY) {
+        int horizontalRampLength = 250;
+        int rampLength = 1000;
+        int verticalRampLength = 400;
+        int lowerRampLength = 200;
+        int secondRampLength = 300;
+
+        FXGL.spawn("rectangle", new SpawnData(spawnX, spawnY)
+                .put("width", horizontalRampLength)
+                .put("height", 1000));
+        FXGL.spawn("triangle", new SpawnData(horizontalRampLength / 2, spawnY / 2)
+                .put("endX", horizontalRampLength / 2 + rampLength)
+                .put("endY", spawnY + rampLength)
+                .put("controlX", horizontalRampLength / 2)
+                .put("controlY", spawnY + rampLength));
+        FXGL.spawn("rectangle", new SpawnData(horizontalRampLength / 2 + rampLength, spawnY + rampLength)
+                .put("width", lowerRampLength)
+                .put("height", 1000));
+        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength)/2 - 70 ,
+                (spawnY + rampLength)/2)
+                .put("endX", (horizontalRampLength + rampLength)/2 + secondRampLength)
+                .put("endY", ((spawnY + rampLength))/2 - secondRampLength)
+                .put("controlX", (horizontalRampLength + rampLength)/2  + secondRampLength)
+                .put("controlY", (spawnY + rampLength)/2));
     }
 
 }
