@@ -12,8 +12,9 @@ import javafx.scene.shape.*;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
+
 public class CustomEntityFactory implements EntityFactory {
-//double vx;
+    //double vx;
 //double vy;
 //PhysicsComponent physics = new PhysicsComponent();
 //public double getVx(){
@@ -25,10 +26,10 @@ public class CustomEntityFactory implements EntityFactory {
 //    return vy;
 //}
     @Spawns("rectangle")
-    public Entity newRectangle(SpawnData data){
+    public Entity newRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(300,80);
+        Rectangle view = new Rectangle(300, 80);
         view.setFill(Color.BLUEVIOLET);
         double rotation = data.get("rotation");
         Entity entity = entityBuilder()
@@ -46,7 +47,7 @@ public class CustomEntityFactory implements EntityFactory {
     }
 
     @Spawns("ramp")
-    public Entity newRamp(SpawnData data){
+    public Entity newRamp(SpawnData data) {
         final int offset = 300;
 
         PhysicsComponent physics = new PhysicsComponent();
@@ -54,10 +55,10 @@ public class CustomEntityFactory implements EntityFactory {
         QuadCurve ramp = new QuadCurve();
         ramp.setStartX(data.getX());
         ramp.setStartY(data.getY());
-        ramp.setEndX(data.getX()+offset);
-        ramp.setEndY(data.getX()+offset);
+        ramp.setEndX(data.getX() + offset);
+        ramp.setEndY(data.getX() + offset);
         ramp.setControlX(data.getX());
-        ramp.setControlY(data.getY()+offset);
+        ramp.setControlY(data.getY() + offset);
         ramp.setStroke(Color.BLACK);
         ramp.setStrokeWidth(2);
         Entity entity = entityBuilder()
@@ -73,13 +74,13 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
-    
+
     @Spawns("penguin")
-    public Entity newPenguin(SpawnData data){
+    public Entity newPenguin(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
         physics.setFixtureDef(new FixtureDef().density(0.1f));
-        Rectangle view = new Rectangle(30,30,Color.BLACK);
+        Rectangle view = new Rectangle(30, 30, Color.BLACK);
         return entityBuilder(data)
                 .type(PENGUIN)
                 .viewWithBBox(view)
@@ -90,10 +91,10 @@ public class CustomEntityFactory implements EntityFactory {
 
 
     @Spawns("begin")
-    public Entity newBegin(SpawnData data){
+    public Entity newBegin(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(200,500);
+        Rectangle view = new Rectangle(200, 500);
         view.setFill(Color.BLUEVIOLET);
         Entity entity = entityBuilder()
                 .from(data)

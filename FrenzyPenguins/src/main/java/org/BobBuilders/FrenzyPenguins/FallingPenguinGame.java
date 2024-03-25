@@ -45,7 +45,7 @@ public class FallingPenguinGame extends GameApplication {
             }
 
             @Override
-            public FXGLMenu newGameMenu(){
+            public FXGLMenu newGameMenu() {
                 return new CustomGameMenu();
             }
         });
@@ -54,19 +54,20 @@ public class FallingPenguinGame extends GameApplication {
         gameSettings.setVersion("1.0");
 
     }
+
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
 
         //Spawning the penguin entity
-        penguin = FXGL.spawn("penguin",10,4);
+        penguin = FXGL.spawn("penguin", 10, 4);
         //Creating the ramp
-        FXGL.spawn("begin",0,100);
+        FXGL.spawn("begin", 0, 100);
 //        addRectangle(90,250,45);
 //        addRectangle(200,350,25);
 //        addRectangle(280,400,0);
 //        addRectangle(480,380,-25);
-        createRamp(250,200);
+        createRamp(250, 200);
 
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
@@ -80,7 +81,7 @@ public class FallingPenguinGame extends GameApplication {
                 .buildAndAttach();
 
         //Displays the horizontal distance traveled by penguin
-        distanceText = getUIFactoryService().newText("",Color.PURPLE,16);
+        distanceText = getUIFactoryService().newText("", Color.PURPLE, 16);
         distanceText.setTranslateX(20);
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
@@ -91,11 +92,11 @@ public class FallingPenguinGame extends GameApplication {
         physics.applyBodyForceToCenter(forceful);
     }
 
-    protected void onUpdate(double tpf){
+    protected void onUpdate(double tpf) {
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position: (" + penguin.getX() + ")");
 
-        if (penguin.getX()>700) {
+        if (penguin.getX() > 700) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
 
@@ -117,13 +118,13 @@ public class FallingPenguinGame extends GameApplication {
 
 
     @Override
-    protected void initPhysics(){
+    protected void initPhysics() {
         //Collision handler for penguin and bottom
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, EXIT) {
             //Closes application once penguin hits bottom
             //This is temporary for us to build upon the surface which the penguin will eventually collide with
             @Override
-            protected void onCollisionBegin(Entity penguin, Entity bottom){
+            protected void onCollisionBegin(Entity penguin, Entity bottom) {
                 getGameController().exit();
             }
         });
@@ -148,23 +149,23 @@ public class FallingPenguinGame extends GameApplication {
         });
 
         //Gives penguin the ability to change angle which it faces
-        onKey(KeyCode.D, ()->{
+        onKey(KeyCode.D, () -> {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
             physics.setAngularVelocity(120);
         });
-        onKey(KeyCode.A, ()->{
+        onKey(KeyCode.A, () -> {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
             physics.setAngularVelocity(-120);
         });
 
     }
 
-    private void addRectangle(double x, double y, double rotation){
-        FXGL.spawn("rectangle",new SpawnData(x,y).put("rotation",rotation));
+    private void addRectangle(double x, double y, double rotation) {
+        FXGL.spawn("rectangle", new SpawnData(x, y).put("rotation", rotation));
     }
 
-    private void createRamp(double spawnX, double spawnY){
-        FXGL.spawn("ramp", new SpawnData(spawnX,spawnY));
+    private void createRamp(double spawnX, double spawnY) {
+        FXGL.spawn("ramp", new SpawnData(spawnX, spawnY));
     }
 
 }
