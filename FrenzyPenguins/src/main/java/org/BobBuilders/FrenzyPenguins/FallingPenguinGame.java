@@ -28,18 +28,12 @@ public class FallingPenguinGame extends GameApplication {
     private Entity penguin;
     private Entity bottom;
     private Text distanceText;
+    public static int points;
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    //    @Override
-//    protected void initUI(){
-//        Text textpixels = new Text();
-//        textpixels.setTranslateX(50);
-//        textpixels.setTranslateY(150);
-//        FXGL.getGameScene().addUINode(textpixels);
-//    }
     @Override
     protected void initSettings(GameSettings gameSettings) {
         gameSettings.setWidth(1200);
@@ -107,8 +101,9 @@ public class FallingPenguinGame extends GameApplication {
     }
 
     protected void onUpdate(double tpf) {
+
         //Constantly updates the x coordinates displayed in distanceText
-        distanceText.setText("Position: (" + penguin.getX() + ")");
+        distanceText.setText("Position: (" + penguin.getX() + ", " + penguin.getY() + ")");
 
         if (penguin.getX() > 700) {
             double penguinX = penguin.getX();
@@ -126,8 +121,13 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
         }
+        // Update the points based on the distance traveled
+        points += (int) penguin.getX();
 
-
+        //Restarts game when penguin reaches the bottom
+        if(penguin.getY() > 1200){
+            goToMenu();
+        }
     }
 
 
@@ -171,6 +171,9 @@ public class FallingPenguinGame extends GameApplication {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
             physics.setAngularVelocity(-120);
         });
+        onKey(KeyCode.ESCAPE, ()->{
+
+        });
 
     }
 
@@ -203,5 +206,12 @@ public class FallingPenguinGame extends GameApplication {
                 .put("controlX", (horizontalRampLength + rampLength)/2  + secondRampLength)
                 .put("controlY", (spawnY + rampLength)/2));
     }
-
+    private void goToMenu() {
+        // Show game menu
+        getGameController().gotoGameMenu();
+        penguin.removeFromWorld();
+        penguin = FXGL.spawn("penguin",10,4);
+        getGameScene().getViewport().setX(0);
+        getGameScene().getViewport().setY(0);
+    }
 }

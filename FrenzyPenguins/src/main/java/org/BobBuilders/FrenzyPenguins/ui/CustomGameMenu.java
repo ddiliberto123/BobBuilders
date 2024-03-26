@@ -17,14 +17,13 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
 
-public class CustomGameMenu extends FXGLMenu {
+public class CustomGameMenu extends FXGLMenu{
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
 
-
     public CustomGameMenu() {
-
         super(MenuType.GAME_MENU);
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
         back.setFill(Color.WHITESMOKE);
@@ -34,17 +33,20 @@ public class CustomGameMenu extends FXGLMenu {
         title.setTranslateX(0);
         title.setTranslateY(-(getAppHeight() / 2 - 100));
 
+        FallingPenguinGame fall = new FallingPenguinGame();
+        int points = fall.points;
+
         //Placeholder to demonstrate where username and points possessed are displayed
         Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.BLACK, 30);
         userName.setTranslateX(-(getAppWidth() / 2 - 200));
         userName.setTranslateY(-(getAppHeight() / 2 - 150));
 
-        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: 100", Color.BLACK, 30);
+        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + points, Color.BLACK, 30);
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 
         //Creates the buttons
-        CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Resume", this::fireResume);
+        CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Restart", this::fireNewGame);
         CustomGameMenu.customMenuButton btnOptions = new CustomGameMenu.customMenuButton("Main Menu", this::fireExitToMainMenu);
         CustomGameMenu.customMenuButton btnOptions1 = new CustomGameMenu.customMenuButton("Buy Jetpack", () -> {
         });
