@@ -18,6 +18,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
+import org.BobBuilders.FrenzyPenguins.Inventory;
 
 public class CustomGameMenu extends FXGLMenu{
     private static final Color SELECTED_COLOR = Color.BLACK;
@@ -25,6 +26,7 @@ public class CustomGameMenu extends FXGLMenu{
 
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
+        Inventory inventory = Inventory.getInstance();
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
         back.setFill(Color.WHITESMOKE);
         StackPane stack = new StackPane();
@@ -34,14 +36,14 @@ public class CustomGameMenu extends FXGLMenu{
         title.setTranslateY(-(getAppHeight() / 2 - 100));
 
         FallingPenguinGame fall = new FallingPenguinGame();
-        int points = fall.points;
+        System.out.println(inventory.getPoints() + "<__-");
 
         //Placeholder to demonstrate where username and points possessed are displayed
         Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.BLACK, 30);
         userName.setTranslateX(-(getAppWidth() / 2 - 200));
         userName.setTranslateY(-(getAppHeight() / 2 - 150));
 
-        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + points, Color.BLACK, 30);
+        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPoints(), Color.BLACK, 30);
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 
