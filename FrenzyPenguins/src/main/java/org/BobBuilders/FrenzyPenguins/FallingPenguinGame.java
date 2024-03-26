@@ -24,6 +24,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
 
 
+
 public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
     private Entity bottom;
@@ -63,7 +64,6 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
-
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin",10,4);
 
@@ -103,7 +103,7 @@ public class FallingPenguinGame extends GameApplication {
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position: (" + penguin.getX() + ")");
 
-        if (penguin.getX()>700) {
+        if (penguin.getX()>200) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
 
@@ -121,7 +121,10 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Lift(penguin.getRotation());
-        x_velocity();
+        if(penguin.getX() > 225) {
+            PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
+            fligth_physics.applyBodyForceToCenter(Lift(penguin.getRotation()));
+        }
     }
 
     @Override
@@ -175,8 +178,8 @@ public class FallingPenguinGame extends GameApplication {
         FXGL.spawn("ramp", new SpawnData(spawnX,spawnY));
     }
 
-    public static double penguin_x_postition(){
-        return penguin.getX();
+    public static double penguin_y_postition(){
+        return penguin.getY();
     }
 
 //    public static void p_velocity() throws InterruptedException {
@@ -187,11 +190,30 @@ public class FallingPenguinGame extends GameApplication {
 //    }
 
 
-    public static double penguin_y_postition(){
-        return penguin.getY();
+    public static double penguin_x_velocity(){
+        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+        double vx = physics.getVelocityX();
+        return vx;
+    }
+    public static double penguin_y_velocity(){
+        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+        double vy = physics.getVelocityY();
+        return vy;
+    }
+
+    public static double wing_area(){
+        //This is temporary, the wing_area should be taken from the area of the gliders
+        return (penguin.getWidth()*penguin.getHeight());
     }
 
 
+
+    public static double pixel_to_cm_converter(double p_measure){
+        double width = getGameScene().getWidth();
+        double height = getGameScene().getHeight();
+        double ppi = width*height;
+        return p_measure/ppi;
+    }
 
 
 }
