@@ -36,7 +36,7 @@ public class CustomGameMenu extends FXGLMenu{
         title.setTranslateY(-(getAppHeight() / 2 - 100));
 
         FallingPenguinGame fall = new FallingPenguinGame();
-        System.out.println(inventory.getPoints() + "<__-");
+        System.out.println(inventory.getPoints() + "<--- Game Menu");
 
         //Placeholder to demonstrate where username and points possessed are displayed
         Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.BLACK, 30);

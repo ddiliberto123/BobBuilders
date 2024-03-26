@@ -28,6 +28,9 @@ public class Inventory {
         this.points.setValue(this.points.getValue() + addedPoints);
     }
 
+    public SimpleIntegerProperty getPointsProperty(){
+        return this.points;
+    }
     public int getPoints(){
         return this.points.getValue();
     }
