@@ -65,14 +65,17 @@ public class CustomEntityFactory implements EntityFactory {
     @Spawns("circle")
     public Entity createCircle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double radius = Double.parseDouble(data.get("radius").toString());
-        Circle circle = new Circle();
-        circle.setRadius(radius);
+//        double radius = Double.parseDouble(data.get("radius").toString());
+        double radius = 20;
+        Circle circle = new Circle(radius);
+        circle.setTranslateX(radius);
+        circle.setTranslateY(radius);
         circle.setFill(Color.BLACK);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
-                .viewWithBBox(circle)
+                .view(circle)
+                .bbox(new HitBox(BoundingShape.circle(radius)))
                 .with(physics)
                 .collidable()
                 .build();
