@@ -4,6 +4,8 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
+import javafx.beans.binding.StringBinding;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -27,6 +29,7 @@ public class CustomGameMenu extends FXGLMenu{
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
         Inventory inventory = Inventory.getInstance();
+        System.out.println(inventory);
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
         back.setFill(Color.WHITESMOKE);
         StackPane stack = new StackPane();
@@ -46,6 +49,9 @@ public class CustomGameMenu extends FXGLMenu{
         Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPoints(), Color.BLACK, 30);
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
+
+        availablePoints.textProperty().bind(Bindings.convert(inventory.getPointsProperty()));
+
 
         //Creates the buttons
         CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Restart", this::fireNewGame);
