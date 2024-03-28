@@ -10,20 +10,21 @@ public class Physics {
 
     public static double penguin_velocity(){
         double penguin_velocity = Math.sqrt((Math.pow(penguin_x_velocity(),2)+Math.pow(penguin_y_velocity(),2)));
+        System.out.println("1: " + penguin_x_velocity() + " 2: " + penguin_y_velocity() + " 3: " + penguin_velocity);
         return penguin_velocity;
-        //System.out.println("1: " + penguin_x_velocity() + " 2: " + penguin_y_velocity() + " 3: " + penguin_velocity);
+
     }
 
 
 
     public static Vec2 Lift(double p_angle){
         //calculating lift
-        double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*wing_area()))*0.00000001;
+        double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*wing_area()));
 
         System.out.println("Angle: " + p_angle);
         System.out.println("Y-Pos: " + penguin_y_postition());
-        Vec2 lift_vector = new Vec2(lift*Math.cos(p_angle+180),lift*Math.sin(p_angle+90));
-        System.out.println("Lift y: " + lift_vector.x + "Lift x: " + lift_vector.y);
+        Vec2 lift_vector = new Vec2(0,lift*Math.toDegrees(Math.sin(Math.toRadians(p_angle+90))));
+        System.out.println("Lift y: " + lift_vector.y + "Lift x: " + lift_vector.x);
         return lift_vector;
     }
     Vec2 Drag(){

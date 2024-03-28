@@ -193,17 +193,19 @@ public class FallingPenguinGame extends GameApplication {
     public static double penguin_x_velocity(){
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vx = physics.getVelocityX();
-        return vx;
+        return getPhysicsWorld().toMeters(vx);
     }
     public static double penguin_y_velocity(){
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vy = physics.getVelocityY();
-        return vy;
+        return getPhysicsWorld().toMeters(vy);
     }
 
     public static double wing_area(){
         //This is temporary, the wing_area should be taken from the area of the gliders
-        return (penguin.getWidth()*penguin.getHeight());
+        System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
+        //return (penguin.getWidth()*penguin.getHeight());
+        return 10;
     }
 
 
