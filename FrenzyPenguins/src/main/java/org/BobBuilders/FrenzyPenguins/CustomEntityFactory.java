@@ -11,6 +11,8 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
@@ -18,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
@@ -110,6 +112,19 @@ public class CustomEntityFactory implements EntityFactory {
         FixtureDef fix = new FixtureDef();
         fix.setDensity(0.1f);
         physics.setFixtureDef(fix);
+        return entity;
+    }
+
+    //Repeating background entity in game
+    @Spawns("background")
+    public Entity newBackground(SpawnData data){
+        Image gameBackground = new Image("file:clouds.jpg");
+        ImageView gameBackgroundView = new ImageView(gameBackground);
+        gameBackgroundView.setFitWidth(getAppWidth());
+        gameBackgroundView.setFitHeight(getAppHeight());
+        Entity entity = entityBuilder()
+                .view(gameBackgroundView)
+                .buildAndAttach();
         return entity;
     }
 

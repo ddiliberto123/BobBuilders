@@ -12,6 +12,9 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -57,8 +60,8 @@ public class FallingPenguinGame extends GameApplication {
 
     @Override
     protected void initGame() {
-
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
+        FXGL.spawn("background",0,0);
 
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin", 10, 4);
@@ -80,6 +83,7 @@ public class FallingPenguinGame extends GameApplication {
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
 
+
         bottom = FXGL.entityBuilder()
                 .at(300, 10000)
                 .type(EXIT)
@@ -96,7 +100,7 @@ public class FallingPenguinGame extends GameApplication {
 
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-        Vec2 forceful = new Vec2(0, -1.8);
+        Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
     }
 
@@ -123,10 +127,12 @@ public class FallingPenguinGame extends GameApplication {
         }
         // Update the points based on the distance traveled
         inventory.addPoints((int) penguin.getX());
+        int points = inventory.getPoints();
         System.out.println(penguin.getX());
 
         //Restarts game when penguin reaches the bottom
-        if(penguin.getY() > 1200){
+        if (penguin.getY() > 1200) {
+            inventory.setPoints(points);
             goToMenu();
         }
     }
@@ -172,14 +178,14 @@ public class FallingPenguinGame extends GameApplication {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
             physics.setAngularVelocity(-120);
         });
-        onKey(KeyCode.ESCAPE, ()->{
+        onKey(KeyCode.ESCAPE, () -> {
 
         });
 
     }
 
     @Override
-    protected void initUI(){
+    protected void initUI() {
     }
 
     private void addRectangle(double x, double y, double rotation) {
@@ -204,18 +210,19 @@ public class FallingPenguinGame extends GameApplication {
         FXGL.spawn("rectangle", new SpawnData(horizontalRampLength / 2 + rampLength, spawnY + rampLength)
                 .put("width", lowerRampLength)
                 .put("height", 1000));
-        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength)/2 - 70 ,
-                (spawnY + rampLength)/2)
-                .put("endX", (horizontalRampLength + rampLength)/2 + secondRampLength)
-                .put("endY", ((spawnY + rampLength))/2 - secondRampLength)
-                .put("controlX", (horizontalRampLength + rampLength)/2  + secondRampLength)
-                .put("controlY", (spawnY + rampLength)/2));
+        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength) / 2 - 70,
+                (spawnY + rampLength) / 2)
+                .put("endX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
+                .put("endY", ((spawnY + rampLength)) / 2 - secondRampLength)
+                .put("controlX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
+                .put("controlY", (spawnY + rampLength) / 2));
     }
+
     private void goToMenu() {
         // Show game menu
         getGameController().gotoGameMenu();
         penguin.removeFromWorld();
-        penguin = FXGL.spawn("penguin",10,4);
+        penguin = FXGL.spawn("penguin", 10, 4);
         getGameScene().getViewport().setX(0);
         getGameScene().getViewport().setY(0);
     }

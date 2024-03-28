@@ -11,6 +11,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -43,9 +45,11 @@ public class CustomMainMenu extends FXGLMenu {
         });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
 
-//        selectedButton = new SimpleObjectProperty<>(btnPlayGame);
-//        FXGL.getAssetLoader().loadTexture("background/background.png");
-
+        //Establish background image
+        Image gameBackground = new Image("file:sunset_mountains.jpg");
+        ImageView gameBackgroundView = new ImageView(gameBackground);
+        gameBackgroundView.setFitHeight(getAppHeight());
+        gameBackgroundView.setPreserveRatio(true);
 
         //Creates a vbox to store the menu in
         var vbox = new VBox(10,
@@ -58,7 +62,7 @@ public class CustomMainMenu extends FXGLMenu {
                 FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15));
         vbox.setTranslateX(100);
         vbox.setTranslateY(450);
-        getContentRoot().getChildren().addAll(vbox);
+        getContentRoot().getChildren().addAll(gameBackgroundView,vbox);
     }
 
     private static class customMenuButton extends StackPane {

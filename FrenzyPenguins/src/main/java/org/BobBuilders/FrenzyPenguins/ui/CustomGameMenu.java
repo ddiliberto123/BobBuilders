@@ -29,8 +29,14 @@ public class CustomGameMenu extends FXGLMenu{
         Inventory inventory = Inventory.getInstance();
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
         back.setFill(Color.WHITESMOKE);
+
+        Image gameBackground = new Image("file:clouds.jpg");
+        ImageView gameBackgroundView = new ImageView(gameBackground);
+        gameBackgroundView.setFitWidth(getAppWidth());
+        gameBackgroundView.setFitHeight(getAppHeight());
+
         StackPane stack = new StackPane();
-        getContentRoot().setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY, null)));
+
         Text title = FXGL.getUIFactoryService().newText("Store", Color.BLACK, 70);
         title.setTranslateX(0);
         title.setTranslateY(-(getAppHeight() / 2 - 100));
@@ -105,7 +111,7 @@ public class CustomGameMenu extends FXGLMenu{
         container.setGridLinesVisible(true);
         container.setAlignment(Pos.CENTER);
 
-        stack.getChildren().addAll(back, container, title, userName, availablePoints);
+        stack.getChildren().addAll(back, gameBackgroundView, container, title, userName, availablePoints);
         getContentRoot().getChildren().addAll(stack);
 
     }
