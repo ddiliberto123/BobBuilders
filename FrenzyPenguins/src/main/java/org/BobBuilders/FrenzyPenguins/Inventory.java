@@ -10,7 +10,7 @@ public class Inventory {
     private int rampLevel;
     private boolean hasJetpack;
     private boolean hasSlide;
-    private IntegerProperty points;
+    private SimpleIntegerProperty points;
 
     private Inventory() {
         rampLevel = 1;
@@ -21,17 +21,14 @@ public class Inventory {
     }
 
     public static Inventory getInstance() {
-        if (instance == null){
-            instance = new Inventory();
-        }
-        return instance;
+        return instance == null ? new Inventory() : instance;
     }
 
     public void addPoints(int addedPoints) {
         this.points.setValue(this.points.getValue() + addedPoints);
     }
 
-    public IntegerProperty getPointsProperty(){
+    public SimpleIntegerProperty getPointsProperty(){
         return this.points;
     }
     public int getPoints(){
