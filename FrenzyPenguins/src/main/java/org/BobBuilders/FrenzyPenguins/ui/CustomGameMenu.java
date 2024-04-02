@@ -27,6 +27,7 @@ public class CustomGameMenu extends FXGLMenu{
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
         Inventory inventory = Inventory.getInstance();
+        System.out.println(inventory);
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
         back.setFill(Color.WHITESMOKE);
         StackPane stack = new StackPane();

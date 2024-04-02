@@ -29,6 +29,8 @@ public class FallingPenguinGame extends GameApplication {
     private Entity bottom;
     private Text distanceText;
 
+    private static final String END_Y = "endy";
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -57,7 +59,6 @@ public class FallingPenguinGame extends GameApplication {
 
     @Override
     protected void initGame() {
-
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
 
         //Spawning the penguin entity
@@ -102,6 +103,7 @@ public class FallingPenguinGame extends GameApplication {
 
     protected void onUpdate(double tpf) {
         Inventory inventory = Inventory.getInstance();
+        System.out.println(inventory);
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position: (" + penguin.getX() + ", " + penguin.getY() + ")");
 
