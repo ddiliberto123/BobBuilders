@@ -3,23 +3,14 @@ package org.BobBuilders.FrenzyPenguins;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Data singleton used to store user inventory
  */
 public class Inventory {
 
     private static Inventory instance = null;
-    @Setter
-    @Getter
     private int rampLevel;
-    @Setter
-    @Getter
     private boolean hasJetpack;
-    @Setter
-    @Getter
     private boolean hasSlide;
     private IntegerProperty points;
 

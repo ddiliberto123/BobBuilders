@@ -4,6 +4,7 @@ open module org.BobBuilders.FrenzyPenguins {
 
     requires com.almasb.fxgl.all;
 
+
 //    opens org.BobBuilders.FrenzyPenguins to javafx.fxml;
     exports org.BobBuilders.FrenzyPenguins;
 
