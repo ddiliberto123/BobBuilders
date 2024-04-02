@@ -3,7 +3,9 @@ package org.BobBuilders.FrenzyPenguins;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-
+/**
+ * Data singleton used to store user inventory
+ */
 public class Inventory {
 
     private static Inventory instance = null;
