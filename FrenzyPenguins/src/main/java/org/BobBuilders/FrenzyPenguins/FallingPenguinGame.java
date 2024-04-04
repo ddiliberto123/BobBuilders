@@ -95,13 +95,16 @@ public class FallingPenguinGame extends GameApplication {
 
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-        Vec2 forceful = new Vec2(0, -1.8);
+        Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
+        //FXGL.getPhysicsWorld().setGravity(0, 98);
+
+
     }
 
     protected void onUpdate(double tpf){
         //Constantly updates the x coordinates displayed in distanceText
-        distanceText.setText("Position: (" + penguin.getX() + ")");
+        distanceText.setText("Position: (" + penguin.getY() + ")");
 
         if (penguin.getX()>200) {
             double penguinX = penguin.getX();
@@ -121,10 +124,11 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Lift(penguin.getRotation());
-        if(penguin.getX() > 225) {
+//        if(penguin.getX() > 225) {
             PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
             fligth_physics.applyBodyForceToCenter(Lift(penguin.getRotation()));
-        }
+//
+//        }
     }
 
     @Override
@@ -203,19 +207,13 @@ public class FallingPenguinGame extends GameApplication {
 
     public static double wing_area(){
         //This is temporary, the wing_area should be taken from the area of the gliders
-        System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
+        //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
         //return (penguin.getWidth()*penguin.getHeight());
-        return 10;
+        return 1;
     }
 
 
 
-    public static double pixel_to_cm_converter(double p_measure){
-        double width = getGameScene().getWidth();
-        double height = getGameScene().getHeight();
-        double ppi = width*height;
-        return p_measure/ppi;
-    }
 
 
 }
