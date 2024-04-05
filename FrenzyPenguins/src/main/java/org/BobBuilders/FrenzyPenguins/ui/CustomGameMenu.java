@@ -4,57 +4,114 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.effect.BoxBlur;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
+import org.BobBuilders.FrenzyPenguins.Inventory;
 
-public class CustomGameMenu extends FXGLMenu {
+public class CustomGameMenu extends FXGLMenu{
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
 
-
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
+        Inventory inventory = Inventory.getInstance();
+        System.out.println(inventory);
+        Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
+        back.setFill(Color.WHITESMOKE);
+        StackPane stack = new StackPane();
+        getContentRoot().setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY, null)));
+        Text title = FXGL.getUIFactoryService().newText("Store", Color.BLACK, 70);
+        title.setTranslateX(0);
+        title.setTranslateY(-(getAppHeight() / 2 - 100));
+
+        FallingPenguinGame fall = new FallingPenguinGame();
+        System.out.println(inventory.getPoints() + "<--- Game Menu");
+
+        //Placeholder to demonstrate where username and points possessed are displayed
+        Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.BLACK, 30);
+        userName.setTranslateX(-(getAppWidth() / 2 - 200));
+        userName.setTranslateY(-(getAppHeight() / 2 - 150));
+
+        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPoints(), Color.BLACK, 30);
+        availablePoints.setTranslateX(getAppWidth() / 2 - 200);
+        availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 
         //Creates the buttons
-        CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Resume", this::fireResume);
-        CustomGameMenu.customMenuButton btnOptions = new CustomGameMenu.customMenuButton("Options", () -> {
+        CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Restart", this::fireNewGame);
+        CustomGameMenu.customMenuButton btnOptions = new CustomGameMenu.customMenuButton("Main Menu", this::fireExitToMainMenu);
+        CustomGameMenu.customMenuButton btnOptions1 = new CustomGameMenu.customMenuButton("Buy Jetpack", () -> {
         });
-        CustomGameMenu.customMenuButton btnMainMenu = new CustomGameMenu.customMenuButton("Main Menu", this::fireExitToMainMenu);
+        CustomGameMenu.customMenuButton btnOptions2 = new CustomGameMenu.customMenuButton(" Buy Glider", () -> {
+        });
+        CustomGameMenu.customMenuButton btnOptions3 = new CustomGameMenu.customMenuButton("Buy Snowboard", () -> {
+        });
+        CustomGameMenu.customMenuButton btnMainMenu = new CustomGameMenu.customMenuButton("Quit", this::fireExitToMainMenu);
 
-        Region region = new Region();
-        region.setStyle("-fx-background-radius: 20000; -fx-background-color: rgb(0,0,0);");
-        region.setEffect(new DropShadow(10, Color.GREY));
-        getContentRoot().setStyle("-fx-background-color: null;");
+        //Creates the images for view of equipment
+        Image jet = new Image("file:jetpack.png");
+        Image glider = new Image("file:glider.png");
+        Image sled = new Image("file:sled.png");
 
-        //Creates a vbox to store the menu in
-        var vbox = new VBox(10,
+        ImageView jetView = new ImageView(jet);
+        ImageView gliderView = new ImageView(glider);
+        ImageView sledView = new ImageView(sled);
+
+        //Establish proportional size for all images
+        jetView.setFitHeight(150);
+        jetView.setPreserveRatio(true);
+        gliderView.setFitHeight(150);
+        gliderView.setPreserveRatio(true);
+        sledView.setFitHeight(150);
+        sledView.setPreserveRatio(true);
+
+        //Creating a container for each option of purchase
+        VBox purchase1 = new VBox(10, jetView, btnOptions1);
+        purchase1.setAlignment(Pos.CENTER);
+
+        VBox purchase2 = new VBox(10, gliderView, btnOptions2);
+        purchase2.setAlignment(Pos.CENTER);
+
+        VBox purchase3 = new VBox(10, sledView, btnOptions3);
+        purchase3.setAlignment(Pos.CENTER);
+
+        //Storing al container options into one
+        HBox choices = new HBox(10, purchase1, purchase2, purchase3);
+        choices.setAlignment(Pos.CENTER);
+        choices.setPadding(new Insets(50));
+
+        //Creates a vbox to store buttons unrelated to store purchases
+        VBox vbox = new VBox(30,
                 btnResume,
                 btnOptions,
-                btnMainMenu,
-                new Text(""),
-                new CustomGameMenu.LineSeparator(),
-                FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15));
-        vbox.setTranslateX(150);
-        vbox.setTranslateY(350);
-        getContentRoot().getChildren().addAll(vbox);
+                btnMainMenu
+        );
+        vbox.setPadding(new Insets(50));
+
+        GridPane container = new GridPane();
+        container.setPadding(new Insets(10));
+        container.add(vbox, 0, 0);
+        container.add(choices, 1, 0);
+        container.setGridLinesVisible(true);
+        container.setAlignment(Pos.CENTER);
+
+        stack.getChildren().addAll(back, container, title, userName, availablePoints);
+        getContentRoot().getChildren().addAll(stack);
+
     }
 
     private static class customMenuButton extends StackPane {
-
         private String name;
         private Runnable action;
 
@@ -108,9 +165,9 @@ public class CustomGameMenu extends FXGLMenu {
         }
     }
 
-    //Used to create the line seperate (also fixes the issue of the text below it, defining its length)
+    //class to potentially be used for styling the store later on
     private static class LineSeparator extends Parent {
-        private Rectangle line = new Rectangle(600, 2);
+        private Rectangle line = new Rectangle(FXGL.getAppWidth(), FXGL.getAppHeight());
 
         public LineSeparator() {
             var gradient = new LinearGradient(0, 0, 0.5, 0.5, true, CycleMethod.NO_CYCLE,
@@ -119,6 +176,7 @@ public class CustomGameMenu extends FXGLMenu {
                     new Stop(2.0, Color.TRANSPARENT));
 
             line.setFill(gradient);
+            line.setFill(Color.BLACK);
             getChildren().add(line);
         }
     }

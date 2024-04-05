@@ -1,10 +1,11 @@
 package org.BobBuilders.FrenzyPenguins;
 
-public class Store extends Inventory {
+public class Store {
     private void withdrawMoney() {
 
     }
 
+    //TODO:
     private void addToInventory() {
 
     }
