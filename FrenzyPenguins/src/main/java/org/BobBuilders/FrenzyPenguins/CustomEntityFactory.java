@@ -25,7 +25,8 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
-    Inventory inventory = Inventory.getInstance();
+    Store store = Store.getInstance();
+
 //    @Spawns("rectangle")
 //    public Entity newRectangle(SpawnData data) {
 //        PhysicsComponent physics = new PhysicsComponent();
@@ -228,13 +229,13 @@ public class CustomEntityFactory implements EntityFactory {
 
         Image penguinView = penguinImage;
 
-        if(inventory.isHasJetpack()){
+        if(store.isEquipJetpack()){
             penguinView = penguinJ;
         }
-        if(inventory.isHasGlider()){
+        if(store.isEquipGlider()){
             penguinView = penguinG;
         }
-        if(inventory.isHasSlide()){
+        if(store.isEquipSlide()){
             penguinView = penguinS;
         }
 

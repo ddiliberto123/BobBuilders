@@ -1,7 +1,10 @@
 package org.BobBuilders.FrenzyPenguins;
 
 
+import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 /**
  * Data singleton used to store user inventory
@@ -10,38 +13,20 @@ public class Inventory {
 
     private static Inventory instance = null;
     private int rampLevel;
-    private boolean hasJetpack;
-    private boolean hasSlide;
-    private boolean hasGlider;
+    private BooleanProperty hasJetpack;
+    private BooleanProperty hasSlide;
+    private BooleanProperty hasGlider;
     private IntegerProperty points;
 
     public Inventory() {
         rampLevel = 1;
         points = new SimpleIntegerProperty();
         points.setValue(0);
+        hasJetpack = new SimpleBooleanProperty(false);
+        hasSlide = new SimpleBooleanProperty(false);
+        hasGlider = new SimpleBooleanProperty(false);
     }
 
-    public void setHasJetpack(boolean hasJetpack) {
-        this.hasJetpack = hasJetpack;
-    }
-
-    public void setHasSlide(boolean hasSlide) {
-        this.hasSlide = hasSlide;
-    }
-    public void setHasGlider(boolean hasGlider){
-        this.hasGlider = hasGlider;
-    }
-
-    public boolean isHasJetpack() {
-        return hasJetpack;
-    }
-
-    public boolean isHasSlide() {
-        return hasSlide;
-    }
-    public boolean isHasGlider() {
-        return hasGlider;
-    }
 
     /**
      * Creates an or gets the single instance of inventory
@@ -52,6 +37,46 @@ public class Inventory {
             instance = new Inventory();
         }
         return instance;
+    }
+
+    public void setHasJetpack(boolean answer) {
+        hasJetpack.set(answer);
+    }
+
+    public void setHasSlide(boolean answer) {
+        hasSlide.set(answer);
+    }
+    public void setHasGlider(boolean answer){
+        hasGlider.set(answer);
+    }
+
+    public BooleanProperty hasJetpackProperty() {
+        if(hasJetpack == null){
+            hasJetpack = new SimpleBooleanProperty();
+        }
+        return hasJetpack;
+    }
+
+    public BooleanProperty hasSlideProperty() {
+        if(hasSlide == null){
+            hasSlide = new SimpleBooleanProperty();
+        }
+        return hasSlide;
+    }
+    public BooleanProperty hasGliderProperty() {
+        if(hasGlider == null){
+            hasGlider = new SimpleBooleanProperty();
+        }
+        return hasGlider;
+    }
+    public boolean isHasJetpack(){
+        return hasJetpack.get();
+    }
+    public boolean isHasSlide(){
+        return hasSlide.get();
+    }
+    public boolean isHasGlider(){
+        return hasGlider.get();
     }
 
     /**
@@ -77,5 +102,6 @@ public class Inventory {
     public int getPoints() {
         return this.points.getValue();
     }
+
 
 }

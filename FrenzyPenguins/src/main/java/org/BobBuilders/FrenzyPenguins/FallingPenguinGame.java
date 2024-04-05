@@ -134,7 +134,6 @@ public class FallingPenguinGame extends GameApplication {
             inventory.addPoints((int) penguin.getX());
             goToMenu();
         }
-        System.out.println(inventory.isHasGlider());
     }
 
 
