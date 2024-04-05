@@ -9,27 +9,33 @@ import javafx.beans.binding.StringBinding;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
-import org.BobBuilders.FrenzyPenguins.Inventory;
+import org.BobBuilders.FrenzyPenguins.*;
 
 public class CustomGameMenu extends FXGLMenu{
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
-
+    private CustomGameMenu.customMenuButton btnOptions1;
+    private CustomGameMenu.customMenuButton btnOptions2;
+    private CustomGameMenu.customMenuButton btnOptions3;
+    private Inventory inventory;
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
-        Inventory inventory = Inventory.getInstance();
-        System.out.println(inventory);
+
+        Image sunset = new Image("file:sunset_mountains_to_scale.jpg");
+        FXGL.getGameScene().setBackgroundRepeat(sunset);
+
+        inventory = Inventory.getInstance();
+
+
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
         back.setFill(Color.WHITESMOKE);
         StackPane stack = new StackPane();
@@ -56,13 +62,56 @@ public class CustomGameMenu extends FXGLMenu{
         //Creates the buttons
         CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Restart", this::fireNewGame);
         CustomGameMenu.customMenuButton btnOptions = new CustomGameMenu.customMenuButton("Main Menu", this::fireExitToMainMenu);
-        CustomGameMenu.customMenuButton btnOptions1 = new CustomGameMenu.customMenuButton("Buy Jetpack", () -> {
-        });
-        CustomGameMenu.customMenuButton btnOptions2 = new CustomGameMenu.customMenuButton(" Buy Glider", () -> {
-        });
-        CustomGameMenu.customMenuButton btnOptions3 = new CustomGameMenu.customMenuButton("Buy Snowboard", () -> {
-        });
         CustomGameMenu.customMenuButton btnMainMenu = new CustomGameMenu.customMenuButton("Quit", this::fireExitToMainMenu);
+        updateButtons();
+
+
+
+//        if(!inventory.isHasJetpack()) {
+//            btnOptions1 = new CustomGameMenu.customMenuButton("Buy Jetpack - 10000$", () -> {
+//                if (inventory.getPoints() >= 10000) {
+//                    inventory.setHasJetpack(true);
+//                    inventory.addPoints(-10000);
+//                }
+//            });
+//        }
+//        else{
+//            btnOptions1.setName("Equip Jetpack");
+//            btnOptions1.setAction(()->{
+//                inventory.addPoints(100);
+//            });
+//        }
+//
+//        if(!inventory.isHasGlider()) {
+//            btnOptions2 = new CustomGameMenu.customMenuButton(" Buy Glider - 2000$", () -> {
+//                if (inventory.getPoints() >= 2000) {
+//                    inventory.setHasGlider(true);
+//                    inventory.addPoints(-2000);
+//                }
+//            });
+//        }
+//        else{
+//            btnOptions2.setName("Equip Glider");
+//            btnOptions2.setAction(()->{
+//                inventory.addPoints(100);
+//            });
+//        }
+//
+//        if(!inventory.isHasSlide()) {
+//            btnOptions3 = new CustomGameMenu.customMenuButton("Buy Snowboard - 3000$", () -> {
+//                if (inventory.getPoints() >= 3000) {
+//                    inventory.setHasSlide(true);
+//                    inventory.addPoints(-3000);
+//                }
+//            });
+//        }
+//        else{
+//            btnOptions3.setName("Equip Glider");
+//            btnOptions3.setAction(()->{
+//                inventory.addPoints(100);
+//            });
+//        }
+
 
         //Creates the images for view of equipment
         Image jet = new Image("file:jetpack.png");
@@ -81,6 +130,7 @@ public class CustomGameMenu extends FXGLMenu{
         sledView.setFitHeight(150);
         sledView.setPreserveRatio(true);
 
+
         //Creating a container for each option of purchase
         VBox purchase1 = new VBox(10, jetView, btnOptions1);
         purchase1.setAlignment(Pos.CENTER);
@@ -92,7 +142,7 @@ public class CustomGameMenu extends FXGLMenu{
         purchase3.setAlignment(Pos.CENTER);
 
         //Storing al container options into one
-        HBox choices = new HBox(10, purchase1, purchase2, purchase3);
+        HBox choices = new HBox(20, purchase1, purchase2, purchase3);
         choices.setAlignment(Pos.CENTER);
         choices.setPadding(new Insets(50));
 
@@ -113,7 +163,6 @@ public class CustomGameMenu extends FXGLMenu{
 
         stack.getChildren().addAll(back, container, title, userName, availablePoints);
         getContentRoot().getChildren().addAll(stack);
-
     }
 
     private static class customMenuButton extends StackPane {
@@ -166,23 +215,53 @@ public class CustomGameMenu extends FXGLMenu{
             setAlignment(Pos.CENTER_LEFT);
             setFocusTraversable(true);
             getChildren().addAll(selector, text);
-
         }
     }
+    protected void updateButtons(){
+        Inventory inventory = Inventory.getInstance();
+        if(!inventory.isHasJetpack()) {
+            btnOptions1 = new CustomGameMenu.customMenuButton("Buy Jetpack - 10000$", () -> {
+                if (inventory.getPoints() >= 10000) {
+                    inventory.setHasJetpack(true);
+                    inventory.addPoints(-10000);
+                    updateButtons();
+                }
+            });
+        }
+        else{
+            btnOptions1 = new CustomGameMenu.customMenuButton("Equip Jetpack", () -> {
 
-    //class to potentially be used for styling the store later on
-    private static class LineSeparator extends Parent {
-        private Rectangle line = new Rectangle(FXGL.getAppWidth(), FXGL.getAppHeight());
+            });
+        }
 
-        public LineSeparator() {
-            var gradient = new LinearGradient(0, 0, 0.5, 0.5, true, CycleMethod.NO_CYCLE,
-                    new Stop(0, Color.BLACK),
-                    new Stop(0.5, Color.GRAY),
-                    new Stop(2.0, Color.TRANSPARENT));
+        if(!inventory.isHasGlider()) {
+            btnOptions2 = new CustomGameMenu.customMenuButton(" Buy Glider - 2000$", () -> {
+                if (inventory.getPoints() >= 2000) {
+                    inventory.setHasGlider(true);
+                    inventory.addPoints(-2000);
+                    updateButtons();
+                }
+            });
+        }
+        else{
+            btnOptions2 = new CustomGameMenu.customMenuButton("Equip Glider", () -> {
 
-            line.setFill(gradient);
-            line.setFill(Color.BLACK);
-            getChildren().add(line);
+            });
+        }
+
+        if(!inventory.isHasSlide()) {
+            btnOptions3 = new CustomGameMenu.customMenuButton("Buy Snowboard - 3000$", () -> {
+                if (inventory.getPoints() >= 3000) {
+                    inventory.setHasSlide(true);
+                    inventory.addPoints(-3000);
+                    updateButtons();
+                }
+            });
+        }
+        else{
+            btnOptions3 = new CustomGameMenu.customMenuButton("Equip Snowboard", () -> {
+
+            });
         }
     }
 }

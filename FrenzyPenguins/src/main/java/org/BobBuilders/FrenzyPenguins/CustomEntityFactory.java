@@ -11,8 +11,11 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import org.BobBuilders.FrenzyPenguins.Inventory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +25,8 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
-
-    //    @Spawns("rectangle")
+    Inventory inventory = Inventory.getInstance();
+//    @Spawns("rectangle")
 //    public Entity newRectangle(SpawnData data) {
 //        PhysicsComponent physics = new PhysicsComponent();
 //        physics.setBodyType(BodyType.STATIC);
@@ -218,10 +221,37 @@ public class CustomEntityFactory implements EntityFactory {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
         physics.setFixtureDef(new FixtureDef().density(0.1f));
-        Rectangle view = new Rectangle(30, 30, Color.BLACK);
+        Image penguinImage = new Image("file:penguin.png");
+        Image penguinJ = new Image("file:penguin_and_jetpack.png");
+        Image penguinG = new Image("file:penguin_and_glider.png");
+        Image penguinS = new Image("file:penguin_and_sled.png");
+
+        Image penguinView = penguinImage;
+
+        if(inventory.isHasJetpack()){
+            penguinView = penguinJ;
+        }
+        if(inventory.isHasGlider()){
+            penguinView = penguinG;
+        }
+        if(inventory.isHasSlide()){
+            penguinView = penguinS;
+        }
+
+        ImageView penguin = new ImageView(penguinView);
+
+
+
+        penguin.setFitHeight(125);
+        penguin.setPreserveRatio(true);
+        penguin.setTranslateX(-40);
+        penguin.setTranslateY(-50);
+        Rectangle view = new Rectangle(50, 25,Color.TRANSPARENT);
+
         return entityBuilder(data)
                 .type(PENGUIN)
                 .viewWithBBox(view)
+                .view(penguin)
                 .collidable()
                 .with(physics)
                 .build();

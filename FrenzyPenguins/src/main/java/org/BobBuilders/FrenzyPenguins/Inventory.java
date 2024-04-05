@@ -12,14 +12,35 @@ public class Inventory {
     private int rampLevel;
     private boolean hasJetpack;
     private boolean hasSlide;
+    private boolean hasGlider;
     private IntegerProperty points;
 
-    private Inventory() {
+    public Inventory() {
         rampLevel = 1;
-        hasJetpack = false;
-        hasSlide = false;
         points = new SimpleIntegerProperty();
         points.setValue(0);
+    }
+
+    public void setHasJetpack(boolean hasJetpack) {
+        this.hasJetpack = hasJetpack;
+    }
+
+    public void setHasSlide(boolean hasSlide) {
+        this.hasSlide = hasSlide;
+    }
+    public void setHasGlider(boolean hasGlider){
+        this.hasGlider = hasGlider;
+    }
+
+    public boolean isHasJetpack() {
+        return hasJetpack;
+    }
+
+    public boolean isHasSlide() {
+        return hasSlide;
+    }
+    public boolean isHasGlider() {
+        return hasGlider;
     }
 
     /**
