@@ -13,6 +13,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import org.BobBuilders.FrenzyPenguins.util.Constant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,8 +47,8 @@ public class CustomEntityFactory implements EntityFactory {
     @Spawns("rectangle")
     public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double width = Double.parseDouble(data.get("width").toString());
-        double height = Double.parseDouble(data.get("height").toString());
+        double width = Double.parseDouble(data.get(Constant.WIDTH).toString());
+        double height = Double.parseDouble(data.get(Constant.HEIGHT).toString());
         Rectangle rectangle = new Rectangle(width, height);
         rectangle.setFill(Color.BLACK);
         Entity entity = entityBuilder()
@@ -88,10 +89,10 @@ public class CustomEntityFactory implements EntityFactory {
     @Spawns("triangle")
     public Entity createTriangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double endX = Double.parseDouble(data.get("endX").toString());
-        double endY = Double.parseDouble(data.get("endY").toString());
-        double controlX = Double.parseDouble(data.get("controlX").toString());
-        double controlY = Double.parseDouble(data.get("controlY").toString());
+        double endX = Double.parseDouble(data.get(Constant.END_X).toString());
+        double endY = Double.parseDouble(data.get(Constant.END_Y).toString());
+        double controlX = Double.parseDouble(data.get(Constant.CONTROL_X).toString());
+        double controlY = Double.parseDouble(data.get(Constant.CONTROL_Y).toString());
         Polygon triangle = new Polygon();
         triangle.getPoints().addAll(
                 data.getX(), data.getY(),
