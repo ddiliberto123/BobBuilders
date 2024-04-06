@@ -70,7 +70,7 @@ public class CustomEntityFactory implements EntityFactory {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
         physics.setFixtureDef(new FixtureDef().density(0.1f));
-        Rectangle view = new Rectangle(30,30,Color.BLACK);
+        Rectangle view = new Rectangle(50,25,Color.BLACK);
         return entityBuilder(data)
                 .type(PENGUIN)
                 .viewWithBBox(view)
