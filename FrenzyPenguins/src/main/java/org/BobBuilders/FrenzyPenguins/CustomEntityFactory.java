@@ -1,5 +1,6 @@
 package org.BobBuilders.FrenzyPenguins;
 
+import com.almasb.fxgl.dsl.components.view.ChildViewComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
@@ -13,6 +14,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import org.BobBuilders.FrenzyPenguins.Inventory;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
@@ -47,6 +49,22 @@ public class CustomEntityFactory implements EntityFactory {
 //        physics.setFixtureDef(fix);
 //        return entity;
 //    }
+
+    @Spawns("background")
+    public Entity createBackground(SpawnData data) {
+        // Create an entity with the image as background
+        Rectangle rectangle = new Rectangle(getAppWidth(),getAppHeight(),Color.TRANSPARENT);
+        Image image = new Image("file:mountains.png");
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(getAppWidth());
+        imageView.setFitHeight(getAppHeight());
+        StackPane stackPane = new StackPane(rectangle,imageView);
+
+        return entityBuilder()
+                .from(data)
+                .viewWithBBox(stackPane)
+                .build();
+    }
     @Spawns("rectangle")
     public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();

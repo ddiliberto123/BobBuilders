@@ -6,7 +6,9 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.core.math.Vec2;
+import com.almasb.fxgl.dsl.EntityBuilder;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.input.UserAction;
@@ -16,8 +18,11 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -33,8 +38,12 @@ public class FallingPenguinGame extends GameApplication {
     private Entity penguin;
     private Entity bottom;
     private Text distanceText;
+    private double beginPoints = 0;
 
     Inventory inventory = Inventory.getInstance();
+    Store store = Store.getInstance();
+    private double jetpackTimeElapsed = 0.0;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -65,6 +74,11 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
+
+        //Spawn moving background
+        for(int i = 0; i < 10; i++) {
+            FXGL.spawn("background", i* getAppWidth(), 0);
+        }
 
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin", 10, 4);
@@ -102,7 +116,7 @@ public class FallingPenguinGame extends GameApplication {
 
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-        Vec2 forceful = new Vec2(0, -1.8);
+        Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
     }
 
@@ -126,8 +140,6 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
         }
-        // Update the points based on the distance traveled
-
 
         //Restarts game when penguin reaches the bottom
         if (penguin.getY() > 1200) {
@@ -183,10 +195,27 @@ public class FallingPenguinGame extends GameApplication {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
             physics.setAngularVelocity(-120);
         });
-        onKey(KeyCode.ESCAPE, () -> {
 
-        });
+        onKey(KeyCode.SPACE, ()->{
+            if(store.isEquipJetpack()) {
+                jetpackTimeElapsed += tpf();
+                System.out.println(jetpackTimeElapsed);
+                if(jetpackTimeElapsed < 5) {
+                    PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+                    double speedMultiplier = 2;
 
+                    double angle = penguin.getRotation() % 360;
+                    if (angle < 0) {
+                        angle += 360;
+                    }
+
+                    double forceX = speedMultiplier * Math.cos(Math.toRadians(angle));
+                    double forceY = -speedMultiplier * Math.sin(Math.toRadians(angle));
+
+                    Vec2 vec = new Vec2(forceX, forceY);
+                    physics.applyBodyForceToCenter(vec);
+                }
+        }});
     }
 
     @Override

@@ -54,9 +54,6 @@ public class CustomGameMenu extends FXGLMenu{
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
 
-        Image sunset = new Image("file:sunset_mountains_to_scale.jpg");
-        FXGL.getGameScene().setBackgroundRepeat(sunset);
-
         inventory = Inventory.getInstance();
         store = Store.getInstance();
 
