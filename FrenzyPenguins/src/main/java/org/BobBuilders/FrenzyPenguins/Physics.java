@@ -35,6 +35,9 @@ public class Physics {
         if (p_angle < 0) {
             p_angle += 360;
         }
+        if(p_angle > 90 && p_angle <=270){
+            p_angle = 180 - p_angle;
+        }
 
         double d_angle = p_angle + 180;
         d_angle = d_angle%360;
