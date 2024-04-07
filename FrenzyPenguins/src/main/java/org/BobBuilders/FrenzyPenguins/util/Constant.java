@@ -7,6 +7,7 @@ public class Constant {
     public static final String CONTROL_Y = "controlY";
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
+    public static final String RADIUS = "radius";
 
     /**
      * When drawing, keep in mind that 0 starts at North/Top not East/right
