@@ -8,4 +8,11 @@ public class Constant {
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
 
+    /**
+     * When drawing, keep in mind that 0 starts at North/Top not East/right
+     */
+    public static final String FROM_ANGLE = "fromAngle";
+    public static final String TO_ANGLE = "toAngle";
+
+
 }

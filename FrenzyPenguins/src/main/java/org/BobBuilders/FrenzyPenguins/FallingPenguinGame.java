@@ -19,10 +19,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
+import org.BobBuilders.FrenzyPenguins.util.Constant;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
+import static org.BobBuilders.FrenzyPenguins.EntityType.GROUND;
 
 
 public class FallingPenguinGame extends GameApplication {
@@ -104,7 +106,6 @@ public class FallingPenguinGame extends GameApplication {
 
     protected void onUpdate(double tpf) {
         Inventory inventory = Inventory.getInstance();
-        System.out.println(inventory);
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position: (" + penguin.getX() + ", " + penguin.getY() + ")");
 
@@ -124,12 +125,12 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
         }
-        // Update the points based on the distance traveled
-        inventory.addPoints((int) penguin.getX());
-        System.out.println(inventory.getPoints());
+
 
         //Restarts game when penguin reaches the bottom
         if (penguin.getY() > 1200) {
+            // Update the points based on the distance traveled
+            inventory.addPoints((int) penguin.getX());
             goToMenu();
         }
     }
@@ -144,6 +145,13 @@ public class FallingPenguinGame extends GameApplication {
             @Override
             protected void onCollisionBegin(Entity penguin, Entity bottom) {
                 getGameController().gotoMainMenu();
+            }
+        });
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN,GROUND) {
+            @Override
+            protected void onCollision(Entity a, Entity b) {
+                super.onCollision(a, b);
+//                System.out.println("I AM COLLIDING WITH THE CURVE HELLO!");
             }
         });
     }
@@ -197,28 +205,35 @@ public class FallingPenguinGame extends GameApplication {
         int secondRampLength = 300;
 
 
-        FXGL.spawn("triangle",new SpawnData(0,0)
-                .put("endX",horizontalRampLength)
-                .put("endY",spawnY)
-                .put("controlX",0)
-                .put("controlY",spawnY));
-        FXGL.spawn("rectangle", new SpawnData(spawnX, spawnY)
-                .put("width", horizontalRampLength)
-                .put("height", 1000));
-        FXGL.spawn("triangle", new SpawnData(horizontalRampLength / 2, spawnY / 2)
-                .put("endX", horizontalRampLength / 2 + rampLength/2)
-                .put("endY", spawnY + rampLength)
-                .put("controlX", horizontalRampLength / 2)
-                .put("controlY", spawnY + rampLength));
-        FXGL.spawn("rectangle", new SpawnData(horizontalRampLength / 2 + rampLength/2, spawnY + rampLength)
-                .put("width", lowerRampLength)
-                .put("height", 1000));
-        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength) / 2 - 70,
-                (spawnY + rampLength) / 2)
-                .put("endX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
-                .put("endY", ((spawnY + rampLength)) / 2 - secondRampLength)
-                .put("controlX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
-                .put("controlY", (spawnY + rampLength) / 2));
+//        FXGL.spawn("triangle",new SpawnData(0,0)
+//                .put("endX",horizontalRampLength)
+//                .put("endY",spawnY)
+//                .put("controlX",0)
+//                .put("controlY",spawnY));
+//        FXGL.spawn("rectangle", new SpawnData(spawnX, spawnY)
+//                .put("width", horizontalRampLength)
+//                .put("height", 1000));
+//        FXGL.spawn("triangle", new SpawnData(horizontalRampLength / 2, spawnY / 2)
+//                .put("endX", horizontalRampLength / 2 + rampLength/2)
+//                .put("endY", spawnY + rampLength)
+//                .put("controlX", horizontalRampLength / 2)
+//                .put("controlY", spawnY + rampLength));
+//        FXGL.spawn("rectangle", new SpawnData(horizontalRampLength / 2 + rampLength/2, spawnY + rampLength)
+//                .put("width", lowerRampLength)
+//                .put("height", 1000));
+//        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength) / 2 - 70,
+//                (spawnY + rampLength) / 2)
+//                .put("endX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
+//                .put("endY", ((spawnY + rampLength)) / 2 - secondRampLength)
+//                .put("controlX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
+//                .put("controlY", (spawnY + rampLength) / 2));
+        FXGL.spawn("curve", new SpawnData(0,100)
+                        .put(Constant.FROM_ANGLE,90)
+                        .put(Constant.TO_ANGLE,180)
+                .put(Constant.END_X, 100)
+                .put(Constant.END_Y,200)
+                .put(Constant.CONTROL_X,0)
+                .put(Constant.CONTROL_Y,200));
     }
 
     private void goToMenu() {

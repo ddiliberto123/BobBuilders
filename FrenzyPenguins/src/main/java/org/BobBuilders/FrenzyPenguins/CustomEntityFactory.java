@@ -4,6 +4,7 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
@@ -110,6 +111,66 @@ public class CustomEntityFactory implements EntityFactory {
                 .bbox(new HitBox(BoundingShape.polygon(hitboxPoints)))
                 .with(physics)
                 .collidable()
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
+
+    @Spawns("curve")
+    public Entity newCurve(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        CollidableComponent collidableComponent = new CollidableComponent(true);
+
+        QuadCurve curve = new QuadCurve(
+                data.getX(),
+                data.getY(),
+                Integer.parseInt(data.get(Constant.CONTROL_X).toString()),
+                Integer.parseInt(data.get(Constant.CONTROL_Y).toString()),
+                Integer.parseInt(data.get(Constant.END_X).toString()),
+                Integer.parseInt(data.get(Constant.END_Y).toString())
+        );
+        double degree = Double.parseDouble(data.get(Constant.FROM_ANGLE).toString());
+        double radius = Integer.parseInt(data.get(Constant.END_X).toString())-data.getX();
+        ArrayList<Point2D> points = new ArrayList<>();
+        while (degree < Double.parseDouble(data.get(Constant.TO_ANGLE).toString())){
+            double rad = Math.toRadians(degree);
+            System.out.println(rad);
+            points.add(new Point2D(Math.cos(rad)*radius+radius,Math.sin(rad)*radius+radius));
+            degree = Math.toDegrees(rad);
+            degree++;
+        }
+        points.add(new Point2D(data.getX(),data.getY()+radius));
+        Point2D[] allPoints = new Point2D[points.size()];
+        allPoints = points.toArray(allPoints);
+        for(Point2D e : allPoints)
+            System.out.println(e);
+        /**
+         * polygon test
+         */
+        Polygon poly = new Polygon();
+        ArrayList<Double> polyPoints = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++){
+            polyPoints.add(points.get(i).getX());
+            polyPoints.add(points.get(i).getY());
+        }
+        poly.getPoints().addAll(polyPoints);
+        entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .view(poly)
+                .buildAndAttach();
+        curve.setStroke(Color.BLACK);
+        curve.setFill(null);
+        curve.setStrokeWidth(4);
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .view(curve)
+                .bbox(new HitBox(BoundingShape.chain(allPoints)))
+                .with(collidableComponent)
+                .with(physics)
                 .build();
         FixtureDef fix = new FixtureDef();
         fix.setDensity(0.1f);
