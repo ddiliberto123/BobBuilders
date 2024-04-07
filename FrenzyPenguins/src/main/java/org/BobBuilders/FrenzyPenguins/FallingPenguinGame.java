@@ -29,6 +29,7 @@ public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
     private Entity bottom;
     private Text distanceText;
+    private double angle;
 
     public static void main(String[] args) {
         launch(args);
@@ -78,13 +79,13 @@ public class FallingPenguinGame extends GameApplication {
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
 
-        bottom = FXGL.entityBuilder()
-                .at(300, 650)
-                .type(EXIT)
-                .viewWithBBox(new Rectangle(2000000000, 20))
-                .collidable()
-                .with(floor)
-                .buildAndAttach();
+//        bottom = FXGL.entityBuilder()
+//                .at(300, 650)
+//                .type(EXIT)
+//                .viewWithBBox(new Rectangle(2000000000, 20))
+//                .collidable()
+//                .with(floor)
+//                .buildAndAttach();
 
         //Displays the horizontal distance traveled by penguin
         distanceText = getUIFactoryService().newText("",Color.PURPLE,16);
@@ -100,13 +101,15 @@ public class FallingPenguinGame extends GameApplication {
         //FXGL.getPhysicsWorld().setGravity(0, 98);
 
 
+
     }
 
+    @Override
     protected void onUpdate(double tpf){
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position x: (" + penguin.getX() + ") Position y: (" + penguin.getY() + ") " +
                 "Velocity x: (" + penguin_x_velocity() + ") Velocity y: (" + penguin_y_velocity() + ")" +
-                "Angle: (" + penguin.getRotation() + ")");
+                "Angle: (" + angle + ")");
 
 
 
@@ -129,13 +132,48 @@ public class FallingPenguinGame extends GameApplication {
 
         //Lift(penguin.getRotation());
 //        if(penguin.getX() > 225) {
-            PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
-            fligth_physics.applyBodyForceToCenter(Lift(penguin.getRotation()));
-//
-        if(penguin_y_velocity() == -120 || penguin_y_velocity() == 120){
-            System.out.println("HERE: " + penguin.getX());
-            //adFXGL.getGameWorld().reset();
+        angle = penguin.getRotation();
+        angle = angle % 360;
+        if (angle < 0) {
+            angle += 360;
         }
+        System.out.println(angle);
+        System.out.println(penguin_velocity());
+
+        if(angle>=45 && angle<=90){
+            angle = angle -45;
+        }
+        if(angle >= 270 && angle <= 315){
+            angle = angle +45;
+        }
+//        if(angleLift > 90 && angleLift <= 135){
+//            angleLift = angleLift - 90;
+//        }
+//        if(angleLift > 225 && angleLift <= 270){
+//            angleLift = angleLift + 90;
+//        }
+//        if(angleLift > 135 && angleLift <= 180){
+//            angleLift = angleLift - 135;
+//        }
+//        if(angleLift > 180 && angleLift <= 225){
+//            angleLift = angleLift + 135;
+//        }
+//        if(angle >= 45 && angle <= 315){
+//            angle = 45;
+//        }
+
+
+
+        PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
+        fligth_physics.applyBodyForceToCenter(Lift(angle));
+
+
+
+//
+//        if(penguin_y_velocity() == -120 || penguin_y_velocity() == 120){
+//            System.out.println("HERE: " + penguin.getX());
+//            //adFXGL.getGameWorld().reset();
+//        }
 //        }
     }
 
@@ -158,14 +196,16 @@ public class FallingPenguinGame extends GameApplication {
         onKey(KeyCode.RIGHT, () -> {
             if (penguin.getX() < 800) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                Vec2 object = new Vec2(1, 0);
+                double velocity = 1;
+                Vec2 object = new Vec2(velocity*Math.cos(Math.toRadians(angle)), velocity*Math.sin(Math.toRadians(angle)));
                 physics.applyBodyForceToCenter(object);
             }
         });
         onKey(KeyCode.LEFT, () -> {
             if (penguin.getX() < 800) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                Vec2 object = new Vec2(-1, 0);
+                double velocity = 1;
+                Vec2 object = new Vec2(-velocity*Math.cos(Math.toRadians(angle)), velocity*Math.sin(Math.toRadians(angle)));
                 physics.applyBodyForceToCenter(object);
             }
         });
@@ -218,9 +258,4 @@ public class FallingPenguinGame extends GameApplication {
         //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
         return (penguin.getWidth()*penguin.getHeight())/10;
     }
-
-
-
-
-
 }
