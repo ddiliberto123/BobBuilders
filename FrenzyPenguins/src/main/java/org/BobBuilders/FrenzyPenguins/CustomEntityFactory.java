@@ -239,7 +239,11 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity newPenguin(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.setFixtureDef(new FixtureDef().density(0.1f));
+        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(1f));
+        if(store.isEquipSlide()) {
+            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.5f));
+        }
+
         Image penguinImage = new Image("file:penguin.png");
         Image penguinJ = new Image("file:penguin_and_jetpack.png");
         Image penguinG = new Image("file:penguin_and_glider.png");

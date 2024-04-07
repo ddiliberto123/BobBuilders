@@ -195,6 +195,7 @@ public class CustomGameMenu extends FXGLMenu{
         purchase3.visibleProperty().bind(Bindings.not(inventory.hasSlideProperty()));
         equip3.visibleProperty().bind(Bindings.and(inventory.hasSlideProperty(), Bindings.not(store.hasEquippedSlide())));
         unequip3.visibleProperty().bind(Bindings.and(inventory.hasSlideProperty(), store.hasEquippedSlide()));
+
     }
 
     private static class customMenuButton extends StackPane {
@@ -284,12 +285,18 @@ public class CustomGameMenu extends FXGLMenu{
         });
         equipGear1 = new CustomGameMenu.customMenuButton("Equip Jetpack", () ->{
             store.setEquipJetpack(true);
+            store.setEquipSlide(false);
+            store.setEquipGlider(false);
         });
         equipGear2 = new CustomGameMenu.customMenuButton("Equip Glider", () ->{
             store.setEquipGlider(true);
+            store.setEquipJetpack(false);
+            store.setEquipSlide(false);
         });
         equipGear3 = new CustomGameMenu.customMenuButton("Equip Slide", () ->{
             store.setEquipSlide(true);
+            store.setEquipJetpack(false);
+            store.setEquipGlider(false);
         });
         unequipGear1 = new CustomGameMenu.customMenuButton("Unequip Jetpack", ()->{
             store.setEquipJetpack(false);

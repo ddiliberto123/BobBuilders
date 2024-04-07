@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -74,10 +75,13 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
+        Rectangle rectangle = new Rectangle(getAppWidth(),getAppHeight(),Color.TRANSPARENT);
+        Image back = new Image("file:clouds.png");
+        ImageView background = new ImageView(back);
 
         //Spawn moving background
         for(int i = 0; i < 10; i++) {
-            FXGL.spawn("background", i* getAppWidth(), 0);
+            FXGL.spawn("background", i* getAppWidth(),0);
         }
 
         //Spawning the penguin entity
@@ -146,6 +150,7 @@ public class FallingPenguinGame extends GameApplication {
             inventory.addPoints((int) penguin.getX());
             goToMenu();
         }
+
     }
 
 
