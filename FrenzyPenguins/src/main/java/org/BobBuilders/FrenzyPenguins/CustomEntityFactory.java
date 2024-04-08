@@ -157,9 +157,9 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity newPenguin(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(.001f));
+        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.02f));
         if (store.isEquipSlide()) {
-            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.2f));
+            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.001f));
         }
 
         Image penguinImage = new Image("file:penguin.png");
