@@ -157,9 +157,9 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity newPenguin(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(1f));
+        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(.001f));
         if (store.isEquipSlide()) {
-            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.5f));
+            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.2f));
         }
 
         Image penguinImage = new Image("file:penguin.png");
@@ -180,7 +180,6 @@ public class CustomEntityFactory implements EntityFactory {
         }
 
         ImageView penguin = new ImageView(penguinView);
-
 
         penguin.setFitHeight(125);
         penguin.setPreserveRatio(true);

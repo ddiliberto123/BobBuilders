@@ -4,34 +4,27 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-
-import java.util.Stack;
 
 
 public class CustomMainMenu extends FXGLMenu {
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
     private VBox vboxOptions;
-    private VBox vbox;
+    private VBox vboxMainMenu;
+
+    private VBox vboxLogin;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -40,32 +33,29 @@ public class CustomMainMenu extends FXGLMenu {
         //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
         customMenuButton btnLogin = new customMenuButton("Login", () -> {
+            vboxMainMenu.setVisible(false);
+            vboxLogin.setVisible(true);
+        });
+        customMenuButton btnSubmit = new customMenuButton("Submit", () -> {
+
         });
         customMenuButton btnOptions = new customMenuButton("Options", () -> {
-            vbox.setVisible(false);
+            vboxMainMenu.setVisible(false);
             vboxOptions.setVisible(true);
         });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
         customMenuButton btnBrightness = new customMenuButton("Brightness", () -> {});
         customMenuButton btnVolume = new customMenuButton("Volume", () -> {});
-        customMenuButton btnReturn = new customMenuButton("Return to Main Menu", () -> {
-            vbox.setVisible(true);
+        customMenuButton btnOptionsReturn = new customMenuButton("Return to Main Menu", () -> {
+            vboxMainMenu.setVisible(true);
             vboxOptions.setVisible(false);
         });
-
-        vboxOptions = new VBox(10,
-                btnBrightness,
-                btnVolume,
-                btnReturn,
-                new Text(""),
-                new LineSeparator());
-        vboxOptions.setTranslateX(100);
-        vboxOptions.setTranslateY(450);
-//        selectedButton = new SimpleObjectProperty<>(btnPlayGame);
-//        FXGL.getAssetLoader().loadTexture("background/background.png");
-
-        //Creates a vbox to store the menu in
-        vbox = new VBox(10,
+        customMenuButton btnLoginReturn = new customMenuButton("Return to Main Menu", () -> {
+            vboxMainMenu.setVisible(true);
+            vboxLogin.setVisible(false);
+        });
+        //Creates a vbox for the main menu
+        vboxMainMenu = new VBox(10,
                 btnPlayGame,
                 btnLogin,
                 btnOptions,
@@ -73,11 +63,37 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15));
-        vbox.setTranslateX(100);
-        vbox.setTranslateY(450);
+        vboxMainMenu.setTranslateX(100);
+        vboxMainMenu.setTranslateY(450);
 
-        StackPane stackMenu = new StackPane(vbox, vboxOptions);
+        //Creates a vbox for options
+        vboxOptions = new VBox(10,
+                btnBrightness,
+                btnVolume,
+                btnOptionsReturn,
+                new Text(""),
+                new LineSeparator());
+        vboxOptions.setTranslateX(100);
+        vboxOptions.setTranslateY(450);
+
+
+        TextField usernameField = new TextField("Username");
+        TextField passwordField = new TextField("Password");
+        //Creates a vbox for Login
+        vboxLogin = new VBox(10,
+                usernameField,
+                passwordField,
+                btnSubmit,
+                btnLoginReturn,
+                new Text(""),
+                new LineSeparator());
+        vboxLogin.setTranslateX(100);
+        vboxLogin.setTranslateY(450);
+
+
+        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxLogin);
         vboxOptions.setVisible(false);
+        vboxLogin.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
     }
 
