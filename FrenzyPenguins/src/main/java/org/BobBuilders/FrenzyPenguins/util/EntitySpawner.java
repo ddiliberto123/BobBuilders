@@ -23,6 +23,10 @@ public class EntitySpawner {
      * Name of triangle entity
      */
     public static final String TRIANGLE = "triangle";
+    /**
+     * Name of background
+     */
+    public static final String BACKGROUND = "background";
 
     /**
      * Spawns a rectangle centered at the top left point

@@ -82,7 +82,7 @@ public class FallingPenguinGame extends GameApplication {
 
         //Spawn moving background
         for (int i = 0; i < 10; i++) {
-            FXGL.spawn("background", i * getAppWidth(), 0);
+            FXGL.spawn(EntitySpawner.BACKGROUND, i * getAppWidth(), 0);
         }
 
         //Spawning the penguin entity

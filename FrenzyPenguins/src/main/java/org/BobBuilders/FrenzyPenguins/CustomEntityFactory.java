@@ -197,4 +197,20 @@ public class CustomEntityFactory implements EntityFactory {
                 .build();
     }
 
+    @Spawns(EntitySpawner.BACKGROUND)
+    public Entity createBackground(SpawnData data) {
+        // Create an entity with the image as background
+        Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
+        Image image = new Image("file:mountains.png");
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(getAppWidth());
+        imageView.setFitHeight(getAppHeight());
+        StackPane stackPane = new StackPane(rectangle, imageView);
+
+        return entityBuilder()
+                .from(data)
+                .viewWithBBox(stackPane)
+                .build();
+    }
+
 }
