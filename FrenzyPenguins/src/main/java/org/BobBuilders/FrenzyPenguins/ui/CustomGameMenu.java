@@ -69,6 +69,8 @@ public class CustomGameMenu extends FXGLMenu {
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 
+        availablePoints.textProperty().bind(Bindings.convert(inventory.getPointsProperty()));
+
         //Creates the buttons
         CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Restart", this::fireNewGame);
         CustomGameMenu.customMenuButton btnOptions = new CustomGameMenu.customMenuButton("Main Menu", this::fireExitToMainMenu);
