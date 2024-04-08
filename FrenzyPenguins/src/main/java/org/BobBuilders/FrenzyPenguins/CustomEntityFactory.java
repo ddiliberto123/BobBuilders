@@ -53,18 +53,19 @@ public class CustomEntityFactory implements EntityFactory {
     @Spawns("background")
     public Entity createBackground(SpawnData data) {
         // Create an entity with the image as background
-        Rectangle rectangle = new Rectangle(getAppWidth(),getAppHeight(),Color.TRANSPARENT);
+        Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
         Image image = new Image("file:mountains.png");
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(getAppWidth());
         imageView.setFitHeight(getAppHeight());
-        StackPane stackPane = new StackPane(rectangle,imageView);
+        StackPane stackPane = new StackPane(rectangle, imageView);
 
         return entityBuilder()
                 .from(data)
                 .viewWithBBox(stackPane)
                 .build();
     }
+
     @Spawns("rectangle")
     public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
@@ -240,7 +241,7 @@ public class CustomEntityFactory implements EntityFactory {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
         physics.setFixtureDef(new FixtureDef().density(0.1f).friction(1f));
-        if(store.isEquipSlide()) {
+        if (store.isEquipSlide()) {
             physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.5f));
         }
 
@@ -251,25 +252,24 @@ public class CustomEntityFactory implements EntityFactory {
 
         Image penguinView = penguinImage;
 
-        if(store.isEquipJetpack()){
+        if (store.isEquipJetpack()) {
             penguinView = penguinJ;
         }
-        if(store.isEquipGlider()){
+        if (store.isEquipGlider()) {
             penguinView = penguinG;
         }
-        if(store.isEquipSlide()){
+        if (store.isEquipSlide()) {
             penguinView = penguinS;
         }
 
         ImageView penguin = new ImageView(penguinView);
 
 
-
         penguin.setFitHeight(125);
         penguin.setPreserveRatio(true);
         penguin.setTranslateX(-40);
         penguin.setTranslateY(-50);
-        Rectangle view = new Rectangle(50, 25,Color.TRANSPARENT);
+        Rectangle view = new Rectangle(50, 25, Color.TRANSPARENT);
 
         return entityBuilder(data)
                 .type(PENGUIN)

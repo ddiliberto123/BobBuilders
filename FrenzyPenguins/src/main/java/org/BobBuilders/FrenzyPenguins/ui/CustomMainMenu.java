@@ -39,16 +39,16 @@ public class CustomMainMenu extends FXGLMenu {
 
         //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
-        customMenuButton btnLogin = new customMenuButton("Login", () -> {});
-        customMenuButton btnOptions = new customMenuButton("Options", ()->{
+        customMenuButton btnLogin = new customMenuButton("Login", () -> {
+        });
+        customMenuButton btnOptions = new customMenuButton("Options", () -> {
             vbox.setVisible(false);
             vboxOptions.setVisible(true);
         });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
-
-        customMenuButton btnBrightness = new customMenuButton("Brightness", ()->{});
-        customMenuButton btnVolume = new customMenuButton("Volume",()->{});
-        customMenuButton btnReturn = new customMenuButton("Return to Main Menu",()->{
+        customMenuButton btnBrightness = new customMenuButton("Brightness", () -> {});
+        customMenuButton btnVolume = new customMenuButton("Volume", () -> {});
+        customMenuButton btnReturn = new customMenuButton("Return to Main Menu", () -> {
             vbox.setVisible(true);
             vboxOptions.setVisible(false);
         });
@@ -64,7 +64,6 @@ public class CustomMainMenu extends FXGLMenu {
 //        selectedButton = new SimpleObjectProperty<>(btnPlayGame);
 //        FXGL.getAssetLoader().loadTexture("background/background.png");
 
-
         //Creates a vbox to store the menu in
         vbox = new VBox(10,
                 btnPlayGame,
@@ -77,16 +76,14 @@ public class CustomMainMenu extends FXGLMenu {
         vbox.setTranslateX(100);
         vbox.setTranslateY(450);
 
-        StackPane stackMenu = new StackPane(vbox,vboxOptions);
+        StackPane stackMenu = new StackPane(vbox, vboxOptions);
         vboxOptions.setVisible(false);
-
         getContentRoot().getChildren().addAll(stackMenu);
     }
 
     private static class customMenuButton extends StackPane {
         private String name;
         private Runnable action;
-
         private Text text;
         private Rectangle selector;
 

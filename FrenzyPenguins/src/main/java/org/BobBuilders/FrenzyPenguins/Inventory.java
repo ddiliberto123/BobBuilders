@@ -6,6 +6,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+
 /**
  * Data singleton used to store user inventory
  */
@@ -30,6 +31,7 @@ public class Inventory {
 
     /**
      * Creates an or gets the single instance of inventory
+     *
      * @return the instance
      */
     public static Inventory getInstance() {
@@ -46,41 +48,47 @@ public class Inventory {
     public void setHasSlide(boolean answer) {
         hasSlide.set(answer);
     }
-    public void setHasGlider(boolean answer){
+
+    public void setHasGlider(boolean answer) {
         hasGlider.set(answer);
     }
 
     public BooleanProperty hasJetpackProperty() {
-        if(hasJetpack == null){
+        if (hasJetpack == null) {
             hasJetpack = new SimpleBooleanProperty();
         }
         return hasJetpack;
     }
 
     public BooleanProperty hasSlideProperty() {
-        if(hasSlide == null){
+        if (hasSlide == null) {
             hasSlide = new SimpleBooleanProperty();
         }
         return hasSlide;
     }
+
     public BooleanProperty hasGliderProperty() {
-        if(hasGlider == null){
+        if (hasGlider == null) {
             hasGlider = new SimpleBooleanProperty();
         }
         return hasGlider;
     }
-    public boolean isHasJetpack(){
+
+    public boolean isHasJetpack() {
         return hasJetpack.get();
     }
-    public boolean isHasSlide(){
+
+    public boolean isHasSlide() {
         return hasSlide.get();
     }
-    public boolean isHasGlider(){
+
+    public boolean isHasGlider() {
         return hasGlider.get();
     }
 
     /**
      * Adds points to the running total
+     *
      * @param addedPoints the points to be added to the total.
      */
     public void addPoints(int addedPoints) {
@@ -89,6 +97,7 @@ public class Inventory {
 
     /**
      * Gets the running points' total property
+     *
      * @return the {@code IntegerProperty} of points
      */
     public IntegerProperty getPointsProperty() {
@@ -97,6 +106,7 @@ public class Inventory {
 
     /**
      * Returns the running total
+     *
      * @return the {@code int} running total
      */
     public int getPoints() {

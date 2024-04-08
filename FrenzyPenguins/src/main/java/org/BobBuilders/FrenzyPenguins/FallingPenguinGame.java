@@ -75,13 +75,13 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
-        Rectangle rectangle = new Rectangle(getAppWidth(),getAppHeight(),Color.TRANSPARENT);
+        Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
         Image back = new Image("file:clouds.png");
         ImageView background = new ImageView(back);
 
         //Spawn moving background
-        for(int i = 0; i < 10; i++) {
-            FXGL.spawn("background", i* getAppWidth(),0);
+        for (int i = 0; i < 10; i++) {
+            FXGL.spawn("background", i * getAppWidth(), 0);
         }
 
         //Spawning the penguin entity
@@ -170,8 +170,8 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initInput() {
         super.initInput();
-        getInput().addEventHandler(KeyEvent.KEY_PRESSED, event ->{
-            if(event.getCode() == KeyCode.ESCAPE){
+        getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
                 event.consume();
             }
         });
@@ -201,11 +201,11 @@ public class FallingPenguinGame extends GameApplication {
             physics.setAngularVelocity(-120);
         });
 
-        onKey(KeyCode.SPACE, ()->{
-            if(store.isEquipJetpack()) {
+        onKey(KeyCode.SPACE, () -> {
+            if (store.isEquipJetpack()) {
                 jetpackTimeElapsed += tpf();
                 System.out.println(jetpackTimeElapsed);
-                if(jetpackTimeElapsed < 5) {
+                if (jetpackTimeElapsed < 5) {
                     PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                     double speedMultiplier = 2;
 
@@ -220,7 +220,8 @@ public class FallingPenguinGame extends GameApplication {
                     Vec2 vec = new Vec2(forceX, forceY);
                     physics.applyBodyForceToCenter(vec);
                 }
-        }});
+            }
+        });
     }
 
     @Override

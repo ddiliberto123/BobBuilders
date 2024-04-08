@@ -4,20 +4,11 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.IntegerBinding;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
@@ -27,7 +18,7 @@ import org.BobBuilders.FrenzyPenguins.*;
 import java.util.Stack;
 
 
-public class CustomGameMenu extends FXGLMenu{
+public class CustomGameMenu extends FXGLMenu {
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
     private CustomGameMenu.customMenuButton btnOptions1;
@@ -48,9 +39,9 @@ public class CustomGameMenu extends FXGLMenu{
     private VBox unequip1;
     private VBox unequip2;
     private VBox unequip3;
-
     private Inventory inventory;
     private Store store;
+
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
 
@@ -127,35 +118,32 @@ public class CustomGameMenu extends FXGLMenu{
 
 
         //Creating a container for each option of purchase
-        purchase1 = new VBox(10,jetView,btnOptions1);
+        purchase1 = new VBox(10, jetView, btnOptions1);
         purchase1.setAlignment(Pos.CENTER);
-        equip1 = new VBox(10,jetViewEquipped,equipGear1);
+        equip1 = new VBox(10, jetViewEquipped, equipGear1);
         equip1.setAlignment(Pos.CENTER);
         unequip1 = new VBox(10, jetViewUnequipped, unequipGear1);
         unequip1.setAlignment(Pos.CENTER);
+        StackPane option1 = new StackPane(purchase1, equip1, unequip1);
 
-        StackPane option1 = new StackPane(purchase1,equip1,unequip1);
-
-        purchase2 = new VBox(10,gliderView, btnOptions2);
+        purchase2 = new VBox(10, gliderView, btnOptions2);
         purchase2.setAlignment(Pos.CENTER);
-        equip2 = new VBox(10,gliderViewEquipped,equipGear2);
+        equip2 = new VBox(10, gliderViewEquipped, equipGear2);
         equip2.setAlignment(Pos.CENTER);
         unequip2 = new VBox(10, gliderViewUnequipped, unequipGear2);
         unequip2.setAlignment(Pos.CENTER);
+        StackPane option2 = new StackPane(purchase2, equip2, unequip2);
 
-        StackPane option2 = new StackPane(purchase2,equip2,unequip2);
-
-        purchase3 = new VBox(10,sledView, btnOptions3);
+        purchase3 = new VBox(10, sledView, btnOptions3);
         purchase3.setAlignment(Pos.CENTER);
-        equip3 = new VBox(10,sledViewEquipped,equipGear3);
+        equip3 = new VBox(10, sledViewEquipped, equipGear3);
         equip3.setAlignment(Pos.CENTER);
         unequip3 = new VBox(10, sledViewUnequipped, unequipGear3);
         unequip3.setAlignment(Pos.CENTER);
-
-        StackPane option3 = new StackPane(purchase3,equip3,unequip3);
+        StackPane option3 = new StackPane(purchase3, equip3, unequip3);
 
         //Storing al container options into one
-        HBox choices = new HBox(20, option1,option2,option3);
+        HBox choices = new HBox(20, option1, option2, option3);
         choices.setAlignment(Pos.CENTER);
         choices.setPadding(new Insets(50));
 
@@ -201,15 +189,12 @@ public class CustomGameMenu extends FXGLMenu{
     private static class customMenuButton extends StackPane {
         private String name;
         private Runnable action;
-
         private Text text;
         private Rectangle selector;
 
         public customMenuButton(String name, Runnable action) {
             this.name = name;
             this.action = action;
-
-
             //Calls the UI factory apart of FXGL to create a text box
             text = FXGL.getUIFactoryService().newText(name, Color.BLACK, 20.0);
             //This is the rectangle next to the buttons that show its been selected (color of button also changes)
@@ -217,7 +202,6 @@ public class CustomGameMenu extends FXGLMenu{
             selector.setTranslateX(-20);
             //Sets it visible if its focused
             selector.visibleProperty().bind(focusedProperty());
-
             text.setStrokeWidth(.5);
             //Changes the colour if its focused
             text.fillProperty().bind(Bindings.when(focusedProperty())
@@ -238,14 +222,12 @@ public class CustomGameMenu extends FXGLMenu{
                     action.run();
                 }
             });
-
             setOnKeyPressed(e -> {
                 //Checks if the button is focused before allowing enter to work (incase mouse is broken)
                 if (isFocused() && e.getCode() == KeyCode.ENTER) {
                     action.run();
                 }
             });
-
             setAlignment(Pos.CENTER_LEFT);
             setFocusTraversable(true);
             getChildren().addAll(selector, text);
@@ -253,10 +235,9 @@ public class CustomGameMenu extends FXGLMenu{
         }
     }
 
-    protected void updateButtons(){
+    protected void updateButtons() {
         Inventory inventory = Inventory.getInstance();
         Store store = Store.getInstance();
-
         btnOptions1 = new CustomGameMenu.customMenuButton("Buy Jetpack - 10000$", () -> {
             if (inventory.getPoints() >= 10000) {
                 inventory.setHasJetpack(true);
@@ -264,18 +245,12 @@ public class CustomGameMenu extends FXGLMenu{
                 updateButtons();
             }
         });
-
-
-
-
         btnOptions2 = new CustomGameMenu.customMenuButton(" Buy Glider - 2000$", () -> {
             if (inventory.getPoints() >= 2000) {
                 inventory.setHasGlider(true);
                 inventory.addPoints(-2000);
             }
         });
-
-
         btnOptions3 = new CustomGameMenu.customMenuButton("Buy Snowboard - 3000$", () -> {
             if (inventory.getPoints() >= 3000) {
                 inventory.setHasSlide(true);
@@ -283,28 +258,28 @@ public class CustomGameMenu extends FXGLMenu{
                 updateButtons();
             }
         });
-        equipGear1 = new CustomGameMenu.customMenuButton("Equip Jetpack", () ->{
+        equipGear1 = new CustomGameMenu.customMenuButton("Equip Jetpack", () -> {
             store.setEquipJetpack(true);
             store.setEquipSlide(false);
             store.setEquipGlider(false);
         });
-        equipGear2 = new CustomGameMenu.customMenuButton("Equip Glider", () ->{
+        equipGear2 = new CustomGameMenu.customMenuButton("Equip Glider", () -> {
             store.setEquipGlider(true);
             store.setEquipJetpack(false);
             store.setEquipSlide(false);
         });
-        equipGear3 = new CustomGameMenu.customMenuButton("Equip Slide", () ->{
+        equipGear3 = new CustomGameMenu.customMenuButton("Equip Slide", () -> {
             store.setEquipSlide(true);
             store.setEquipJetpack(false);
             store.setEquipGlider(false);
         });
-        unequipGear1 = new CustomGameMenu.customMenuButton("Unequip Jetpack", ()->{
+        unequipGear1 = new CustomGameMenu.customMenuButton("Unequip Jetpack", () -> {
             store.setEquipJetpack(false);
         });
-        unequipGear2 = new CustomGameMenu.customMenuButton("Unequip Glider", ()->{
+        unequipGear2 = new CustomGameMenu.customMenuButton("Unequip Glider", () -> {
             store.setEquipGlider(false);
         });
-        unequipGear3 = new CustomGameMenu.customMenuButton("Unequip Slide", ()->{
+        unequipGear3 = new CustomGameMenu.customMenuButton("Unequip Slide", () -> {
             store.setEquipSlide(false);
         });
     }

@@ -1,6 +1,5 @@
 package org.BobBuilders.FrenzyPenguins;
 
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -9,17 +8,20 @@ public class Store {
     private BooleanProperty equipJetpack;
     private BooleanProperty equipGlider;
     private BooleanProperty equipSlide;
-    public Store(){
+
+    public Store() {
         equipJetpack = new SimpleBooleanProperty(false);
         equipGlider = new SimpleBooleanProperty(false);
         equipSlide = new SimpleBooleanProperty(false);
     }
-    public static Store getInstance(){
-        if(instance == null){
+
+    public static Store getInstance() {
+        if (instance == null) {
             instance = new Store();
         }
         return instance;
     }
+
     public boolean isEquipJetpack() {
         return equipJetpack.get();
     }
@@ -39,13 +41,16 @@ public class Store {
     public boolean isEquipSlide() {
         return equipSlide.get();
     }
-    public BooleanProperty hasEquippedJetpack(){
+
+    public BooleanProperty hasEquippedJetpack() {
         return equipJetpack;
     }
-    public BooleanProperty hasEquippedGlider(){
+
+    public BooleanProperty hasEquippedGlider() {
         return equipGlider;
     }
-    public BooleanProperty hasEquippedSlide(){
+
+    public BooleanProperty hasEquippedSlide() {
         return equipSlide;
     }
 
