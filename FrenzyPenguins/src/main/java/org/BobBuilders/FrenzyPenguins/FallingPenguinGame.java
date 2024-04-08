@@ -3,7 +3,6 @@ package org.BobBuilders.FrenzyPenguins;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
-import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.dsl.FXGL;
@@ -14,13 +13,11 @@ import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
-import org.BobBuilders.FrenzyPenguins.util.Constant;
-import org.BobBuilders.FrenzyPenguins.util.EntityNames;
+import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
@@ -151,7 +148,7 @@ public class FallingPenguinGame extends GameApplication {
                 getGameController().gotoMainMenu();
             }
         });
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN,GROUND) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, GROUND) {
             @Override
             protected void onCollision(Entity a, Entity b) {
                 super.onCollision(a, b);
@@ -202,52 +199,21 @@ public class FallingPenguinGame extends GameApplication {
     }
 
     private void createEntireRamp(double spawnX, double spawnY) {
+        //Variables left for store implementation
         int horizontalRampLength = 250;
         int rampLength = 1000;
         int verticalRampLength = 400;
         int lowerRampLength = 200;
         int secondRampLength = 300;
+        double rampRadius = 300;
 
-
-//        FXGL.spawn("triangle",new SpawnData(0,0)
-//                .put("endX",horizontalRampLength)
-//                .put("endY",spawnY)
-//                .put("controlX",0)
-//                .put("controlY",spawnY));
-//        FXGL.spawn("rectangle", new SpawnData(spawnX, spawnY)
-//                .put("width", horizontalRampLength)
-//                .put("height", 1000));
-//        FXGL.spawn("triangle", new SpawnData(horizontalRampLength / 2, spawnY / 2)
-//                .put("endX", horizontalRampLength / 2 + rampLength/2)
-//                .put("endY", spawnY + rampLength)
-//                .put("controlX", horizontalRampLength / 2)
-//                .put("controlY", spawnY + rampLength));
-//        FXGL.spawn("rectangle", new SpawnData(horizontalRampLength / 2 + rampLength/2, spawnY + rampLength)
-//                .put("width", lowerRampLength)
-//                .put("height", 1000));
-//        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength) / 2 - 70,
-//                (spawnY + rampLength) / 2)
-//                .put("endX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
-//                .put("endY", ((spawnY + rampLength)) / 2 - secondRampLength)
-//                .put("controlX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
-//                .put("controlY", (spawnY + rampLength) / 2));
-//        FXGL.spawn(EntityNames.RECTANGLE, new SpawnData(0,100)
-//                .put(Constant.WIDTH,100)
-//                .put(Constant.HEIGHT,1000));
-//        FXGL.spawn(EntityNames.CURVE, new SpawnData(0,100)
-//                .put(Constant.FROM_ANGLE,90)
-//                .put(Constant.TO_ANGLE,180)
-//                .put(Constant.END_X, 100)
-//                .put(Constant.END_Y,200)
-//                .put(Constant.CONTROL_X,0)
-//                .put(Constant.CONTROL_Y,200));
-        spawnRectangle(-300,100,500,2000);
-        spawnCircle( 200-50, 100,50);
-        spawnRectangle(200,150,50,1950);
-//        spawnCurve(400,500,400,600,500,600,90,180);
-        spawnCurve(250,500,250,600,500,600,90,180);
-        spawnCurve(250,500,0,0,500,600,90,180);
-//        spawnCurve(500,600,500,600,600,400,270,360);
+        //Creates the initial ramp
+        EntitySpawner.spawnRectangle(-300, 100, 500, 2000);
+        EntitySpawner.spawnCircle(200 - 50, 100, 50);
+        EntitySpawner.spawnRectangle(200, 150, 50, 1950);
+        EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
+        EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
+        EntitySpawner.spawnRectangle(250, 1600, 2 * rampRadius, 400);
     }
 
     private void goToMenu() {
@@ -257,54 +223,6 @@ public class FallingPenguinGame extends GameApplication {
         penguin = FXGL.spawn("penguin", 10, 4);
         getGameScene().getViewport().setX(0);
         getGameScene().getViewport().setY(0);
-    }
-
-    /**
-     * Spawns a rectangle centered at the top left point
-     * @param startX {@code double} top left x position
-     * @param startY {@code double} top left y position
-     * @param width {@code double} width of rectangle
-     * @param height {@code double} height of rectangle
-     */
-    public void spawnRectangle(double startX,double startY,double width,double height){
-        FXGL.spawn(EntityNames.RECTANGLE, new SpawnData(startX,startY)
-                .put(Constant.WIDTH,width)
-                .put(Constant.HEIGHT,height));
-    }
-
-    /**
-     * Spawns a circle at a designated position centered around an x,y coordinate
-     * @param startX {@code double} top left x position
-     * @param startY {@code double} top left y position
-     * @param radius {@code double} radius
-     */
-    public void spawnCircle(double startX,double startY,double radius){
-        FXGL.spawn(EntityNames.CIRCLE, new SpawnData(startX,startY)
-                .put(Constant.RADIUS,radius));
-    }
-
-    /**
-     * Spawns a curve at a designated position and fills in the area around it to a control point.
-     * @param startX {@code double} starting x position
-     * @param startY {@code double} starting y position
-     * @param controlX {@code double} control y position - used to encapsulate the area on either side of the curve
-     * @param controlY {@code double} control y position - used to encapsulate the area on either side of the curve
-     * @param endX {@code double} end x position
-     * @param endY {@code double} end y position
-     * @param fromAngle {@code double} angle where the curve begins - north is 0 degrees
-     * @param toAngle {@code double} angle where the curve ends
-     */
-    public void spawnCurve(double startX, double startY, double controlX, double controlY, double endX, double endY, double fromAngle, double toAngle){
-        if (startX == endX || startX == endY){
-            System.out.println("You've just made a dot, not a curve!");
-        }
-        FXGL.spawn(EntityNames.CURVE, new SpawnData(startX,startY)
-                .put(Constant.FROM_ANGLE,fromAngle)
-                .put(Constant.TO_ANGLE,toAngle)
-                .put(Constant.CONTROL_X,controlX)
-                .put(Constant.CONTROL_Y,controlY)
-                .put(Constant.END_X, endX)
-                .put(Constant.END_Y,endY));
     }
 
 

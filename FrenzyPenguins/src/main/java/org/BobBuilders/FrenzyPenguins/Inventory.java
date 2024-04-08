@@ -33,6 +33,7 @@ public class Inventory {
 
     /**
      * Returns the instance of the {@code Inventory} if the instance is not null, else creates a new instance of {@code Inventory}
+     *
      * @return the instance of {@code Inventory}
      */
     public static Inventory getInstance() {
@@ -41,6 +42,7 @@ public class Inventory {
 
     /**
      * Adds points to the running total of points
+     *
      * @param addedPoints the amount of points to be added
      */
     public void addPoints(int addedPoints) {
@@ -49,17 +51,19 @@ public class Inventory {
 
     /**
      * Returns the {@Code SimpleIntegerProperty} of points
+     *
      * @return the {@Code SimpleIntegerProperty} of points
      */
-    public SimpleIntegerProperty getPointsProperty(){
+    public SimpleIntegerProperty getPointsProperty() {
         return this.points;
     }
 
     /**
      * Returns the running total of points
+     *
      * @return the {@Code int} of points
      */
-    public int getPoints(){
+    public int getPoints() {
         return this.points.getValue();
     }
 }

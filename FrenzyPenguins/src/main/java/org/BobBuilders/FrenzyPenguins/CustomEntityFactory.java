@@ -9,24 +9,21 @@ import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
-import org.BobBuilders.FrenzyPenguins.util.EntityNames;
+import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
 
-    @Spawns(EntityNames.RECTANGLE)
+    @Spawns(EntitySpawner.RECTANGLE)
     public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         double width = Double.parseDouble(data.get(Constant.WIDTH).toString());
@@ -45,7 +42,7 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
-    @Spawns(EntityNames.CIRCLE)
+    @Spawns(EntitySpawner.CIRCLE)
     public Entity createCircle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
 //        double radius = Double.parseDouble(data.get("radius").toString());
@@ -68,7 +65,7 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
-    @Spawns(EntityNames.TRIANGLE)
+    @Spawns(EntitySpawner.TRIANGLE)
     public Entity createTriangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         double endX = Double.parseDouble(data.get(Constant.END_X).toString());
@@ -99,59 +96,44 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
-    @Spawns(EntityNames.CURVE)
+    @Spawns(EntitySpawner.CURVE)
     public Entity newCurve(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         CollidableComponent collidableComponent = new CollidableComponent(true);
-        double startX = data.getX();
-        double startY = data.getY();
-        double endX = Double.parseDouble(data.get(Constant.END_X).toString());
-        double endY = Double.parseDouble(data.get(Constant.END_Y).toString());
-        double degree = Double.parseDouble(data.get(Constant.FROM_ANGLE).toString());
+        double fromDegree = Double.parseDouble(data.get(Constant.FROM_ANGLE).toString());
         double endDegree = Double.parseDouble(data.get(Constant.TO_ANGLE).toString());
-
-        QuadCurve curve = new QuadCurve(
-                startX,
-                startY,
-                startX,
-                endY,
-                endX,
-                endY
-        );
-        System.out.println(curve.getEndX());
-        double radius = endX-startX;
+        double radius = Double.parseDouble(data.get(Constant.RADIUS).toString());
+        //Creates points along the circumfrance of a circle
         ArrayList<Point2D> points = new ArrayList<>();
-        while (degree < endDegree){
-            double rad = Math.toRadians(degree);
-            System.out.println(radius);
-            System.out.println();
-            points.add(new Point2D(Math.cos(rad)*radius+startX,Math.sin(rad)*radius+endY));
-            degree = Math.toDegrees(rad);
-            degree++;
+        double computedDegree = fromDegree;
+        while (computedDegree < endDegree) {
+            double rad = Math.toRadians(computedDegree);
+            points.add(new Point2D(Math.cos(rad) * radius + radius, Math.sin(rad) * radius + radius));
+            computedDegree = Math.toDegrees(rad);
+            computedDegree++;
         }
-        points.add(new Point2D(startX-radius,endY+radius));
+        //Depending on the quadrant, changes the control point (used to fill in the missing area)
+        switch ((int) (fromDegree / 90)) {
+            case 0 -> {
+                //Quad 3 - 0 at N
+                points.add(new Point2D(2 * radius, 2 * radius));
+            }
+            case 1 -> {
+                //Quad 2 - 0 at N
+                points.add(new Point2D(0, 2 * radius));
+            }
+        }
+        //Makes a polygon
         Point2D[] allPoints = new Point2D[points.size()];
         allPoints = points.toArray(allPoints);
-        for(Point2D e : allPoints)
-            System.out.println(e);
-        /**
-         * polygon test
-         */
         Polygon poly = new Polygon();
         ArrayList<Double> polyPoints = new ArrayList<>();
-        for (int i = 0; i < points.size(); i++){
-            polyPoints.add(points.get(i).getX());
-            polyPoints.add(points.get(i).getY());
+        for (Point2D point : points) {
+            polyPoints.add(point.getX());
+            polyPoints.add(point.getY());
         }
+        //Makes a polygon as the view surface with a chain hitbox
         poly.getPoints().addAll(polyPoints);
-//        entityBuilder()
-//                .from(data)
-//                .type(GROUND)
-//                .view(poly)
-//                .buildAndAttach();
-//        curve.setStroke(Color.BLACK);
-//        curve.setFill(null);
-//        curve.setStrokeWidth(4);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
