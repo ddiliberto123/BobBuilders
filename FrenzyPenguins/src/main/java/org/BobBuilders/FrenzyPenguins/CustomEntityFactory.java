@@ -4,50 +4,30 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import org.BobBuilders.FrenzyPenguins.util.Constant;
+import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
 
-    //    @Spawns("rectangle")
-//    public Entity newRectangle(SpawnData data) {
-//        PhysicsComponent physics = new PhysicsComponent();
-//        physics.setBodyType(BodyType.STATIC);
-//        Rectangle view = new Rectangle(300, 80);
-//        view.setFill(Color.BLUEVIOLET);
-//        double rotation = data.get("rotation");
-//        Entity entity = entityBuilder()
-//                .from(data)
-//                .type(GROUND)
-//                .viewWithBBox(view)
-//                .rotate(rotation)
-//                .collidable()
-//                .with(physics)
-//                .build();
-//        FixtureDef fix = new FixtureDef();
-//        fix.setDensity(0.1f);
-//        physics.setFixtureDef(fix);
-//        return entity;
-//    }
-    @Spawns("rectangle")
+    @Spawns(EntitySpawner.RECTANGLE)
     public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double width = Double.parseDouble(data.get("width").toString());
-        double height = Double.parseDouble(data.get("height").toString());
+        double width = Double.parseDouble(data.get(Constant.WIDTH).toString());
+        double height = Double.parseDouble(data.get(Constant.HEIGHT).toString());
         Rectangle rectangle = new Rectangle(width, height);
         rectangle.setFill(Color.BLACK);
         Entity entity = entityBuilder()
@@ -62,17 +42,20 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
-    @Spawns("circle")
+    @Spawns(EntitySpawner.CIRCLE)
     public Entity createCircle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double radius = Double.parseDouble(data.get("radius").toString());
-        Circle circle = new Circle();
-        circle.setRadius(radius);
+//        double radius = Double.parseDouble(data.get("radius").toString());
+        double radius = Double.parseDouble(data.get(Constant.RADIUS).toString());
+        Circle circle = new Circle(radius);
+        circle.setTranslateX(radius);
+        circle.setTranslateY(radius);
         circle.setFill(Color.BLACK);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
-                .viewWithBBox(circle)
+                .view(circle)
+                .bbox(new HitBox(BoundingShape.circle(radius)))
                 .with(physics)
                 .collidable()
                 .build();
@@ -82,13 +65,13 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
-    @Spawns("triangle")
+    @Spawns(EntitySpawner.TRIANGLE)
     public Entity createTriangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double endX = Double.parseDouble(data.get("endX").toString());
-        double endY = Double.parseDouble(data.get("endY").toString());
-        double controlX = Double.parseDouble(data.get("controlX").toString());
-        double controlY = Double.parseDouble(data.get("controlY").toString());
+        double endX = Double.parseDouble(data.get(Constant.END_X).toString());
+        double endY = Double.parseDouble(data.get(Constant.END_Y).toString());
+        double controlX = Double.parseDouble(data.get(Constant.CONTROL_X).toString());
+        double controlY = Double.parseDouble(data.get(Constant.CONTROL_Y).toString());
         Polygon triangle = new Polygon();
         triangle.getPoints().addAll(
                 data.getX(), data.getY(),
@@ -113,105 +96,57 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
-
-    /*
-
-        Left temporarily incase of reintroduction into code
-
-     */
-    @Spawns("ramp")
-    public Entity newRamp(SpawnData data) {
-        int horizontalRampLength = 300;
-        int verticalRampLength = 400;
-        int lowerRampLength = 50;
-        int borderLength = 50;
-        final int curveOffset = 50;
-
+    @Spawns(EntitySpawner.CURVE)
+    public Entity newCurve(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        MoveTo moveTo = new MoveTo(0,
-                100);
-        Path path = new Path();
-        LineTo horizontalLine = new LineTo(moveTo.getX() + horizontalRampLength, moveTo.getY());
-        QuadCurveTo curveTo = new QuadCurveTo();
-        curveTo.setControlX(horizontalLine.getX() + curveOffset);
-        curveTo.setControlY(horizontalLine.getY());
-        curveTo.setX(horizontalLine.getX() + curveOffset);
-        curveTo.setY(horizontalLine.getY() + curveOffset);
-        LineTo verticalLine = new LineTo(curveTo.getX(), curveTo.getY() + verticalRampLength);
-
-        QuadCurveTo leftCurveTo = new QuadCurveTo();
-        leftCurveTo.setControlX(verticalLine.getX());
-        leftCurveTo.setControlY(verticalLine.getY() + curveOffset);
-        leftCurveTo.setX(verticalLine.getX() + curveOffset);
-        leftCurveTo.setY(verticalLine.getY() + curveOffset);
-
-        LineTo lowerRampLine = new LineTo(leftCurveTo.getX() + lowerRampLength, leftCurveTo.getY());
-
-        QuadCurveTo rightCurveTo = new QuadCurveTo();
-        rightCurveTo.setControlX(lowerRampLine.getX() + curveOffset);
-        rightCurveTo.setControlY(lowerRampLine.getY());
-        rightCurveTo.setX(lowerRampLine.getX() + curveOffset);
-        rightCurveTo.setY(lowerRampLine.getY() - curveOffset);
-
-        LineTo rightBorder = new LineTo(rightCurveTo.getX(), rightCurveTo.getY() + curveOffset + borderLength);
-        LineTo bottomBorder = new LineTo(rightBorder.getX() - horizontalRampLength - curveOffset * 3 - borderLength, rightBorder.getY());
-        LineTo leftBorder = new LineTo(bottomBorder.getX(), bottomBorder.getY() - curveOffset * 2 - borderLength - verticalRampLength);
-
-        path.getElements().addAll(moveTo, horizontalLine, curveTo, verticalLine, leftCurveTo,
-                lowerRampLine, rightCurveTo, rightBorder, bottomBorder, leftBorder);
-        path.setFill(Color.RED);
-        path.setStroke(Color.RED);
-        Point2D[] hitboxPoints = {
-                new Point2D(0, 100),
-                new Point2D(horizontalLine.getX(), horizontalLine.getY()),
-                new Point2D(curveTo.getX(), curveTo.getY()),
-                new Point2D(verticalLine.getX(), verticalLine.getY()),
-                new Point2D(leftCurveTo.getX(), leftCurveTo.getY()),
-                new Point2D(lowerRampLine.getX(), lowerRampLine.getY()),
-                new Point2D(rightCurveTo.getX(), rightCurveTo.getY()),
-                new Point2D(rightBorder.getX(), rightBorder.getY()),
-                new Point2D(bottomBorder.getX(), bottomBorder.getY()),
-                new Point2D(leftBorder.getX(), leftBorder.getY())
-        };
-        for (Point2D e : hitboxPoints) {
-            int i = 0;
-            System.out.println(i + ":" + e.getX() + "," + e.getY());
-            i = i + 1;
+        CollidableComponent collidableComponent = new CollidableComponent(true);
+        double fromDegree = Double.parseDouble(data.get(Constant.FROM_ANGLE).toString());
+        double endDegree = Double.parseDouble(data.get(Constant.TO_ANGLE).toString());
+        double radius = Double.parseDouble(data.get(Constant.RADIUS).toString());
+        //Creates points along the circumfrance of a circle
+        ArrayList<Point2D> points = new ArrayList<>();
+        double computedDegree = fromDegree;
+        while (computedDegree < endDegree) {
+            double rad = Math.toRadians(computedDegree);
+            points.add(new Point2D(Math.cos(rad) * radius + radius, Math.sin(rad) * radius + radius));
+            computedDegree = Math.toDegrees(rad);
+            computedDegree++;
         }
+        //Depending on the quadrant, changes the control point (used to fill in the missing area)
+        switch ((int) (fromDegree / 90)) {
+            case 0 -> {
+                //Quad 3 - 0 at N
+                points.add(new Point2D(2 * radius, 2 * radius));
+            }
+            case 1 -> {
+                //Quad 2 - 0 at N
+                points.add(new Point2D(0, 2 * radius));
+            }
+        }
+        //Makes a polygon
+        Point2D[] allPoints = new Point2D[points.size()];
+        allPoints = points.toArray(allPoints);
+        Polygon poly = new Polygon();
+        ArrayList<Double> polyPoints = new ArrayList<>();
+        for (Point2D point : points) {
+            polyPoints.add(point.getX());
+            polyPoints.add(point.getY());
+        }
+        //Makes a polygon as the view surface with a chain hitbox
+        poly.getPoints().addAll(polyPoints);
         Entity entity = entityBuilder()
+                .from(data)
                 .type(GROUND)
-                .bbox(new HitBox(BoundingShape.polygon(hitboxPoints)))
-                .view(path)
-                .collidable()
+                .view(poly)
+                .bbox(new HitBox(BoundingShape.chain(allPoints)))
+                .with(collidableComponent)
                 .with(physics)
                 .build();
-
-//        final int offset = 300;
-//
-//        PhysicsComponent physics = new PhysicsComponent();
-//        physics.setBodyType(BodyType.STATIC);
-//        QuadCurve ramp = new QuadCurve();
-//        ramp.setStartX(data.getX());
-//        ramp.setStartY(data.getY());
-//        ramp.setEndX(data.getX()+offset);
-//        ramp.setEndY(data.getX()+offset);
-//        ramp.setControlX(data.getX());
-//        ramp.setControlY(data.getY()+offset);
-//        ramp.setStroke(Color.BLACK);
-//        ramp.setStrokeWidth(2);
-//        Entity entity = entityBuilder()
-//                .from(data)
-//                .type(GROUND)
-//                .view(ramp)
-//                .collidable()
-//                .with(physics)
-//                .build();
         FixtureDef fix = new FixtureDef();
         fix.setDensity(0.1f);
         physics.setFixtureDef(fix);
         return entity;
     }
-
 
     @Spawns("penguin")
     public Entity newPenguin(SpawnData data) {
@@ -225,26 +160,6 @@ public class CustomEntityFactory implements EntityFactory {
                 .collidable()
                 .with(physics)
                 .build();
-    }
-
-
-    @Spawns("begin")
-    public Entity newBegin(SpawnData data) {
-        PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.STATIC);
-        Rectangle view = new Rectangle(200, 500);
-        view.setFill(Color.BLUEVIOLET);
-        Entity entity = entityBuilder()
-                .from(data)
-                .type(GROUND)
-                .viewWithBBox(view)
-                .collidable()
-                .with(physics)
-                .build();
-        FixtureDef fix = new FixtureDef();
-        fix.setDensity(0.1f);
-        physics.setFixtureDef(fix);
-        return entity;
     }
 
 }

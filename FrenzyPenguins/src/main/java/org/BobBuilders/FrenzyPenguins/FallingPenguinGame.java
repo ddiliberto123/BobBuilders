@@ -3,7 +3,6 @@ package org.BobBuilders.FrenzyPenguins;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
-import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.dsl.FXGL;
@@ -18,10 +17,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
+import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
+import static org.BobBuilders.FrenzyPenguins.EntityType.GROUND;
 
 
 public class FallingPenguinGame extends GameApplication {
@@ -62,7 +63,7 @@ public class FallingPenguinGame extends GameApplication {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
 
         //Spawning the penguin entity
-        penguin = FXGL.spawn("penguin", 10, 4);
+        penguin = FXGL.spawn("penguin", 10, 0);
 
         /*
 
@@ -76,7 +77,7 @@ public class FallingPenguinGame extends GameApplication {
 //        addRectangle(280,400,0);
 //        addRectangle(480,380,-25);
 //        createRamp(250, 200);
-        createEntireRamp(0, 100);
+        createEntireRamp(0, 150);
 
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
@@ -97,17 +98,16 @@ public class FallingPenguinGame extends GameApplication {
 
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-        Vec2 forceful = new Vec2(0, -1.8);
+        Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
     }
 
     protected void onUpdate(double tpf) {
         Inventory inventory = Inventory.getInstance();
-        System.out.println(inventory);
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position: (" + penguin.getX() + ", " + penguin.getY() + ")");
 
-        if (penguin.getX() > 700) {
+        if (penguin.getY() > 400) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
 
@@ -122,13 +122,19 @@ public class FallingPenguinGame extends GameApplication {
             // Set the X and Y position of the viewport to keep the penguin centered
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
+        } else {
+            getGameScene().getViewport().setX(0);
+            getGameScene().getViewport().setY(0);
         }
         // Update the points based on the distance traveled
         inventory.addPoints((int) penguin.getX());
         System.out.println(inventory.getPoints());
 
+
         //Restarts game when penguin reaches the bottom
-        if (penguin.getY() > 1200) {
+        if (penguin.getY() > 4000) {
+            // Update the points based on the distance traveled
+            inventory.addPoints((int) penguin.getX());
             goToMenu();
         }
     }
@@ -143,6 +149,13 @@ public class FallingPenguinGame extends GameApplication {
             @Override
             protected void onCollisionBegin(Entity penguin, Entity bottom) {
                 getGameController().gotoMainMenu();
+            }
+        });
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, GROUND) {
+            @Override
+            protected void onCollision(Entity a, Entity b) {
+                super.onCollision(a, b);
+//                System.out.println("I AM COLLIDING WITH THE CURVE HELLO!");
             }
         });
     }
@@ -189,29 +202,21 @@ public class FallingPenguinGame extends GameApplication {
     }
 
     private void createEntireRamp(double spawnX, double spawnY) {
+        //Variables left for store implementation
         int horizontalRampLength = 250;
         int rampLength = 1000;
         int verticalRampLength = 400;
         int lowerRampLength = 200;
         int secondRampLength = 300;
+        double rampRadius = 300;
 
-        FXGL.spawn("rectangle", new SpawnData(spawnX, spawnY)
-                .put("width", horizontalRampLength)
-                .put("height", 1000));
-        FXGL.spawn("triangle", new SpawnData(horizontalRampLength / 2, spawnY / 2)
-                .put("endX", horizontalRampLength / 2 + rampLength)
-                .put("endY", spawnY + rampLength)
-                .put("controlX", horizontalRampLength / 2)
-                .put("controlY", spawnY + rampLength));
-        FXGL.spawn("rectangle", new SpawnData(horizontalRampLength / 2 + rampLength, spawnY + rampLength)
-                .put("width", lowerRampLength)
-                .put("height", 1000));
-        FXGL.spawn("triangle", new SpawnData((horizontalRampLength + rampLength + lowerRampLength) / 2 - 70,
-                (spawnY + rampLength) / 2)
-                .put("endX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
-                .put("endY", ((spawnY + rampLength)) / 2 - secondRampLength)
-                .put("controlX", (horizontalRampLength + rampLength) / 2 + secondRampLength)
-                .put("controlY", (spawnY + rampLength) / 2));
+        //Creates the initial ramp
+        EntitySpawner.spawnRectangle(-300, 100, 500, 2000);
+        EntitySpawner.spawnCircle(200 - 50, 100, 50);
+        EntitySpawner.spawnRectangle(200, 150, 50, 1950);
+        EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
+        EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
+        EntitySpawner.spawnRectangle(250, 1600, 2 * rampRadius, 400);
     }
 
     private void goToMenu() {
@@ -222,4 +227,5 @@ public class FallingPenguinGame extends GameApplication {
         getGameScene().getViewport().setX(0);
         getGameScene().getViewport().setY(0);
     }
+
 }
