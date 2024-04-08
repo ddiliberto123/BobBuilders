@@ -100,7 +100,7 @@ public class Inventory {
      *
      * @return the {@code IntegerProperty} of points
      */
-    public SimpleIntegerProperty getPointsProperty() {
+    public IntegerProperty getPointsProperty() {
         return this.points;
     }
 
