@@ -1,7 +1,10 @@
 package org.BobBuilders.FrenzyPenguins;
 
 
+import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,56 +17,100 @@ public class Inventory {
     @Setter
     @Getter
     private int rampLevel;
-    @Setter
-    @Getter
-    private boolean hasJetpack;
-    @Setter
-    @Getter
-    private boolean hasSlide;
-    private SimpleIntegerProperty points;
+    private BooleanProperty hasJetpack;
+    private BooleanProperty hasSlide;
+    private BooleanProperty hasGlider;
+    private IntegerProperty points;
 
-    private Inventory() {
+    public Inventory() {
         rampLevel = 1;
-        hasJetpack = false;
-        hasSlide = false;
         points = new SimpleIntegerProperty();
         points.setValue(0);
-        Math.min(1, 2);
+        hasJetpack = new SimpleBooleanProperty(false);
+        hasSlide = new SimpleBooleanProperty(false);
+        hasGlider = new SimpleBooleanProperty(false);
     }
 
+
     /**
-     * Returns the instance of the {@code Inventory} if the instance is not null, else creates a new instance of {@code Inventory}
+     * Creates an or gets the single instance of inventory
      *
-     * @return the instance of {@code Inventory}
+     * @return the instance
      */
     public static Inventory getInstance() {
         return instance = (instance == null) ? new Inventory() : instance;
     }
 
+    public void setHasJetpack(boolean answer) {
+        hasJetpack.set(answer);
+    }
+
+    public void setHasSlide(boolean answer) {
+        hasSlide.set(answer);
+    }
+
+    public void setHasGlider(boolean answer) {
+        hasGlider.set(answer);
+    }
+
+    public BooleanProperty hasJetpackProperty() {
+        if (hasJetpack == null) {
+            hasJetpack = new SimpleBooleanProperty();
+        }
+        return hasJetpack;
+    }
+
+    public BooleanProperty hasSlideProperty() {
+        if (hasSlide == null) {
+            hasSlide = new SimpleBooleanProperty();
+        }
+        return hasSlide;
+    }
+
+    public BooleanProperty hasGliderProperty() {
+        if (hasGlider == null) {
+            hasGlider = new SimpleBooleanProperty();
+        }
+        return hasGlider;
+    }
+
+    public boolean isHasJetpack() {
+        return hasJetpack.get();
+    }
+
+    public boolean isHasSlide() {
+        return hasSlide.get();
+    }
+
+    public boolean isHasGlider() {
+        return hasGlider.get();
+    }
+
     /**
-     * Adds points to the running total of points
+     * Adds points to the running total
      *
-     * @param addedPoints the amount of points to be added
+     * @param addedPoints the points to be added to the total.
      */
     public void addPoints(int addedPoints) {
         this.points.setValue(this.points.getValue() + addedPoints);
     }
 
     /**
-     * Returns the {@Code SimpleIntegerProperty} of points
+     * Gets the running points' total property
      *
-     * @return the {@Code SimpleIntegerProperty} of points
+     * @return the {@code IntegerProperty} of points
      */
     public SimpleIntegerProperty getPointsProperty() {
         return this.points;
     }
 
     /**
-     * Returns the running total of points
+     * Returns the running total
      *
-     * @return the {@Code int} of points
+     * @return the {@code int} running total
      */
     public int getPoints() {
         return this.points.getValue();
     }
+
 }

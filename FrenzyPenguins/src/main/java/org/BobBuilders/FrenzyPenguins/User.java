@@ -1,6 +1,8 @@
 package org.BobBuilders.FrenzyPenguins;
 
-//TODO: Create/Get Userdata from Database
+import org.BobBuilders.FrenzyPenguins.Inventory;
+import org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
+
 public class User {
     private String username;
     private String password;

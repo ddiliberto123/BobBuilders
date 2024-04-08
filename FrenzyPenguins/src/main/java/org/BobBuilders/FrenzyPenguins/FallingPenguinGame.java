@@ -5,13 +5,24 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.core.math.Vec2;
+import com.almasb.fxgl.dsl.EntityBuilder;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
+import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -29,8 +40,12 @@ public class FallingPenguinGame extends GameApplication {
     private Entity penguin;
     private Entity bottom;
     private Text distanceText;
+    private double beginPoints = 0;
 
-    private static final String END_Y = "endy";
+    Inventory inventory = Inventory.getInstance();
+    Store store = Store.getInstance();
+    private double jetpackTimeElapsed = 0.0;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -61,6 +76,14 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
+        Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
+        Image back = new Image("file:clouds.png");
+        ImageView background = new ImageView(back);
+
+        //Spawn moving background
+        for (int i = 0; i < 10; i++) {
+            FXGL.spawn("background", i * getAppWidth(), 0);
+        }
 
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin", 10, 0);
@@ -126,10 +149,6 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setX(0);
             getGameScene().getViewport().setY(0);
         }
-        // Update the points based on the distance traveled
-        inventory.addPoints((int) penguin.getX());
-        System.out.println(inventory.getPoints());
-
 
         //Restarts game when penguin reaches the bottom
         if (penguin.getY() > 4000) {
@@ -137,6 +156,7 @@ public class FallingPenguinGame extends GameApplication {
             inventory.addPoints((int) penguin.getX());
             goToMenu();
         }
+
     }
 
 
@@ -162,6 +182,12 @@ public class FallingPenguinGame extends GameApplication {
 
     @Override
     protected void initInput() {
+        super.initInput();
+        getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                event.consume();
+            }
+        });
         //Gives penguin the ability to move left and right in ramp vicinity
         onKey(KeyCode.RIGHT, () -> {
             if (penguin.getX() < 800) {
@@ -187,10 +213,28 @@ public class FallingPenguinGame extends GameApplication {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
             physics.setAngularVelocity(-120);
         });
-        onKey(KeyCode.ESCAPE, () -> {
 
+        onKey(KeyCode.SPACE, () -> {
+            if (store.isEquipJetpack()) {
+                jetpackTimeElapsed += tpf();
+                System.out.println(jetpackTimeElapsed);
+                if (jetpackTimeElapsed < 5) {
+                    PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+                    double speedMultiplier = 2;
+
+                    double angle = penguin.getRotation() % 360;
+                    if (angle < 0) {
+                        angle += 360;
+                    }
+
+                    double forceX = speedMultiplier * Math.cos(Math.toRadians(angle));
+                    double forceY = -speedMultiplier * Math.sin(Math.toRadians(angle));
+
+                    Vec2 vec = new Vec2(forceX, forceY);
+                    physics.applyBodyForceToCenter(vec);
+                }
+            }
         });
-
     }
 
     @Override

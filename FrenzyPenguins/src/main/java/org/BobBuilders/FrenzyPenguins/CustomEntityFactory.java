@@ -1,5 +1,6 @@
 package org.BobBuilders.FrenzyPenguins;
 
+import com.almasb.fxgl.dsl.components.view.ChildViewComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
@@ -11,6 +12,9 @@ import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
@@ -18,10 +22,11 @@ import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
 import java.util.ArrayList;
 
-import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
+    Store store = Store.getInstance();
 
     @Spawns(EntitySpawner.RECTANGLE)
     public Entity createRectangle(SpawnData data) {
@@ -152,11 +157,41 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity newPenguin(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.setFixtureDef(new FixtureDef().density(0.1f));
-        Rectangle view = new Rectangle(30, 30, Color.BLACK);
+        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(1f));
+        if (store.isEquipSlide()) {
+            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.5f));
+        }
+
+        Image penguinImage = new Image("file:penguin.png");
+        Image penguinJ = new Image("file:penguin_and_jetpack.png");
+        Image penguinG = new Image("file:penguin_and_glider.png");
+        Image penguinS = new Image("file:penguin_and_sled.png");
+
+        Image penguinView = penguinImage;
+
+        if (store.isEquipJetpack()) {
+            penguinView = penguinJ;
+        }
+        if (store.isEquipGlider()) {
+            penguinView = penguinG;
+        }
+        if (store.isEquipSlide()) {
+            penguinView = penguinS;
+        }
+
+        ImageView penguin = new ImageView(penguinView);
+
+
+        penguin.setFitHeight(125);
+        penguin.setPreserveRatio(true);
+        penguin.setTranslateX(-40);
+        penguin.setTranslateY(-50);
+        Rectangle view = new Rectangle(50, 25, Color.TRANSPARENT);
+
         return entityBuilder(data)
                 .type(PENGUIN)
                 .viewWithBBox(view)
+                .view(penguin)
                 .collidable()
                 .with(physics)
                 .build();

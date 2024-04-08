@@ -30,6 +30,8 @@ import java.util.Stack;
 public class CustomMainMenu extends FXGLMenu {
     private static final Color SELECTED_COLOR = Color.BLACK;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
+    private VBox vboxOptions;
+    private VBox vbox;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -40,15 +42,30 @@ public class CustomMainMenu extends FXGLMenu {
         customMenuButton btnLogin = new customMenuButton("Login", () -> {
         });
         customMenuButton btnOptions = new customMenuButton("Options", () -> {
+            vbox.setVisible(false);
+            vboxOptions.setVisible(true);
         });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
+        customMenuButton btnBrightness = new customMenuButton("Brightness", () -> {});
+        customMenuButton btnVolume = new customMenuButton("Volume", () -> {});
+        customMenuButton btnReturn = new customMenuButton("Return to Main Menu", () -> {
+            vbox.setVisible(true);
+            vboxOptions.setVisible(false);
+        });
 
+        vboxOptions = new VBox(10,
+                btnBrightness,
+                btnVolume,
+                btnReturn,
+                new Text(""),
+                new LineSeparator());
+        vboxOptions.setTranslateX(100);
+        vboxOptions.setTranslateY(450);
 //        selectedButton = new SimpleObjectProperty<>(btnPlayGame);
 //        FXGL.getAssetLoader().loadTexture("background/background.png");
 
-
         //Creates a vbox to store the menu in
-        var vbox = new VBox(10,
+        vbox = new VBox(10,
                 btnPlayGame,
                 btnLogin,
                 btnOptions,
@@ -58,13 +75,15 @@ public class CustomMainMenu extends FXGLMenu {
                 FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15));
         vbox.setTranslateX(100);
         vbox.setTranslateY(450);
-        getContentRoot().getChildren().addAll(vbox);
+
+        StackPane stackMenu = new StackPane(vbox, vboxOptions);
+        vboxOptions.setVisible(false);
+        getContentRoot().getChildren().addAll(stackMenu);
     }
 
     private static class customMenuButton extends StackPane {
         private String name;
         private Runnable action;
-
         private Text text;
         private Rectangle selector;
 
