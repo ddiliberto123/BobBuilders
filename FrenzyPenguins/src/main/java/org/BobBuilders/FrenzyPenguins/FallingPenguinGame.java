@@ -123,14 +123,17 @@ public class FallingPenguinGame extends GameApplication {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
+
+
     }
 
     protected void onUpdate(double tpf) {
+        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Inventory inventory = Inventory.getInstance();
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position: (" + penguin.getX() + ", " + penguin.getY() + ")");
 
-        if (penguin.getY() > 400) {
+        if (penguin.getX() >= 200) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
 
@@ -157,6 +160,14 @@ public class FallingPenguinGame extends GameApplication {
             goToMenu();
         }
 
+        //Initial animation of penguin
+        if(penguin.getX() < 230){
+            physics.setVelocityX(40);
+        }
+        if(penguin.getX() == 250){
+            Vec2 downtime = new Vec2(-10,-50);
+            physics.applyBodyForceToCenter(downtime);
+        }
     }
 
 
@@ -188,40 +199,29 @@ public class FallingPenguinGame extends GameApplication {
                 event.consume();
             }
         });
-        //Gives penguin the ability to move left and right in ramp vicinity
-        onKey(KeyCode.RIGHT, () -> {
-            if (penguin.getX() < 800) {
-                PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                Vec2 object = new Vec2(3, 0);
-                physics.applyBodyForceToCenter(object);
-            }
-        });
-        onKey(KeyCode.LEFT, () -> {
-            if (penguin.getX() < 800) {
-                PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                Vec2 object = new Vec2(-3, 0);
-                physics.applyBodyForceToCenter(object);
-            }
-        });
 
         //Gives penguin the ability to change angle which it faces
         onKey(KeyCode.D, () -> {
-            PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-            physics.setAngularVelocity(120);
+            if(penguin.getX() >= 1000) {
+                PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+                physics.setAngularVelocity(120);
+            }
         });
         onKey(KeyCode.A, () -> {
-            PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-            physics.setAngularVelocity(-120);
+            if(penguin.getX() >= 1000) {
+                PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+                physics.setAngularVelocity(-120);
+            }
         });
 
         onKey(KeyCode.SPACE, () -> {
-            if (store.isEquipJetpack()) {
+            if (store.isEquipJetpack() && penguin.getX() >= 1000) {
                 jetpackTimeElapsed += tpf();
                 System.out.println(jetpackTimeElapsed);
                 if (jetpackTimeElapsed < 5) {
                     PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                     double speedMultiplier = 2;
-
+                    
                     double angle = penguin.getRotation() % 360;
                     if (angle < 0) {
                         angle += 360;
