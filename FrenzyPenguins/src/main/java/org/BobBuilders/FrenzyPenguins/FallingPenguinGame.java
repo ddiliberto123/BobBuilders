@@ -28,7 +28,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
+import org.BobBuilders.FrenzyPenguins.util.Database;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
+import org.BobBuilders.FrenzyPenguins.util.Database;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
@@ -37,6 +39,7 @@ import static org.BobBuilders.FrenzyPenguins.EntityType.GROUND;
 
 
 public class FallingPenguinGame extends GameApplication {
+
     private Entity penguin;
     private Entity bottom;
     private Text distanceText;
@@ -48,6 +51,7 @@ public class FallingPenguinGame extends GameApplication {
 
 
     public static void main(String[] args) {
+        Database.dbInit();
         launch(args);
     }
 
