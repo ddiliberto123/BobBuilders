@@ -14,6 +14,7 @@ import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
@@ -87,6 +88,15 @@ public class FallingPenguinGame extends GameApplication {
 //                .with(floor)
 //                .buildAndAttach();
 
+        //Circle trail to help keep track of penguin position and movement
+        for(int i =0; i < 100; i++){
+            Entity circle = FXGL.entityBuilder()
+                    .at(300,300*i)
+                    .type(EXIT)
+                    .viewWithBBox(new Circle(20,20,20,Color.GREEN))
+                    .buildAndAttach();
+        }
+
         //Displays the horizontal distance traveled by penguin
         distanceText = getUIFactoryService().newText("",Color.PURPLE,16);
         distanceText.setTranslateX(20);
@@ -113,7 +123,6 @@ public class FallingPenguinGame extends GameApplication {
 
 
 
-        if (penguin.getX()>200) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
 
@@ -128,7 +137,6 @@ public class FallingPenguinGame extends GameApplication {
             // Set the X and Y position of the viewport to keep the penguin centered
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
-        }
 
         //Lift(penguin.getRotation());
 //        if(penguin.getX() > 225) {
@@ -145,6 +153,9 @@ public class FallingPenguinGame extends GameApplication {
         }
         if(angle >= 270 && angle <= 315){
             angle = angle +45;
+        }
+        if(angle >= 90 && angle <= 270){
+            angle = -angle;
         }
 //        if(angleLift > 90 && angleLift <= 135){
 //            angleLift = angleLift - 90;
