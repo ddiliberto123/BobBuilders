@@ -14,6 +14,8 @@ import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
+import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
+import com.almasb.fxgl.ui.FXGLButton;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
@@ -159,14 +161,20 @@ public class FallingPenguinGame extends GameApplication {
             inventory.addPoints((int) penguin.getX());
             goToMenu();
         }
-
-        //Initial animation of penguin
+        
         if(penguin.getX() < 230){
             physics.setVelocityX(40);
         }
         if(penguin.getX() == 250){
             Vec2 downtime = new Vec2(-10,-50);
             physics.applyBodyForceToCenter(downtime);
+        }
+
+        if(penguin.getX() > 1000){
+            if(!physics.isMoving()){
+                inventory.addPoints((int) penguin.getX());
+                goToMenu();
+            }
         }
     }
 
@@ -261,6 +269,9 @@ public class FallingPenguinGame extends GameApplication {
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
         EntitySpawner.spawnRectangle(250, 1600, 2 * rampRadius, 400);
+
+        //Creates floor for penguin to run into
+        FXGL.spawn("floor",1000,3000);
     }
 
     private void goToMenu() {

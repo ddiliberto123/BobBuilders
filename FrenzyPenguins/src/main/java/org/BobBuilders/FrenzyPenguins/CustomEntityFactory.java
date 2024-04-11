@@ -47,6 +47,22 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
+    //Rectangle specifically designed with high friction to be placed along the track
+    @Spawns("floor")
+    public Entity createFloor(SpawnData data){
+        PhysicsComponent physics = new PhysicsComponent();
+        FixtureDef fix = new FixtureDef().density(0.1f).friction(10f);
+        physics.setFixtureDef(fix);
+        Rectangle rectangle = new Rectangle(20000, 50);
+        rectangle.setFill(Color.BLACK);
+        return entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(rectangle)
+                .with(physics)
+                .build();
+    }
+
     @Spawns(EntitySpawner.CIRCLE)
     public Entity createCircle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
