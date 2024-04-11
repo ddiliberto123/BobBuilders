@@ -20,6 +20,7 @@ import javafx.scene.shape.*;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
@@ -31,8 +32,14 @@ public class CustomEntityFactory implements EntityFactory {
     @Spawns(EntitySpawner.RECTANGLE)
     public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double width = Double.parseDouble(data.get(Constant.WIDTH).toString());
-        double height = Double.parseDouble(data.get(Constant.HEIGHT).toString());
+        double width = 1;
+        double height = 1;
+        try {
+            width = Double.parseDouble(data.get(Constant.WIDTH).toString());
+            height = Double.parseDouble(data.get(Constant.HEIGHT).toString());
+        } catch (NumberFormatException | NullPointerException ex) {
+            System.out.println("Width or Height formatting not defined correctly, defaulting to 1");
+        }
         Rectangle rectangle = new Rectangle(width, height);
         rectangle.setFill(Color.BLACK);
         Entity entity = entityBuilder()

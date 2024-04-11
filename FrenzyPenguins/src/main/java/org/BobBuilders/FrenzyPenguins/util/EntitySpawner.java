@@ -36,6 +36,7 @@ public class EntitySpawner {
      * @param width  {@code double} width of rectangle
      * @param height {@code double} height of rectangle
      */
+
     public static void spawnRectangle(double startX, double startY, double width, double height) {
         FXGL.spawn(RECTANGLE, new SpawnData(startX, startY)
                 .put(Constant.WIDTH, width)
