@@ -178,10 +178,10 @@ public class CustomEntityFactory implements EntityFactory {
             physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.001f));
         }
 
-        Image penguinImage = new Image("file:penguin.png");
-        Image penguinJ = new Image("file:penguin_and_jetpack.png");
-        Image penguinG = new Image("file:penguin_and_glider.png");
-        Image penguinS = new Image("file:penguin_and_sled.png");
+        Image penguinImage = new Image("file:"+path_fix()+"/penguin.png");
+        Image penguinJ = new Image("file:"+path_fix()+"/penguin_and_jetpack.png");
+        Image penguinG = new Image("file:"+path_fix()+"/penguin_and_glider.png");
+        Image penguinS = new Image("file:"+path_fix()+"/penguin_and_sled.png");
 
         Image penguinView = penguinImage;
 
@@ -216,7 +216,7 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity createBackground(SpawnData data) {
         // Create an entity with the image as background
         Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
-        Image image = new Image("file:mountains.png");
+        Image image = new Image("file:"+path_fix()+"/mountains.png");
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(getAppWidth());
         imageView.setFitHeight(getAppHeight());
@@ -226,6 +226,13 @@ public class CustomEntityFactory implements EntityFactory {
                 .from(data)
                 .viewWithBBox(stackPane)
                 .build();
+    }
+
+    public String path_fix(){
+
+        String home = System.getProperty("user.home");
+        String path = String.format("%s%s",home,"/documents/BobBuilders/FrenzyPenguins");
+        return path;
     }
 
 }
