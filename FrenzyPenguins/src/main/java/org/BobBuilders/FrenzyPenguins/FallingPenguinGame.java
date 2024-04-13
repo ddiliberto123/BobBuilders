@@ -119,7 +119,8 @@ public class FallingPenguinGame extends GameApplication {
         //Constantly updates the x coordinates displayed in distanceText
         distanceText.setText("Position x: (" + penguin.getX() + ") Position y: (" + penguin.getY() + ") " +
                 "Velocity x: (" + penguin_x_velocity() + ") Velocity y: (" + penguin_y_velocity() + ")" +
-                "Angle: (" + angle + ")");
+                "Angle: (" + Math.round(get_penguin_angle()) + ")"+
+                "FPS: (" + 1/tpf() + ")");
 
 
 
@@ -145,8 +146,8 @@ public class FallingPenguinGame extends GameApplication {
         if (angle < 0) {
             angle += 360;
         }
-        System.out.println(angle);
-        System.out.println(penguin_velocity());
+        //System.out.println(angle);
+        //System.out.println(penguin_velocity());
 
         if(angle>=45 && angle<=90){
             angle = angle -45;
@@ -175,7 +176,15 @@ public class FallingPenguinGame extends GameApplication {
 
 
 
+
         PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
+        //System.out.println(get_penguin_angle());
+        System.out.println(fligth_physics.getBody().getAngularVelocity());
+        //Locks the angle, so that the penguin doesnt spin forever
+        if(fligth_physics.getBody().getAngularVelocity() >= 1 || fligth_physics.getBody().getAngularVelocity() <= -1){
+            System.out.println("here");
+            fligth_physics.setAngularVelocity(0);
+        }
         fligth_physics.applyBodyForceToCenter(Lift(angle));
 
 
@@ -268,5 +277,13 @@ public class FallingPenguinGame extends GameApplication {
         //This is temporary, the wing_area should be taken from the area of the gliders
         //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
         return (penguin.getWidth()*penguin.getHeight())/10;
+    }
+
+    public static double get_penguin_angle(){
+        double angle = penguin.getRotation();
+        if(angle > 360){
+            angle = angle % 360;
+        }
+        return Math.round(angle);
     }
 }
