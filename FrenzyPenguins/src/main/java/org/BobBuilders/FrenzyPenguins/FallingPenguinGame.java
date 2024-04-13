@@ -52,6 +52,7 @@ public class FallingPenguinGame extends GameApplication {
 
     public static void main(String[] args) {
         Database.dbInit();
+        Database.Login("joe","hello");
         launch(args);
     }
 

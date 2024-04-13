@@ -44,6 +44,50 @@ public class Database {
             );
         } catch (SQLException ex){
             System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static boolean CreateUser(String username, String password) {
+        String statement = "INSERT INTO Users (username,password)VALUES (?,?);";
+
+        try (Connection conn = Database.connect()) {
+            PreparedStatement pstatement = conn.prepareStatement(statement);
+            pstatement.setString(1,username);
+            pstatement.setString(2,password);
+            try {
+                pstatement.executeUpdate();
+                return true;
+            } catch (SQLException ex) {
+                return false;
+            }
+
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static int Login(String username, String password) {
+        String statement = "SELECT id FROM Users WHERE username = ? AND password = ?";
+
+        try (Connection conn = Database.connect()) {
+            PreparedStatement pstatement = conn.prepareStatement(statement);
+            pstatement.setString(1,username);
+            pstatement.setString(2,password);
+            ResultSet rs = pstatement.executeQuery();
+            if (rs.getInt("id") != 0){
+                System.out.println("ID" + rs.getInt("id") );
+                return rs.getInt("id");
+            } else {
+                System.out.println("ID" + rs.getInt("id") );
+                return -1;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
         }
     }
 

@@ -1,7 +1,6 @@
 package org.BobBuilders.FrenzyPenguins;
 
 
-import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,17 +19,18 @@ public class Inventory {
     private BooleanProperty hasJetpack;
     private BooleanProperty hasSlide;
     private BooleanProperty hasGlider;
-    private IntegerProperty points;
+
+    @Getter
+    private IntegerProperty pointsProperty;
 
     public Inventory() {
         rampLevel = 1;
-        points = new SimpleIntegerProperty();
-        points.setValue(0);
+        pointsProperty = new SimpleIntegerProperty();
+        pointsProperty.setValue(0);
         hasJetpack = new SimpleBooleanProperty(false);
         hasSlide = new SimpleBooleanProperty(false);
         hasGlider = new SimpleBooleanProperty(false);
     }
-
 
     /**
      * Creates an or gets the single instance of inventory
@@ -92,25 +92,16 @@ public class Inventory {
      * @param addedPoints the points to be added to the total.
      */
     public void addPoints(int addedPoints) {
-        this.points.setValue(this.points.getValue() + addedPoints);
-    }
-
-    /**
-     * Gets the running points' total property
-     *
-     * @return the {@code IntegerProperty} of points
-     */
-    public IntegerProperty getPointsProperty() {
-        return this.points;
+        this.pointsProperty.setValue(this.pointsProperty.getValue() + addedPoints);
     }
 
     /**
      * Returns the running total
      *
-     * @return the {@code int} running total
+     * @return the running total
      */
-    public int getPoints() {
-        return this.points.getValue();
+    public int getPointsPropertyValue() {
+        return this.pointsProperty.getValue();
     }
 
 }
