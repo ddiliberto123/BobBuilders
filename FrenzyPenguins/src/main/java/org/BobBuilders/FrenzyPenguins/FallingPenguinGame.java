@@ -110,6 +110,7 @@ public class FallingPenguinGame extends GameApplication {
         physics.applyBodyForceToCenter(forceful);
 
 
+
     }
 
     protected void onUpdate(double tpf) {
@@ -310,3 +311,5 @@ public class FallingPenguinGame extends GameApplication {
         return (penguin.getWidth()*penguin.getHeight())/10;
     }
 }
+
+
