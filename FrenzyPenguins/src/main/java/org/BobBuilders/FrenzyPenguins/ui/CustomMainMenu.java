@@ -103,7 +103,7 @@ public class CustomMainMenu extends FXGLMenu {
             String username = usernameField.getText();
             String password = passwordField.getText();
             int userId = Database.loginUser(username,password);
-            if (userId == 0) {
+            if (userId == -1) {
                 System.out.println("Username or password Incorrect");
             } else {
                 System.out.println("SUCCESS");
