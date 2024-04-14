@@ -97,16 +97,21 @@ public class CustomMainMenu extends FXGLMenu {
         vboxOptions.setTranslateY(450);
 
 
-        TextField usernameField = new TextField("Username");
-        TextField passwordField = new TextField("Password");
+//        TextField usernameField = new TextField("Username");
+//        TextField passwordField = new TextField("Password");
+
+        customTextField usernameField = new customTextField("Username");
+        customTextField passwordField = new customTextField("Password");
         customMenuButton btnSubmit = new customMenuButton("Submit", () -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
             int userId = Database.loginUser(username,password);
             if (userId == -1) {
-                System.out.println("Username or password Incorrect");
+                usernameField.showSubtext();
+                passwordField.showSubtext();
             } else {
-                System.out.println("SUCCESS");
+                usernameField.hideSubtext();
+                passwordField.hideSubtext();
                 User user = User.getInstance();
                 user.setUsername(username);
                 user.setUserId(userId);
@@ -136,6 +141,44 @@ public class CustomMainMenu extends FXGLMenu {
         vboxOptions.setVisible(false);
         vboxLogin.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
+    }
+
+    private static class customTextField extends StackPane {
+
+        private String name;
+        private TextField textField;
+        private Text text;
+
+        public customTextField(String name) {
+            this.name = name;
+
+            textField = new TextField();
+            textField.setPromptText(name);
+            textField.setMaxWidth(300);
+
+            text = FXGL.getUIFactoryService().newText("Wrong username or password",Color.RED,10);
+            text.setTranslateX(5);
+            text.setVisible(false);
+
+            VBox vBox = new VBox();
+            vBox.getChildren().addAll(textField,text);
+            setAlignment(Pos.CENTER_LEFT);
+            getChildren().addAll(vBox);
+
+        }
+
+        public String getText() {
+            return textField.getText();
+        }
+
+        public void showSubtext() {
+            text.setVisible(true);
+        }
+
+        public void hideSubtext() {
+            text.setVisible(false);
+        }
+
     }
 
     private static class customMenuButton extends StackPane {
