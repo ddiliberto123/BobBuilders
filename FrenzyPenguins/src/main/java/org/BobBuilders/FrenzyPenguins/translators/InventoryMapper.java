@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 
-import java.sql.SQLType;
-
-public class InventoryTranslator {
+public class InventoryMapper {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 

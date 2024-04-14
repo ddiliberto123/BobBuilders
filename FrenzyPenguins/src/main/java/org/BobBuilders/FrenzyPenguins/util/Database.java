@@ -1,8 +1,7 @@
 package org.BobBuilders.FrenzyPenguins.util;
 
-import lombok.Data;
 import org.BobBuilders.FrenzyPenguins.Inventory;
-import org.BobBuilders.FrenzyPenguins.translators.InventoryTranslator;
+import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.sqlite.SQLiteConfig;
 
 import java.sql.*;
@@ -103,14 +102,14 @@ public class Database {
             if (rs.getInt("id") != 0) {
                 statement = "UPDATE Inventories SET inventory = ? WHERE user_id = ?";
                 pstatement = con.prepareStatement(statement);
-                pstatement.setString(1, InventoryTranslator.convert(inventory));
+                pstatement.setString(1, InventoryMapper.convert(inventory));
                 pstatement.setInt(2, userId);
                 pstatement.executeUpdate();
             } else {
                 statement = "INSERT INTO Inventories (user_id,inventory) VALUES (?,?)";
                 pstatement = con.prepareStatement(statement);
                 pstatement.setInt(1, userId);
-                pstatement.setString(2, InventoryTranslator.convert(inventory));
+                pstatement.setString(2, InventoryMapper.convert(inventory));
                 pstatement.executeUpdate();
             }
 
@@ -124,10 +123,10 @@ public class Database {
         String statement = "SELECT inventory, id FROM Inventories WHERE user_id = ?";
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
-            pstatement.setInt(1,userId);
+            pstatement.setInt(1, userId);
             ResultSet rs = pstatement.executeQuery();
-            if (rs.getInt("id") != 0){
-                return InventoryTranslator.unconvert(rs.getString("inventory"));
+            if (rs.getInt("id") != 0) {
+                return InventoryMapper.unconvert(rs.getString("inventory"));
             } else {
                 System.out.println("No inventory found!");
                 return null;

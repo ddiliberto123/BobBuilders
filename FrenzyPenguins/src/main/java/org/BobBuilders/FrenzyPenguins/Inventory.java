@@ -1,6 +1,8 @@
 package org.BobBuilders.FrenzyPenguins;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -8,11 +10,15 @@ import javafx.beans.property.SimpleIntegerProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.BobBuilders.FrenzyPenguins.translators.InventoryDeserializer;
+import org.BobBuilders.FrenzyPenguins.translators.InventorySerializer;
 
 /**
  * Data singleton used to store user inventory
  */
 @ToString
+@JsonSerialize(using = InventorySerializer.class)
+@JsonDeserialize(using = InventoryDeserializer.class)
 public class Inventory {
     private static Inventory instance = null;
     @Setter
@@ -104,6 +110,10 @@ public class Inventory {
      */
     public int getPointsPropertyValue() {
         return this.pointsProperty.getValue();
+    }
+
+    public void setPointsPropertyValue(int points) {
+        this.pointsProperty.set(points);
     }
 
 }
