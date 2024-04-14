@@ -22,7 +22,7 @@ public class InventoryDeserializer extends StdDeserializer<Inventory> {
 
     @Override
     public Inventory deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        Inventory inventory = new Inventory();
+        Inventory inventory = Inventory.getInstance();
         ObjectCodec codec = p.getCodec();
         JsonNode node = codec.readTree(p);
 

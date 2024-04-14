@@ -43,10 +43,6 @@ public class FallingPenguinGame extends GameApplication {
 
     public static void main(String[] args) {
         Database.dbInit();
-        Database.loginUser("joe","hello");
-        Inventory inventory1 = Inventory.getInstance();
-        Database.save(1,inventory1);
-        System.out.println(Database.load(1));
         launch(args);
     }
 

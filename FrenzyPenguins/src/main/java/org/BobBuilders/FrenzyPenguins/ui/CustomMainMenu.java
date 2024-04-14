@@ -4,6 +4,8 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
@@ -16,6 +18,9 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import org.BobBuilders.FrenzyPenguins.Inventory;
+import org.BobBuilders.FrenzyPenguins.User;
+import org.BobBuilders.FrenzyPenguins.util.Database;
 
 
 public class CustomMainMenu extends FXGLMenu {
@@ -23,12 +28,27 @@ public class CustomMainMenu extends FXGLMenu {
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
     private VBox vboxOptions;
     private VBox vboxMainMenu;
-
+    private SimpleStringProperty usernameProperty = new SimpleStringProperty();
     private VBox vboxLogin;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
+
+
+        if (User.getInstance().getUserId() == 0) {
+            usernameProperty.set("Not Logged in");
+        } else {
+            usernameProperty.set("Logged in as " + User.getInstance().getUsername());
+        }
+
+        Text menuUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
+        Text loginUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
+        Text optionsUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
+
+
+
+//        availablePoints.textProperty().bind(Bindings.convert(inventory.getPointsProperty()));
 
         //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
@@ -36,9 +56,7 @@ public class CustomMainMenu extends FXGLMenu {
             vboxMainMenu.setVisible(false);
             vboxLogin.setVisible(true);
         });
-        customMenuButton btnSubmit = new customMenuButton("Submit", () -> {
 
-        });
         customMenuButton btnOptions = new customMenuButton("Options", () -> {
             vboxMainMenu.setVisible(false);
             vboxOptions.setVisible(true);
@@ -54,6 +72,7 @@ public class CustomMainMenu extends FXGLMenu {
             vboxMainMenu.setVisible(true);
             vboxLogin.setVisible(false);
         });
+
         //Creates a vbox for the main menu
         vboxMainMenu = new VBox(10,
                 btnPlayGame,
@@ -62,7 +81,7 @@ public class CustomMainMenu extends FXGLMenu {
                 btnQuit,
                 new Text(""),
                 new LineSeparator(),
-                FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15));
+                menuUsernameText);
         vboxMainMenu.setTranslateX(100);
         vboxMainMenu.setTranslateY(450);
 
@@ -72,13 +91,31 @@ public class CustomMainMenu extends FXGLMenu {
                 btnVolume,
                 btnOptionsReturn,
                 new Text(""),
-                new LineSeparator());
+                new LineSeparator(),
+                optionsUsernameText);
         vboxOptions.setTranslateX(100);
         vboxOptions.setTranslateY(450);
 
 
         TextField usernameField = new TextField("Username");
         TextField passwordField = new TextField("Password");
+        customMenuButton btnSubmit = new customMenuButton("Submit", () -> {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            int userId = Database.loginUser(username,password);
+            if (userId == 0) {
+                System.out.println("Username or password Incorrect");
+            } else {
+                System.out.println("SUCCESS");
+                User user = User.getInstance();
+                user.setUsername(username);
+                user.setUserId(userId);
+
+                Database.load(user.getUserId());
+                usernameProperty.set("Logged in as " + user.getUsername());
+            }
+        });
+
         //Creates a vbox for Login
         vboxLogin = new VBox(10,
                 usernameField,
@@ -86,10 +123,14 @@ public class CustomMainMenu extends FXGLMenu {
                 btnSubmit,
                 btnLoginReturn,
                 new Text(""),
-                new LineSeparator());
+                new LineSeparator(),
+                loginUsernameText);
         vboxLogin.setTranslateX(100);
         vboxLogin.setTranslateY(450);
 
+        menuUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
+        optionsUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
+        loginUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
         StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxLogin);
         vboxOptions.setVisible(false);

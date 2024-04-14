@@ -31,7 +31,7 @@ public class Inventory {
     @Getter
     private SimpleIntegerProperty pointsProperty;
 
-    public Inventory() {
+    private Inventory() {
         rampLevel = 1;
         pointsProperty = new SimpleIntegerProperty();
         pointsProperty.setValue(0);
