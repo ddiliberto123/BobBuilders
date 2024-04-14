@@ -7,21 +7,23 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Data singleton used to store user inventory
  */
+@ToString
 public class Inventory {
     private static Inventory instance = null;
     @Setter
     @Getter
     private int rampLevel;
-    private BooleanProperty hasJetpack;
-    private BooleanProperty hasSlide;
-    private BooleanProperty hasGlider;
+    private SimpleBooleanProperty hasJetpack;
+    private SimpleBooleanProperty hasSlide;
+    private SimpleBooleanProperty hasGlider;
 
     @Getter
-    private IntegerProperty pointsProperty;
+    private SimpleIntegerProperty pointsProperty;
 
     public Inventory() {
         rampLevel = 1;
