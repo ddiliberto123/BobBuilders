@@ -31,7 +31,4 @@ General game mechanics, such as:
 - friction
 - gravity
 
-## Features being Implemented:
-> [!CAUTION]
-> loading from database does not work at the moment
-- Database
+Database functional
