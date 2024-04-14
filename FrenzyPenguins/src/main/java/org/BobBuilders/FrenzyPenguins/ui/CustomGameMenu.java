@@ -15,8 +15,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.*;
 
-import java.util.Stack;
-
 
 public class CustomGameMenu extends FXGLMenu {
     private static final Color SELECTED_COLOR = Color.BLACK;
@@ -58,14 +56,13 @@ public class CustomGameMenu extends FXGLMenu {
         title.setTranslateY(-(getAppHeight() / 2 - 100));
 
         FallingPenguinGame fall = new FallingPenguinGame();
-        System.out.println(inventory.getPoints() + "<--- Game Menu");
 
         //Placeholder to demonstrate where username and points possessed are displayed
         Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.BLACK, 30);
         userName.setTranslateX(-(getAppWidth() / 2 - 200));
         userName.setTranslateY(-(getAppHeight() / 2 - 150));
 
-        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPoints(), Color.BLACK, 30);
+        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPointsPropertyValue(), Color.BLACK, 30);
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 
@@ -238,20 +235,20 @@ public class CustomGameMenu extends FXGLMenu {
         Inventory inventory = Inventory.getInstance();
         Store store = Store.getInstance();
         btnOptions1 = new CustomGameMenu.customMenuButton("Buy Jetpack - 10000$", () -> {
-            if (inventory.getPoints() >= 10000) {
+            if (inventory.getPointsPropertyValue() >= 10000) {
                 inventory.setHasJetpack(true);
                 inventory.addPoints(-10000);
                 updateButtons();
             }
         });
         btnOptions2 = new CustomGameMenu.customMenuButton(" Buy Glider - 2000$", () -> {
-            if (inventory.getPoints() >= 2000) {
+            if (inventory.getPointsPropertyValue() >= 2000) {
                 inventory.setHasGlider(true);
                 inventory.addPoints(-2000);
             }
         });
         btnOptions3 = new CustomGameMenu.customMenuButton("Buy Snowboard - 3000$", () -> {
-            if (inventory.getPoints() >= 3000) {
+            if (inventory.getPointsPropertyValue() >= 3000) {
                 inventory.setHasSlide(true);
                 inventory.addPoints(-3000);
                 updateButtons();
