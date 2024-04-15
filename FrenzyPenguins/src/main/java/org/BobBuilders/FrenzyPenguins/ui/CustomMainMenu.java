@@ -5,7 +5,6 @@ import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
@@ -28,8 +27,9 @@ public class CustomMainMenu extends FXGLMenu {
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
     private VBox vboxOptions;
     private VBox vboxMainMenu;
+    private VBox vboxAccount;
+    private VBox vboxLoggedIn;
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
-    private VBox vboxLogin;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -43,18 +43,16 @@ public class CustomMainMenu extends FXGLMenu {
         }
 
         Text menuUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
-        Text loginUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
+        Text accountUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
         Text optionsUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
+        Text loggedInUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
 
-
-
-//        availablePoints.textProperty().bind(Bindings.convert(inventory.getPointsProperty()));
 
         //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
-        customMenuButton btnLogin = new customMenuButton("Login", () -> {
+        customMenuButton btnAccount = new customMenuButton("Account", () -> {
             vboxMainMenu.setVisible(false);
-            vboxLogin.setVisible(true);
+            vboxAccount.setVisible(true);
         });
 
         customMenuButton btnOptions = new customMenuButton("Options", () -> {
@@ -62,21 +60,34 @@ public class CustomMainMenu extends FXGLMenu {
             vboxOptions.setVisible(true);
         });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
-        customMenuButton btnBrightness = new customMenuButton("Brightness", () -> {});
-        customMenuButton btnVolume = new customMenuButton("Volume", () -> {});
+        customMenuButton btnBrightness = new customMenuButton("Brightness", () -> {
+        });
+        customMenuButton btnVolume = new customMenuButton("Volume", () -> {
+        });
         customMenuButton btnOptionsReturn = new customMenuButton("Return to Main Menu", () -> {
             vboxMainMenu.setVisible(true);
             vboxOptions.setVisible(false);
         });
-        customMenuButton btnLoginReturn = new customMenuButton("Return to Main Menu", () -> {
+        customMenuButton btnAccountReturn = new customMenuButton("Return to Main Menu", () -> {
             vboxMainMenu.setVisible(true);
-            vboxLogin.setVisible(false);
+            vboxAccount.setVisible(false);
+        });
+
+        customMenuButton btnLoggedInReturn = new customMenuButton("Return to Main Menu", () -> {
+            vboxMainMenu.setVisible(true);
+            vboxLoggedIn.setVisible(false);
+        });
+
+        customMenuButton btnLogout = new customMenuButton("Logout", () -> {
+            vboxAccount.setVisible(true);
+            vboxLoggedIn.setVisible(false);
+            usernameProperty.set("Not Logged in");
         });
 
         //Creates a vbox for the main menu
         vboxMainMenu = new VBox(10,
                 btnPlayGame,
-                btnLogin,
+                btnAccount,
                 btnOptions,
                 btnQuit,
                 new Text(""),
@@ -96,50 +107,87 @@ public class CustomMainMenu extends FXGLMenu {
         vboxOptions.setTranslateX(100);
         vboxOptions.setTranslateY(450);
 
-
-//        TextField usernameField = new TextField("Username");
-//        TextField passwordField = new TextField("Password");
-
+        //Account
         customTextField usernameField = new customTextField("Username");
         customTextField passwordField = new customTextField("Password");
-        customMenuButton btnSubmit = new customMenuButton("Submit", () -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-            int userId = Database.loginUser(username,password);
+        customMenuButton btnLogin = new customMenuButton("Login", () -> {
+            String username = usernameField.getInput();
+            String password = passwordField.getInput();
+            int userId = Database.loginUser(username, password);
             if (userId == -1) {
-                usernameField.showSubtext();
-                passwordField.showSubtext();
+                usernameField.hideTaken();
+                usernameField.showIncorrect();
+                passwordField.showIncorrect();
             } else {
-                usernameField.hideSubtext();
-                passwordField.hideSubtext();
+                usernameField.hideTaken();
+                usernameField.hideIncorrect();
+                passwordField.hideIncorrect();
                 User user = User.getInstance();
                 user.setUsername(username);
                 user.setUserId(userId);
 
                 Database.load(user.getUserId());
                 usernameProperty.set("Logged in as " + user.getUsername());
+                vboxAccount.setVisible(false);
+                vboxLoggedIn.setVisible(true);
             }
         });
 
-        //Creates a vbox for Login
-        vboxLogin = new VBox(10,
+        customMenuButton btnCreateAccount = new customMenuButton("Create account", () -> {
+            String username = usernameField.getInput();
+            String password = passwordField.getInput();
+            if (Database.createUser(username, password)) {
+                usernameField.hideTaken();
+                usernameField.hideIncorrect();
+                passwordField.hideIncorrect();
+
+                User user = User.getInstance();
+                user.setUserId(Database.loginUser(username, password));
+                user.setUsername(username);
+
+                Database.save(user.getUserId(), Inventory.getInstance());
+                usernameProperty.set("Logged in as " + user.getUsername());
+                vboxAccount.setVisible(false);
+                vboxLoggedIn.setVisible(true);
+            } else {
+                usernameField.hideIncorrect();
+                passwordField.hideIncorrect();
+                usernameField.showTaken();
+            }
+        });
+
+        //Creates a vbox for Account
+        vboxAccount = new VBox(10,
                 usernameField,
                 passwordField,
-                btnSubmit,
-                btnLoginReturn,
+                btnLogin,
+                btnCreateAccount,
+                btnAccountReturn,
                 new Text(""),
                 new LineSeparator(),
-                loginUsernameText);
-        vboxLogin.setTranslateX(100);
-        vboxLogin.setTranslateY(450);
+                accountUsernameText);
+        vboxAccount.setTranslateX(100);
+        vboxAccount.setTranslateY(450);
+
+        vboxLoggedIn = new VBox(10,
+                btnLogout,
+                btnLoggedInReturn,
+                new Text(""),
+                new LineSeparator(),
+                loggedInUsernameText);
+        vboxLoggedIn.setTranslateX(100);
+        vboxLoggedIn.setTranslateY(450);
 
         menuUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
         optionsUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
-        loginUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
+        accountUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
+        loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
-        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxLogin);
+
+        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
         vboxOptions.setVisible(false);
-        vboxLogin.setVisible(false);
+        vboxAccount.setVisible(false);
+        vboxLoggedIn.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
     }
 
@@ -147,7 +195,8 @@ public class CustomMainMenu extends FXGLMenu {
 
         private String name;
         private TextField textField;
-        private Text text;
+        private Text incorrectSubtext;
+        private Text takenSubtext;
 
         public customTextField(String name) {
             this.name = name;
@@ -156,27 +205,49 @@ public class CustomMainMenu extends FXGLMenu {
             textField.setPromptText(name);
             textField.setMaxWidth(300);
 
-            text = FXGL.getUIFactoryService().newText("Wrong username or password",Color.RED,10);
-            text.setTranslateX(5);
-            text.setVisible(false);
+            incorrectSubtext = FXGL.getUIFactoryService().newText("Wrong username or password", Color.RED, 10);
+            incorrectSubtext.setTranslateX(5);
+            incorrectSubtext.setVisible(false);
+
+            takenSubtext = FXGL.getUIFactoryService().newText("Username already taken", Color.RED, 10);
+            takenSubtext.setTranslateX(5);
+            takenSubtext.setVisible(false);
+
+//            textField.setStyle("-fx-text-box-border: red; -fx-focus-color: red;");
+            StackPane subtextStack = new StackPane();
+            subtextStack.getChildren().addAll(incorrectSubtext, takenSubtext);
+            subtextStack.setAlignment(Pos.CENTER_LEFT);
 
             VBox vBox = new VBox();
-            vBox.getChildren().addAll(textField,text);
+            vBox.getChildren().addAll(textField, subtextStack);
             setAlignment(Pos.CENTER_LEFT);
             getChildren().addAll(vBox);
 
         }
 
-        public String getText() {
+        public String getInput() {
             return textField.getText();
         }
 
-        public void showSubtext() {
-            text.setVisible(true);
+        public void showIncorrect() {
+            incorrectSubtext.setVisible(true);
+            textField.setStyle("-fx-text-box-border: red; -fx-focus-color: red;");
         }
 
-        public void hideSubtext() {
-            text.setVisible(false);
+        public void hideIncorrect() {
+            incorrectSubtext.setVisible(false);
+            textField.setStyle("-fx-text-box-border: black; -fx-focus-color: black;");
+        }
+
+        public void showTaken() {
+            takenSubtext.setVisible(true);
+            textField.setStyle("-fx-text-box-border: red; -fx-focus-color: red;");
+            System.out.println("Hello");
+        }
+
+        public void hideTaken() {
+            takenSubtext.setVisible(false);
+            textField.setStyle("-fx-text-box-border: black; -fx-focus-color: black;");
         }
 
     }
