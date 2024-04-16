@@ -23,6 +23,7 @@ import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
+import static org.BobBuilders.FrenzyPenguins.CustomEntityFactory.fix_for_Mac;
 import static org.BobBuilders.FrenzyPenguins.Physics.*;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
@@ -129,7 +130,7 @@ public class FallingPenguinGame extends GameApplication {
         physics.applyBodyForceToCenter(forceful);
         //FXGL.getPhysicsWorld().setGravity(0, 98);
 
-
+        fix_for_Mac();
 
     }
 
@@ -359,4 +360,5 @@ public class FallingPenguinGame extends GameApplication {
         }
         return Math.round(angle);
     }
+
 }
