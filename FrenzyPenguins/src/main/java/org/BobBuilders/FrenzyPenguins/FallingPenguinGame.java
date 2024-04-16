@@ -145,6 +145,7 @@ public class FallingPenguinGame extends GameApplication {
             // Update the points based on the distance traveled
             inventory.addPoints((int) penguin.getX());
             goToMenu();
+            jetpackTimeElapsed = 0;
         }
         
         if(penguin.getX() < 230){
@@ -160,6 +161,7 @@ public class FallingPenguinGame extends GameApplication {
             if(!physics.isMoving()){
                 inventory.addPoints((int) penguin.getX());
                 goToMenu();
+                jetpackTimeElapsed = 0;
             }
         }
 
@@ -188,7 +190,7 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Locks angle when player isn't pressing key
-        if(physics.getBody().getAngularVelocity() >= 1 || physics.getBody().getAngularVelocity() <= -1){
+        if(penguin.getX() > 1000 && (physics.getBody().getAngularVelocity() >= 1 || physics.getBody().getAngularVelocity() <= -1)){
             System.out.println("here");
             physics.setAngularVelocity(0);
         }
@@ -299,6 +301,7 @@ public class FallingPenguinGame extends GameApplication {
         penguin = FXGL.spawn("penguin", 10, 4);
         getGameScene().getViewport().setX(0);
         getGameScene().getViewport().setY(0);
+        jetpackTimeElapsed = 0;
     }
     public static double penguin_x_velocity(){
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
