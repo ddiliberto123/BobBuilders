@@ -22,14 +22,6 @@ public class Physics {
 
     }
 
-    public static double penguin_velocity_angle(){
-        return Math.asin(penguin_y_velocity()/penguin_x_velocity());
-    }
-
-
-
-
-
     public static Vec2 Lift(double p_angle){
 //        System.out.println("velocity x: " + penguin_x_velocity() + " velocity y: " + penguin_y_velocity() + " total velocity: " + penguin_velocity());
 

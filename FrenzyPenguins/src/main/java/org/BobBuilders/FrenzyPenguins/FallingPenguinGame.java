@@ -73,7 +73,7 @@ public class FallingPenguinGame extends GameApplication {
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
         Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
-        Image back = new Image("file:clouds.png");
+        Image back = new Image("file:"+fix_for_Mac()+"clouds.png");
         ImageView background = new ImageView(back);
 
         //Spawn moving background
@@ -159,6 +159,7 @@ public class FallingPenguinGame extends GameApplication {
         } else {
             getGameScene().getViewport().setX(0);
             getGameScene().getViewport().setY(0);
+        }
             //Lift(penguin.getRotation());
 //        if(penguin.getX() > 225) {
             angle = penguin.getRotation();
@@ -184,9 +185,8 @@ public class FallingPenguinGame extends GameApplication {
                 inventory.addPoints((int) penguin.getX());
                 PhysicsComponent buoyancy_physics = penguin.getComponent(PhysicsComponent.class);
                 buoyancy_physics.applyBodyForceToCenter(Buoyancy(get_penguin_angle()));
-                //goToMenu();
+                goToMenu();
             }
-
 
             PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
             //Locks the angle, so that the penguin doesn't spin forever
@@ -195,15 +195,7 @@ public class FallingPenguinGame extends GameApplication {
             }
             fligth_physics.applyBodyForceToCenter(Lift(angle));
 
-
-//
-//        if(penguin_y_velocity() == -120 || penguin_y_velocity() == 120){
-//            System.out.println("HERE: " + penguin.getX());
-//            //adFXGL.getGameWorld().reset();
-//        }
-//        }
         }
-    }
 
 
         @Override
