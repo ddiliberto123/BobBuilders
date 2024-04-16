@@ -100,13 +100,13 @@ public class FallingPenguinGame extends GameApplication {
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
 
-        bottom = FXGL.entityBuilder()
-                .at(300, 10000)
-                .type(EXIT)
-                .viewWithBBox(new Rectangle(20000, 20))
-                .collidable()
-                .with(floor)
-                .buildAndAttach();
+//        bottom = FXGL.entityBuilder()
+//                .at(300, 10000)
+//                .type(EXIT)
+//                .viewWithBBox(new Rectangle(20000, 20))
+//                .collidable()
+//                .with(floor)
+//                .buildAndAttach();
 
         //Circle trail to help keep track of penguin position and movement
         for(int i =0; i < 100; i++){
@@ -123,14 +123,11 @@ public class FallingPenguinGame extends GameApplication {
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
 
-
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
         //FXGL.getPhysicsWorld().setGravity(0, 98);
-
-        fix_for_Mac();
 
     }
 
@@ -185,16 +182,15 @@ public class FallingPenguinGame extends GameApplication {
             if (penguin.getY() > 4000) {
                 // Update the points based on the distance traveled
                 inventory.addPoints((int) penguin.getX());
-                goToMenu();
+                PhysicsComponent buoyancy_physics = penguin.getComponent(PhysicsComponent.class);
+                buoyancy_physics.applyBodyForceToCenter(Buoyancy(get_penguin_angle()));
+                //goToMenu();
             }
 
 
             PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
-            //System.out.println(get_penguin_angle());
-            System.out.println(fligth_physics.getBody().getAngularVelocity());
-            //Locks the angle, so that the penguin doesnt spin forever
+            //Locks the angle, so that the penguin doesn't spin forever
             if (fligth_physics.getBody().getAngularVelocity() >= 1 || fligth_physics.getBody().getAngularVelocity() <= -1) {
-                System.out.println("here");
                 fligth_physics.setAngularVelocity(0);
             }
             fligth_physics.applyBodyForceToCenter(Lift(angle));
@@ -328,14 +324,7 @@ public class FallingPenguinGame extends GameApplication {
         return penguin.getY();
     }
 
-//    public static void p_velocity() throws InterruptedException {
-//        double p1 = penguin_x_postition();
-//        FallingPenguinGame.class.wait(10);
-//        double p2 = penguin_x_postition();
-//        System.out.println("1: " + p1 + " 2: " + p2);
-//    }
-
-
+    //Methods to get Velocity of the Penguin
     public static double penguin_x_velocity(){
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vx = physics.getVelocityX();
@@ -346,7 +335,6 @@ public class FallingPenguinGame extends GameApplication {
         double vy = physics.getVelocityY();
         return Math.round(getPhysicsWorld().toMeters(vy));
     }
-
     public static double wing_area(){
         //This is temporary, the wing_area should be taken from the area of the gliders
         //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
@@ -359,6 +347,11 @@ public class FallingPenguinGame extends GameApplication {
             angle = angle % 360;
         }
         return Math.round(angle);
+    }
+    //Get the area of the penguin
+    public static double get_penguin_area(){
+        double p_area = getPhysicsWorld().toMeters(penguin.getWidth()*penguin.getHeight());
+        return p_area;
     }
 
 }
