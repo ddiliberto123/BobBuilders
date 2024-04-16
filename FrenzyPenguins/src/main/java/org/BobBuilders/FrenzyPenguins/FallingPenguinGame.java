@@ -16,30 +16,30 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
-
+import static org.BobBuilders.FrenzyPenguins.Physics.*;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
 import static org.BobBuilders.FrenzyPenguins.EntityType.GROUND;
 
 
-public class FallingPenguinGame extends GameApplication {
 
-    private Entity penguin;
+public class FallingPenguinGame extends GameApplication {
+    private static Entity penguin;
     private Entity bottom;
     private Text distanceText;
     private double beginPoints = 0;
-
+    private double angle;
     Inventory inventory = Inventory.getInstance();
     Store store = Store.getInstance();
     private double jetpackTimeElapsed = 0.0;
-
 
     public static void main(String[] args) {
         Database.dbInit();
@@ -79,7 +79,6 @@ public class FallingPenguinGame extends GameApplication {
         for (int i = 0; i < 10; i++) {
             FXGL.spawn(EntitySpawner.BACKGROUND, i * getAppWidth(), 0);
         }
-
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin", 10, 0);
 
@@ -108,22 +107,41 @@ public class FallingPenguinGame extends GameApplication {
                 .with(floor)
                 .buildAndAttach();
 
+        //Circle trail to help keep track of penguin position and movement
+        for(int i =0; i < 100; i++){
+            Entity circle = FXGL.entityBuilder()
+                    .at(300,300*i)
+                    .type(EXIT)
+                    .viewWithBBox(new Circle(20,20,20,Color.GREEN))
+                    .buildAndAttach();
+        }
+
         //Displays the horizontal distance traveled by penguin
         distanceText = getUIFactoryService().newText("", Color.PURPLE, 16);
         distanceText.setTranslateX(20);
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
 
+
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
+        //FXGL.getPhysicsWorld().setGravity(0, 98);
+
+
+
     }
+
 
     protected void onUpdate(double tpf) {
         Inventory inventory = Inventory.getInstance();
         //Constantly updates the x coordinates displayed in distanceText
-        distanceText.setText("Position: (" + penguin.getX() + ", " + penguin.getY() + ")");
+        //Constantly updates the x coordinates displayed in distanceText
+        distanceText.setText("Position x: (" + penguin.getX() + ") Position y: (" + penguin.getY() + ") " +
+                "Velocity x: (" + penguin_x_velocity() + ") Velocity y: (" + penguin_y_velocity() + ")" +
+                "Angle: (" + Math.round(get_penguin_angle()) + ")" +
+                "FPS: (" + 1 / tpf() + ")");
 
         if (penguin.getY() > 400) {
             double penguinX = penguin.getX();
@@ -143,37 +161,73 @@ public class FallingPenguinGame extends GameApplication {
         } else {
             getGameScene().getViewport().setX(0);
             getGameScene().getViewport().setY(0);
-        }
+            //Lift(penguin.getRotation());
+//        if(penguin.getX() > 225) {
+            angle = penguin.getRotation();
+            angle = angle % 360;
+            if (angle < 0) {
+                angle += 360;
+            }
+            //System.out.println(angle);
+            //System.out.println(penguin_velocity());
 
-        //Restarts game when penguin reaches the bottom
-        if (penguin.getY() > 4000) {
-            // Update the points based on the distance traveled
-            inventory.addPoints((int) penguin.getX());
-            goToMenu();
-        }
+            if (angle >= 45 && angle <= 90) {
+                angle = angle - 45;
+            }
+            if (angle >= 270 && angle <= 315) {
+                angle = angle + 45;
+            }
+            if (angle >= 90 && angle <= 270) {
+                angle = -angle;
+            }
+            //Restarts game when penguin reaches the bottom
+            if (penguin.getY() > 4000) {
+                // Update the points based on the distance traveled
+                inventory.addPoints((int) penguin.getX());
+                goToMenu();
+            }
 
+
+            PhysicsComponent fligth_physics = penguin.getComponent(PhysicsComponent.class);
+            //System.out.println(get_penguin_angle());
+            System.out.println(fligth_physics.getBody().getAngularVelocity());
+            //Locks the angle, so that the penguin doesnt spin forever
+            if (fligth_physics.getBody().getAngularVelocity() >= 1 || fligth_physics.getBody().getAngularVelocity() <= -1) {
+                System.out.println("here");
+                fligth_physics.setAngularVelocity(0);
+            }
+            fligth_physics.applyBodyForceToCenter(Lift(angle));
+
+
+//
+//        if(penguin_y_velocity() == -120 || penguin_y_velocity() == 120){
+//            System.out.println("HERE: " + penguin.getX());
+//            //adFXGL.getGameWorld().reset();
+//        }
+//        }
+        }
     }
 
 
-    @Override
-    protected void initPhysics() {
-        //Collision handler for penguin and bottom
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, EXIT) {
-            //Closes application once penguin hits bottom
-            //This is temporary for us to build upon the surface which the penguin will eventually collide with
-            @Override
-            protected void onCollisionBegin(Entity penguin, Entity bottom) {
-                getGameController().gotoMainMenu();
-            }
-        });
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, GROUND) {
-            @Override
-            protected void onCollision(Entity a, Entity b) {
-                super.onCollision(a, b);
+        @Override
+        protected void initPhysics () {
+            //Collision handler for penguin and bottom
+            FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, EXIT) {
+                //Closes application once penguin hits bottom
+                //This is temporary for us to build upon the surface which the penguin will eventually collide with
+                @Override
+                protected void onCollisionBegin(Entity penguin, Entity bottom) {
+                    getGameController().gotoMainMenu();
+                }
+            });
+            FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, GROUND) {
+                @Override
+                protected void onCollision(Entity a, Entity b) {
+                    super.onCollision(a, b);
 //                System.out.println("I AM COLLIDING WITH THE CURVE HELLO!");
-            }
-        });
-    }
+                }
+            });
+        }
 
     @Override
     protected void initInput() {
@@ -187,14 +241,16 @@ public class FallingPenguinGame extends GameApplication {
         onKey(KeyCode.RIGHT, () -> {
             if (penguin.getX() < 800) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                Vec2 object = new Vec2(3, 0);
+                double velocity = 1;
+                Vec2 object = new Vec2(velocity*Math.cos(Math.toRadians(angle)), velocity*Math.sin(Math.toRadians(angle)));
                 physics.applyBodyForceToCenter(object);
             }
         });
         onKey(KeyCode.LEFT, () -> {
             if (penguin.getX() < 800) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                Vec2 object = new Vec2(-3, 0);
+                double velocity = 1;
+                Vec2 object = new Vec2(-velocity*Math.cos(Math.toRadians(angle)), velocity*Math.sin(Math.toRadians(angle)));
                 physics.applyBodyForceToCenter(object);
             }
         });
@@ -202,11 +258,11 @@ public class FallingPenguinGame extends GameApplication {
         //Gives penguin the ability to change angle which it faces
         onKey(KeyCode.D, () -> {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-            physics.setAngularVelocity(120);
+            physics.setAngularVelocity(60);
         });
         onKey(KeyCode.A, () -> {
             PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-            physics.setAngularVelocity(-120);
+            physics.setAngularVelocity(-60);
         });
 
         onKey(KeyCode.SPACE, () -> {
@@ -267,4 +323,40 @@ public class FallingPenguinGame extends GameApplication {
         getGameScene().getViewport().setY(0);
     }
 
+    public static double penguin_y_postition(){
+        return penguin.getY();
+    }
+
+//    public static void p_velocity() throws InterruptedException {
+//        double p1 = penguin_x_postition();
+//        FallingPenguinGame.class.wait(10);
+//        double p2 = penguin_x_postition();
+//        System.out.println("1: " + p1 + " 2: " + p2);
+//    }
+
+
+    public static double penguin_x_velocity(){
+        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+        double vx = physics.getVelocityX();
+        return Math.round(getPhysicsWorld().toMeters(vx));
+    }
+    public static double penguin_y_velocity(){
+        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+        double vy = physics.getVelocityY();
+        return Math.round(getPhysicsWorld().toMeters(vy));
+    }
+
+    public static double wing_area(){
+        //This is temporary, the wing_area should be taken from the area of the gliders
+        //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
+        return (penguin.getWidth()*penguin.getHeight())/10;
+    }
+
+    public static double get_penguin_angle(){
+        double angle = penguin.getRotation();
+        if(angle > 360){
+            angle = angle % 360;
+        }
+        return Math.round(angle);
+    }
 }
