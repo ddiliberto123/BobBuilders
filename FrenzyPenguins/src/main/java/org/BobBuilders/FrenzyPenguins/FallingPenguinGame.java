@@ -188,7 +188,6 @@ public class FallingPenguinGame extends GameApplication {
         if(penguin.getX() > 250 && store.isEquipGlider()) {
             physics.applyBodyForceToCenter(Lift(angle));
         }
-
         //Locks angle when player isn't pressing key
         if(penguin.getX() > 1000 && (physics.getBody().getAngularVelocity() >= 1 || physics.getBody().getAngularVelocity() <= -1)){
             System.out.println("here");
