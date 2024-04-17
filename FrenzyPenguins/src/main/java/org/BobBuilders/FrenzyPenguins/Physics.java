@@ -1,7 +1,10 @@
 package org.BobBuilders.FrenzyPenguins;
 import com.almasb.fxgl.core.math.Vec2;
 import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.*;
+import com.almasb.fxgl.core.math.Vec2;
 
+import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.penguin_x_velocity;
+import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.penguin_y_velocity;
 public class Physics {
 
     static final double air_density = 1.293; // Kg/m^3
@@ -22,8 +25,11 @@ public class Physics {
 
     }
 
+    public static double penguin_velocity_angle(){
+        return Math.asin(penguin_y_velocity()/penguin_x_velocity());
+    }
+
     public static Vec2 Lift(double p_angle){
-//        System.out.println("velocity x: " + penguin_x_velocity() + " velocity y: " + penguin_y_velocity() + " total velocity: " + penguin_velocity());
 
         p_angle = p_angle % 360;
         if (p_angle < 0) {
@@ -40,9 +46,7 @@ public class Physics {
 
         //calculating lift
         double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1));
-
         Vec2 lift_vector = new Vec2(Math.floor(lift*Math.sin((Math.toRadians(p_angle)))),Math.floor(lift*(Math.cos(Math.toRadians(p_angle)))));
-
         double drag = (temp_drag_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1);
         //System.out.println("Drag: " +  drag);
         Vec2 drag_vector = new Vec2(Math.floor(drag*(Math.cos(Math.toRadians(d_angle)))),Math.floor(drag*(Math.sin(Math.toRadians(d_angle)))));
@@ -58,7 +62,4 @@ public class Physics {
     }
 
 }
-
-
-
 
