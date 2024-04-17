@@ -2,7 +2,6 @@ package org.BobBuilders.FrenzyPenguins;
 import com.almasb.fxgl.core.math.Vec2;
 import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.*;
 import com.almasb.fxgl.core.math.Vec2;
-
 import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.penguin_x_velocity;
 import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.penguin_y_velocity;
 public class Physics {
@@ -48,17 +47,32 @@ public class Physics {
         double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1));
         Vec2 lift_vector = new Vec2(Math.floor(lift*Math.sin((Math.toRadians(p_angle)))),Math.floor(lift*(Math.cos(Math.toRadians(p_angle)))));
         double drag = (temp_drag_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1);
-        //System.out.println("Drag: " +  drag);
         Vec2 drag_vector = new Vec2(Math.floor(drag*(Math.cos(Math.toRadians(d_angle)))),Math.floor(drag*(Math.sin(Math.toRadians(d_angle)))));
         Vec2 final_flight_vector = new Vec2(0.016*(lift_vector.x+drag_vector.x),0.016*(lift_vector.y+drag_vector.y));
         return final_flight_vector;
     }
 
+    //It might not be worth it to model buoyancy, considering that we still do not understand the scale idk...
     public static Vec2 Buoyancy(double p_angle){
         double Buoyancy = (water_density*gravity*get_penguin_area());
-        Vec2 buoyancy_vector = new Vec2(Buoyancy*Math.cos(p_angle), Buoyancy*Math.sin(p_angle));
-        System.out.println(Buoyancy);
+        Vec2 buoyancy_vector = new Vec2(Buoyancy*Math.sin(Math.toRadians(p_angle)), Buoyancy*Math.cos(Math.toRadians(p_angle)));
+        System.out.println("x: "+buoyancy_vector.x + " y: " + buoyancy_vector.y);
         return buoyancy_vector;
+    }
+
+    //Very painless way of implementing "buoyancy"
+    public static Vec2 B_mockup(double p_angle){
+        double vx = penguin_x_velocity();
+        Vec2 fake_buoyancy = new Vec2();
+        if(vx!=0){
+            double force = Math.random()*15;
+            fake_buoyancy.set(0,(float)force);
+            return fake_buoyancy;
+        }
+        else{
+            fake_buoyancy.set(0,0);
+            return fake_buoyancy;
+        }
     }
 
 }

@@ -156,10 +156,11 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Restarts game when penguin reaches the bottom
-        if (penguin.getY() > 4000) {
+        if (penguin.getY() >= 2970) {
             // Update the points based on the distance traveled
             inventory.addPoints((int) penguin.getX());
-            goToMenu();
+            //goToMenu();
+            physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
             jetpackTimeElapsed = 0;
         }
 
@@ -175,7 +176,7 @@ public class FallingPenguinGame extends GameApplication {
         if (penguin.getX() > 1000) {
             if (!physics.isMoving()) {
                 inventory.addPoints((int) penguin.getX());
-                goToMenu();
+                //goToMenu();
                 jetpackTimeElapsed = 0;
             }
         }
@@ -185,9 +186,8 @@ public class FallingPenguinGame extends GameApplication {
         if (angle < 0) {
             angle += 360;
         }
-        System.out.println(angle);
-        System.out.println(penguin_velocity());
-
+        //System.out.println(angle);
+        //System.out.println(penguin_velocity());
         if (angle >= 45 && angle <= 90) {
             angle = angle - 45;
         }
@@ -198,14 +198,12 @@ public class FallingPenguinGame extends GameApplication {
             angle = -angle;
         }
 
-
         //Conditions for which lift force is applied
         if (penguin.getX() > 250 && store.isEquipGlider()) {
             physics.applyBodyForceToCenter(Lift(angle));
         }
         //Locks angle when player isn't pressing key
         if (penguin.getX() > 1000 && (physics.getBody().getAngularVelocity() >= 1 || physics.getBody().getAngularVelocity() <= -1)) {
-            System.out.println("here");
             physics.setAngularVelocity(0);
         }
     }
