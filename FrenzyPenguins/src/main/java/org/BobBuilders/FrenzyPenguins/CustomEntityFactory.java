@@ -54,6 +54,22 @@ public class CustomEntityFactory implements EntityFactory {
         return entity;
     }
 
+    //Rectangle specifically designed with high friction to be placed along the track
+    @Spawns("floor")
+    public Entity createFloor(SpawnData data){
+        PhysicsComponent physics = new PhysicsComponent();
+        FixtureDef fix = new FixtureDef().density(0.1f).friction(10f);
+        physics.setFixtureDef(fix);
+        Rectangle rectangle = new Rectangle(20000, 50);
+        rectangle.setFill(Color.BLACK);
+        return entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(rectangle)
+                .with(physics)
+                .build();
+    }
+
     @Spawns(EntitySpawner.CIRCLE)
     public Entity createCircle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
@@ -169,10 +185,10 @@ public class CustomEntityFactory implements EntityFactory {
             physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.001f));
         }
 
-        Image penguinImage = new Image("file:penguin.png");
-        Image penguinJ = new Image("file:penguin_and_jetpack.png");
-        Image penguinG = new Image("file:penguin_and_glider.png");
-        Image penguinS = new Image("file:penguin_and_sled.png");
+        Image penguinImage = new Image("file:"+fix_for_Mac()+"penguin.png");
+        Image penguinJ = new Image("file:"+fix_for_Mac()+"penguin_and_jetpack.png");
+        Image penguinG = new Image("file:"+fix_for_Mac()+"penguin_and_glider.png");
+        Image penguinS = new Image("file:"+fix_for_Mac()+"penguin_and_sled.png");
 
         Image penguinView = penguinImage;
 
@@ -207,7 +223,7 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity createBackground(SpawnData data) {
         // Create an entity with the image as background
         Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
-        Image image = new Image("file:mountains.png");
+        Image image = new Image("file:"+fix_for_Mac()+"mountains.png");
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(getAppWidth());
         imageView.setFitHeight(getAppHeight());
@@ -219,4 +235,14 @@ public class CustomEntityFactory implements EntityFactory {
                 .build();
     }
 
+    public static String fix_for_Mac() {
+        if ((System.getProperty("os.name").toLowerCase()).contains("mac")) {
+            String home = System.getProperty("user.home");
+            String mac_directory = String.format("%s%s", home, "/documents/BobBuilders/FrenzyPenguins/");
+            return mac_directory;
+        } else {
+            return "";
+        }
+
+    }
 }
