@@ -176,7 +176,7 @@ public class FallingPenguinGame extends GameApplication {
         if (penguin.getX() > 1000) {
             if (!physics.isMoving()) {
                 inventory.addPoints((int) penguin.getX());
-                //goToMenu();
+                goToMenu();
                 jetpackTimeElapsed = 0;
             }
         }
