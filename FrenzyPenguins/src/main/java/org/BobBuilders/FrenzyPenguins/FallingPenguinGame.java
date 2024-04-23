@@ -299,7 +299,8 @@ public class FallingPenguinGame extends GameApplication {
         EntitySpawner.spawnRectangle(250, 1600, 2 * rampRadius, 400);
 
         //Creates floor for penguin to run into
-        FXGL.spawn("floor",1000,3000);
+        FXGL.spawn("ground",1000,3000);
+        FXGL.spawn("water",151000,3000);
     }
 
     private void goToMenu() {

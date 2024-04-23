@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bbd8024-6f2a-4ab4-af41-fd6a624c5fb2" name="Changes" comment="" />
+    <list default="true" id="2bbd8024-6f2a-4ab4-af41-fd6a624c5fb2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/CustomEntityFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/CustomEntityFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/FallingPenguinGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/FallingPenguinGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/ui/CustomGameMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/ui/CustomGameMenu.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,6 +26,17 @@
       </MavenGeneralSettings>
     </option>
   </component>
+  <component name="ProjectId" id="2fVBHCjodeP2Ygi0nUH9ehpn9Jg" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="FrenzyPenguins" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="org.BobBuilders.FrenzyPenguins.FallingPenguinGame" />
@@ -30,7 +46,15 @@
       </method>
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2bbd8024-6f2a-4ab4-af41-fd6a624c5fb2" name="Changes" comment="" />
+      <created>1713876275853</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1713876275853</updated>
+    </task>
     <servers />
   </component>
 </project>

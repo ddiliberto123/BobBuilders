@@ -14,6 +14,7 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.*;
+import static org.BobBuilders.FrenzyPenguins.CustomEntityFactory.fix_for_Mac;
 
 
 public class CustomGameMenu extends FXGLMenu {
@@ -76,9 +77,9 @@ public class CustomGameMenu extends FXGLMenu {
 
 
         //Creates the images for view of equipment
-        Image jet = new Image("file:jetpack.png");
-        Image glider = new Image("file:glider.png");
-        Image sled = new Image("file:sled.png");
+        Image jet = new Image("file:"+fix_for_Mac()+"jetpack.png");
+        Image glider = new Image("file:"+fix_for_Mac()+"glider.png");
+        Image sled = new Image("file:"+fix_for_Mac()+"sled.png");
 
         ImageView jetView = new ImageView(jet);
         ImageView jetViewEquipped = new ImageView(jet);
