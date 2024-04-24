@@ -5,10 +5,12 @@ import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -16,6 +18,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
@@ -29,6 +32,7 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxMainMenu;
     private VBox vboxAccount;
     private VBox vboxLoggedIn;
+    private GridPane accountDisplay;
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
 
     //    private ObjectProperty<customMenuButton> selectedButton;
@@ -53,6 +57,7 @@ public class CustomMainMenu extends FXGLMenu {
         customMenuButton btnAccount = new customMenuButton("Account", () -> {
             vboxMainMenu.setVisible(false);
             vboxAccount.setVisible(true);
+            accountDisplay.setVisible(true);
         });
 
         customMenuButton btnOptions = new customMenuButton("Options", () -> {
@@ -71,6 +76,7 @@ public class CustomMainMenu extends FXGLMenu {
         customMenuButton btnAccountReturn = new customMenuButton("Return to Main Menu", () -> {
             vboxMainMenu.setVisible(true);
             vboxAccount.setVisible(false);
+            accountDisplay.setVisible(false);
         });
 
         customMenuButton btnLoggedInReturn = new customMenuButton("Return to Main Menu", () -> {
@@ -80,6 +86,7 @@ public class CustomMainMenu extends FXGLMenu {
 
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
             vboxAccount.setVisible(true);
+            accountDisplay.setVisible(true);
             vboxLoggedIn.setVisible(false);
             usernameProperty.set("Not Logged in");
         });
@@ -129,6 +136,7 @@ public class CustomMainMenu extends FXGLMenu {
                 Database.load(user.getUserId());
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
+                accountDisplay.setVisible(true);
                 vboxLoggedIn.setVisible(true);
             }
         });
@@ -148,6 +156,7 @@ public class CustomMainMenu extends FXGLMenu {
                 Database.save(user.getUserId(), Inventory.getInstance());
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
+                accountDisplay.setVisible(false);
                 vboxLoggedIn.setVisible(true);
             } else {
                 usernameField.hideIncorrect();
@@ -155,6 +164,28 @@ public class CustomMainMenu extends FXGLMenu {
                 usernameField.showTaken();
             }
         });
+        Text savedUser1 = new Text("Save 1");
+        Text savedUser2 = new Text("Save 2");
+        savedUser1.setFont(Font.font(30));
+        savedUser2.setFont(Font.font(30));
+        VBox vbox1 = new VBox(new Text("Hello"));
+        vbox1.setPadding(new Insets(10));
+        VBox vbox2 = new VBox(new Text("Hello Again"));
+        vbox2.setPadding(new Insets(10));
+        CustomMainMenu.customMenuButton b1 = new CustomMainMenu.customMenuButton("Button 1", ()->{});
+        CustomMainMenu.customMenuButton b2 = new CustomMainMenu.customMenuButton("Button 2", ()->{});
+
+        //Creases a gridpane for different saved info
+        accountDisplay = new GridPane();
+        accountDisplay.setGridLinesVisible(true);
+        accountDisplay.add(savedUser1,0,0);
+        accountDisplay.add(savedUser2,1,0);
+        accountDisplay.add(vbox1,0,1);
+        accountDisplay.add(vbox2,1,1);
+        accountDisplay.add(b1,0,2);
+        accountDisplay.add(b2,1,2);
+        accountDisplay.setTranslateX(getAppWidth()/2);
+        accountDisplay.setTranslateY(100);
 
         //Creates a vbox for Account
         vboxAccount = new VBox(10,
@@ -184,7 +215,8 @@ public class CustomMainMenu extends FXGLMenu {
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
 
-        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
+        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxAccount, accountDisplay, vboxLoggedIn);
+        accountDisplay.setVisible(false);
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         vboxLoggedIn.setVisible(false);
