@@ -157,9 +157,6 @@ public class FallingPenguinGame extends GameApplication {
 
         //Restarts game when penguin reaches the bottom
         if (penguin.getY() >= 2970) {
-            // Update the points based on the distance traveled
-            inventory.addPoints((int) penguin.getX());
-            //goToMenu();
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
             jetpackTimeElapsed = 0;
         }
@@ -175,7 +172,17 @@ public class FallingPenguinGame extends GameApplication {
         //Temporary until full floor is constructed
         if (penguin.getX() > 1000) {
             if (!physics.isMoving()) {
-                inventory.addPoints((int) penguin.getX());
+                double currencyToAdd = penguin.getX() * 0.05;
+                System.out.println(currencyToAdd);
+                inventory.addPoints((int) currencyToAdd);
+                inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
+                if (inventory.getMaxDistanceFlown() < (int) penguin.getX()){
+                    inventory.setMaxDistanceFlown((int) penguin.getX());
+                }
+                inventory.setNetworth(inventory.getNetworth() + (int) currencyToAdd);
+                if (User.getInstance().getUserId() != 0){
+                    Database.save(User.getInstance().getUserId(), inventory);
+                }
                 goToMenu();
                 jetpackTimeElapsed = 0;
             }
@@ -291,7 +298,7 @@ public class FallingPenguinGame extends GameApplication {
         double rampRadius = 300;
 
         //Creates the initial ramp
-        EntitySpawner.spawnRectangle(-300, 100, 500, 2000);
+        EntitySpawner.spawnRectangle(-500, 100, 700, 2000);
         EntitySpawner.spawnCircle(200 - 50, 100, 50);
         EntitySpawner.spawnRectangle(200, 150, 50, 1950);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);

@@ -21,6 +21,8 @@ import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
+import java.util.Objects;
+
 
 public class CustomMainMenu extends FXGLMenu {
     private static final Color SELECTED_COLOR = Color.BLACK;
@@ -52,7 +54,11 @@ public class CustomMainMenu extends FXGLMenu {
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
         customMenuButton btnAccount = new customMenuButton("Account", () -> {
             vboxMainMenu.setVisible(false);
-            vboxAccount.setVisible(true);
+            if(Objects.equals(menuUsernameText.getText(), "Not Logged in")){
+                vboxAccount.setVisible(true);
+            } else {
+                vboxLoggedIn.setVisible(true);
+            }
         });
 
         customMenuButton btnOptions = new customMenuButton("Options", () -> {
@@ -78,11 +84,18 @@ public class CustomMainMenu extends FXGLMenu {
             vboxLoggedIn.setVisible(false);
         });
 
+        customMenuButton btnAdmin = new customMenuButton("Admin Menu", () -> {
+
+        });
+
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
             vboxAccount.setVisible(true);
             vboxLoggedIn.setVisible(false);
+            vboxLoggedIn.getChildren().remove(btnAdmin);
             usernameProperty.set("Not Logged in");
         });
+
+
 
         //Creates a vbox for the main menu
         vboxMainMenu = new VBox(10,
@@ -126,10 +139,16 @@ public class CustomMainMenu extends FXGLMenu {
                 user.setUsername(username);
                 user.setUserId(userId);
 
-                Database.load(user.getUserId());
+                Database.loadInventory(user.getUserId());
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 vboxLoggedIn.setVisible(true);
+
+                user.setAdmin(Database.getAdminStatus(userId));
+                if(user.isAdmin()){
+                    vboxLoggedIn.getChildren().add(0,btnAdmin);
+                }
+
             }
         });
 

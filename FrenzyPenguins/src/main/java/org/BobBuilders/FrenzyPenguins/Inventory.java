@@ -27,9 +27,18 @@ public class Inventory {
     private SimpleBooleanProperty hasJetpack;
     private SimpleBooleanProperty hasSlide;
     private SimpleBooleanProperty hasGlider;
-
     @Getter
     private SimpleIntegerProperty pointsProperty;
+    @Getter
+    @Setter
+    private int totalDistanceFlown = 0;
+    @Getter
+    @Setter
+    private int maxDistanceFlown = 0;
+    @Getter
+    @Setter
+    private int networth = 0;
+
 
     private Inventory() {
         rampLevel = 1;

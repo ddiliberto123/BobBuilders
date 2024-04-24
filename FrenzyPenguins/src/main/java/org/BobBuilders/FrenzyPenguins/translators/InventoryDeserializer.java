@@ -45,6 +45,18 @@ public class InventoryDeserializer extends StdDeserializer<Inventory> {
         JsonNode pointsPropertyNode = node.get("pointsProperty");
         int pointsPropertyValue = pointsPropertyNode.asInt();
         inventory.setPointsPropertyValue(pointsPropertyValue);
+
+        JsonNode totalDistanceFlownNode = node.get("totalDistanceFlown");
+        int totalDistanceFlown = totalDistanceFlownNode.asInt();
+        inventory.setTotalDistanceFlown(totalDistanceFlown);
+
+        JsonNode maxDistanceFlownNode = node.get("maxDistanceFlown");
+        int maxDistanceFlown = maxDistanceFlownNode.asInt();
+        inventory.setMaxDistanceFlown(maxDistanceFlown);
+
+        JsonNode networthNode = node.get("networth");
+        int networth = networthNode.asInt();
+        inventory.setNetworth(networth);
         return inventory;
     }
 }

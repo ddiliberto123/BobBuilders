@@ -1,6 +1,7 @@
 package org.BobBuilders.FrenzyPenguins.util;
 
 import org.BobBuilders.FrenzyPenguins.Inventory;
+import org.BobBuilders.FrenzyPenguins.User;
 import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.sqlite.SQLiteConfig;
 
@@ -32,6 +33,7 @@ public class Database {
                             "id INTEGER NOT NULL, " +
                             "username TEXT NOT NULL UNIQUE, " +
                             "password TEXT, " +
+                            "admin INTEGER NOT NULL, " +
                             "PRIMARY KEY(id AUTOINCREMENT)" +
                             ");"
             );
@@ -52,12 +54,13 @@ public class Database {
     }
 
     public static boolean createUser(String username, String password) {
-        String statement = "INSERT INTO Users (username,password) VALUES (?,?)";
+        String statement = "INSERT INTO Users (username,password,admin) VALUES (?,?,?)";
 
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
             pstatement.setString(1, username);
             pstatement.setString(2, password);
+            pstatement.setInt(3, 0);
             try {
                 pstatement.executeUpdate();
                 return true;
@@ -119,7 +122,7 @@ public class Database {
         }
     }
 
-    public static Inventory load(int userId) {
+    public static Inventory loadInventory(int userId) {
         String statement = "SELECT inventory, id FROM Inventories WHERE user_id = ?";
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
@@ -130,6 +133,23 @@ public class Database {
             } else {
                 System.out.println("No inventory found!");
                 return null;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
+    public static boolean getAdminStatus(int userId) {
+        String statement = "SELECT id, admin FROM Users WHERE id = ?";
+        try (Connection con = Database.connect()) {
+            PreparedStatement pstatement = con.prepareStatement(statement);
+            pstatement.setInt(1, userId);
+            ResultSet rs = pstatement.executeQuery();
+            if (rs.getInt("id") != 0) {
+                return rs.getInt("admin") != 0;
+            } else {
+                System.out.println("No user found!");
+                return false;
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
