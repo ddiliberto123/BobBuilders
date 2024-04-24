@@ -191,11 +191,12 @@ public class CustomEntityFactory implements EntityFactory {
 
     @Spawns("penguin")
     public Entity newPenguin(SpawnData data) {
+        float slideFriction = 0.055f-store.getSlideLevel()/200f;
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.02f));
+        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.055f));
         if (store.isEquipSlide()) {
-            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.001f));
+            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(slideFriction));
         }
 
         Image penguinImage = new Image("file:"+fix_for_Mac()+"penguin.png");

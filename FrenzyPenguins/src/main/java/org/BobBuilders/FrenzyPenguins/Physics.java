@@ -4,6 +4,7 @@ import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.*;
 import com.almasb.fxgl.core.math.Vec2;
 import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.penguin_x_velocity;
 import static org.BobBuilders.FrenzyPenguins.FallingPenguinGame.penguin_y_velocity;
+import org.BobBuilders.FrenzyPenguins.Store;
 public class Physics {
 
     static final double air_density = 1.293; // Kg/m^3
@@ -12,12 +13,14 @@ public class Physics {
     static final double temp_wing_area = 1;
     public static final double temp_lift_c = 1.5;
     public static final double temp_drag_c = 0.1;
+    static Store store = Store.getInstance();
+
 
 
     public static double penguin_velocity(){
         double penguin_velocity = Math.sqrt((Math.pow(penguin_x_velocity(),2)+Math.pow(penguin_y_velocity(),2)));
-        if(penguin_velocity > 6){
-            penguin_velocity = 6;
+        if(penguin_velocity > ((double)store.getGliderLevel()/10)*7){
+            penguin_velocity = ((double)store.getGliderLevel()/10)*7;
         }
 //        System.out.println("1: " + penguin_x_velocity() + " 2: " + penguin_y_velocity() + " 3: " + penguin_velocity);
         return Math.floor(penguin_velocity);

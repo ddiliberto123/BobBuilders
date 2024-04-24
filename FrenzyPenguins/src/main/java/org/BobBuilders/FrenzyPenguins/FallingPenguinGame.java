@@ -199,7 +199,7 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Conditions for which lift force is applied
-        if (penguin.getX() > 250 && store.isEquipGlider()) {
+        if (penguin.getX() > 250 && store.isEquipGlider() && penguin_y_velocity() > 0) {
             physics.applyBodyForceToCenter(Lift(angle));
         }
         //Locks angle when player isn't pressing key
@@ -250,21 +250,23 @@ public class FallingPenguinGame extends GameApplication {
             }
         });
         onKey(KeyCode.SPACE, () -> {
+            //Ensures that the jetpack only works when jetpack is equipped and after going off ramp
             if (store.isEquipJetpack() && penguin.getX() >= 1000) {
+                //Keeps track of the elapsed time when jetpack is used
                 jetpackTimeElapsed += tpf();
                 System.out.println(jetpackTimeElapsed);
                 //If statement limits the amount of time the user can use the jetpack for
                 if (jetpackTimeElapsed < 5) {
                     PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                    double speedMultiplier = 2;
-                    
-//                    double angle = penguin.getRotation() % 360;
-                    if (angle < 0) {
-                        angle += 360;
+                    //Jetpack is stronger depending on the level of the jetpack
+                    double speedMultiplier = (double)store.getJetPackLevel()/4;
+                    double jetAngle = penguin.getRotation() % 360;
+                    if (jetAngle < 0) {
+                        jetAngle += 360;
                     }
 
-                    double forceX = speedMultiplier * Math.cos(Math.toRadians(angle));
-                    double forceY = -speedMultiplier * Math.sin(Math.toRadians(angle));
+                    double forceX = speedMultiplier * Math.cos(Math.toRadians(jetAngle));
+                    double forceY = -speedMultiplier * Math.sin(Math.toRadians(jetAngle));
 
                     Vec2 vec = new Vec2(forceX, forceY);
                     physics.applyBodyForceToCenter(vec);
