@@ -5,7 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2bbd8024-6f2a-4ab4-af41-fd6a624c5fb2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/cloud_lonely.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_bg.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_1_lightened.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/glacial_mountains_lightened.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/glacialmountains.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/sky.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/sky_lightened.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/CustomEntityFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/CustomEntityFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/FallingPenguinGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/FallingPenguinGame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/Physics.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/Physics.java" afterDir="false" />
     </list>
@@ -26,12 +37,16 @@
     </option>
   </component>
   <component name="ProjectId" id="2fVBHCjodeP2Ygi0nUH9ehpn9Jg" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true"
   }
@@ -55,5 +70,8 @@
       <updated>1713876275853</updated>
     </task>
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

@@ -1,5 +1,7 @@
 package org.BobBuilders.FrenzyPenguins;
 
+import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.components.Effect;
 import com.almasb.fxgl.dsl.components.view.ChildViewComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
@@ -11,9 +13,11 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
+import com.almasb.fxgl.ui.FXGLScrollPane;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -23,6 +27,7 @@ import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 
+import static com.almasb.fxgl.dsl.FXGL.getGameScene;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
@@ -236,11 +241,23 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity createBackground(SpawnData data) {
         // Create an entity with the image as background
         Rectangle rectangle = new Rectangle(getAppWidth(), getAppHeight(), Color.TRANSPARENT);
-        Image image = new Image("file:"+fix_for_Mac()+"mountains.png");
-        ImageView imageView = new ImageView(image);
+        Image layer1 = new Image("file:"+fix_for_Mac()+"glacialmountains.png");
+        Image layer2 = new Image("file:"+fix_for_Mac()+"glacialmountainslightened.png");
+
+        ImageView imageView = new ImageView(layer1);
+        //ImageView imageView2 = new ImageView(layer2);
+
         imageView.setFitWidth(getAppWidth());
         imageView.setFitHeight(getAppHeight());
+
         StackPane stackPane = new StackPane(rectangle, imageView);
+        FXGLScrollPane scroll = new FXGLScrollPane();
+        //System.out.println("view port size: "+ getGameScene().getViewport().getWidth());
+        //System.out.println(imageView.getFitWidth());
+        //getGameScene().setBackgroundRepeat(layer1);
+        scroll.setContent(imageView);
+        //double width = getGameScene().getViewport().getWidth();
+        //System.out.println("image width: "+width);
 
         return entityBuilder()
                 .from(data)

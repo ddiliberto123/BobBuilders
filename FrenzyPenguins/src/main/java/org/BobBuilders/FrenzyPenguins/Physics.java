@@ -21,7 +21,6 @@ public class Physics {
         }
 //        System.out.println("1: " + penguin_x_velocity() + " 2: " + penguin_y_velocity() + " 3: " + penguin_velocity);
         return Math.floor(penguin_velocity);
-
     }
 
     public static double penguin_velocity_angle(){
@@ -76,11 +75,14 @@ public class Physics {
 
     //Very painless way of implementing "buoyancy"
     public static Vec2 B_mockup(double p_angle){
-        double vx = Math.round(penguin_x_velocity()/120);
+        double vx = Math.round(penguin_x_velocity());
+        System.out.println(vx);
         Vec2 fake_buoyancy = new Vec2();
         if(vx!=0){
-            double force = Math.random()*15;
-            fake_buoyancy.set(0,(float)force);
+            System.out.println("wtf");
+            //double force = Math.random()*15;
+            double force  = penguin_x_velocity(); //yes this is janky but i think it will work
+            fake_buoyancy.set((float)(force*Math.sin(Math.toRadians(p_angle))),(float)(force*Math.cos(Math.toRadians(p_angle))));
             return fake_buoyancy;
         }
         else{
@@ -88,6 +90,5 @@ public class Physics {
             return fake_buoyancy;
         }
     }
-
 }
 
