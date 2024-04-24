@@ -160,8 +160,10 @@ public class FallingPenguinGame extends GameApplication {
             // Update the points based on the distance traveled
             inventory.addPoints((int) penguin.getX());
             //goToMenu();
-            physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
             jetpackTimeElapsed = 0;
+        }
+        if(penguin.getX() >= 151000){
+            physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
         }
 
         if (penguin.getX() < 230) {
@@ -175,9 +177,11 @@ public class FallingPenguinGame extends GameApplication {
         //Temporary until full floor is constructed
         if (penguin.getX() > 1000) {
             if (!physics.isMoving()) {
-                inventory.addPoints((int) penguin.getX());
+                inventory.addPoints((int) (penguin.getX()/100));
                 goToMenu();
                 jetpackTimeElapsed = 0;
+                //Applies Drag without having a glider equiped
+                physics.applyBodyForceToCenter(Drag(angle));
             }
         }
 
@@ -198,9 +202,9 @@ public class FallingPenguinGame extends GameApplication {
             angle = -angle;
         }
 
-        //Conditions for which lift force is applied
+        //Conditions for which lift+drag force is applied
         if (penguin.getX() > 250 && store.isEquipGlider()) {
-            physics.applyBodyForceToCenter(Lift(angle));
+            physics.applyBodyForceToCenter(Flight_vectors(angle));
         }
         //Locks angle when player isn't pressing key
         if (penguin.getX() > 1000 && (physics.getBody().getAngularVelocity() >= 1 || physics.getBody().getAngularVelocity() <= -1)) {
