@@ -15,6 +15,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.ui.FXGLScrollPane;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -26,6 +27,7 @@ import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.almasb.fxgl.dsl.FXGL.getGameScene;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
@@ -245,19 +247,10 @@ public class CustomEntityFactory implements EntityFactory {
         Image layer2 = new Image("file:"+fix_for_Mac()+"glacialmountainslightened.png");
 
         ImageView imageView = new ImageView(layer1);
-        //ImageView imageView2 = new ImageView(layer2);
-
         imageView.setFitWidth(getAppWidth());
         imageView.setFitHeight(getAppHeight());
 
         StackPane stackPane = new StackPane(rectangle, imageView);
-        FXGLScrollPane scroll = new FXGLScrollPane();
-        //System.out.println("view port size: "+ getGameScene().getViewport().getWidth());
-        //System.out.println(imageView.getFitWidth());
-        //getGameScene().setBackgroundRepeat(layer1);
-        scroll.setContent(imageView);
-        //double width = getGameScene().getViewport().getWidth();
-        //System.out.println("image width: "+width);
 
         return entityBuilder()
                 .from(data)
@@ -265,6 +258,81 @@ public class CustomEntityFactory implements EntityFactory {
                 .build();
     }
 
+
+    @Spawns("speedometer")
+    public Entity speedometer(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        double width = 150;
+        double height = 5;
+        Rectangle rectangle = new Rectangle(width, height);
+
+        rectangle.setFill(Color.RED);
+        rectangle.setOpacity(0.75);
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(rectangle)
+                .rotationOrigin(150,5)
+                .with(physics)
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
+    @Spawns("speed_curve")
+    public Entity speed_curve(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        double width = 150;
+        double height = 5;
+//        try {
+//            width = Double.parseDouble(data.get(Constant.WIDTH).toString());
+//            height = Double.parseDouble(data.get(Constant.HEIGHT).toString());
+//        } catch (NumberFormatException | NullPointerException ex) {
+//            System.out.println("Width or Height formatting not defined correctly, defaulting to 1");
+
+        Arc arc = new Arc();
+        arc.setCenterX(300.0f);
+        arc.setCenterY(50.0f);
+        arc.setRadiusX(150.0f);
+        arc.setRadiusY(150.0f);
+        arc.setStartAngle(-180.0f);
+        arc.setLength(-90.0f);
+        arc.setType(ArcType.ROUND);
+        StackPane sp = new StackPane(arc);
+        Rectangle indicator1 = new Rectangle(20,5);
+        indicator1.setFill(Color.WHITESMOKE);
+        Rectangle indicator2 = new Rectangle(20,5);
+        indicator1.setFill(Color.WHITESMOKE);
+        Rectangle indicator3 = new Rectangle(20,5);
+        indicator1.setFill(Color.WHITESMOKE);
+        sp.getChildren().add(indicator1);
+        sp.getChildren().get(1).setTranslateY(70);
+        sp.getChildren().get(1).setTranslateX(-65);
+        sp.getChildren().add(indicator2);
+        sp.getChildren().get(1).setTranslateY(70);
+        sp.getChildren().get(1).setTranslateX(-65);
+        sp.getChildren().add(indicator3);
+        sp.getChildren().get(1).setTranslateY(70);
+        sp.getChildren().get(1).setTranslateX(-65);
+//        for(Rectangle indicator: indicators){
+//            for(int z=20; z<100; z+=20) {
+//                indicator.setFill(Color.WHITE);
+//                indicator.setRotate(z);
+//                sp.getChildren().add(indicator);
+//            }
+//        }
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(sp)
+                .with(physics)
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
     public static String fix_for_Mac() {
         if ((System.getProperty("os.name").toLowerCase()).contains("mac")) {
             String home = System.getProperty("user.home");

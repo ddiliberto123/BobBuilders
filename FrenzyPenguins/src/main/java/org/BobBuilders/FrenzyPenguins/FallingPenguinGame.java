@@ -15,6 +15,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.ui.FXGLButton;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -40,8 +41,14 @@ import static org.BobBuilders.FrenzyPenguins.Physics.penguin_velocity;
 
 public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
+    private static Entity speedometer;
+    private static Entity speed_curve;
     private static Entity background_1st;
     private static Entity background_2nd;
+    private static Entity background_3rd;
+    private static Entity background2_1st;
+    private static Entity background2_2nd;
+
     private Entity bottom;
     private Text distanceText;
     private double beginPoints = 0;
@@ -88,9 +95,14 @@ public class FallingPenguinGame extends GameApplication {
         for (int i = 0; i < 10; i++) {
             background_1st = FXGL.spawn(EntitySpawner.BACKGROUND, -9200, 2500);
             background_2nd = FXGL.spawn(EntitySpawner.BACKGROUND, -9200, 2500);
+            background_3rd = FXGL.spawn(EntitySpawner.BACKGROUND, -9200, 2500);
         }
         //Spawning the penguin entity
         penguin = FXGL.spawn("penguin", 10, 0);
+        speed_curve = FXGL.spawn("speed_curve",-200,-300);
+        speedometer = FXGL.spawn("speedometer", -200,-200);
+
+
 
         createEntireRamp(0, 150);
 
@@ -141,10 +153,13 @@ public class FallingPenguinGame extends GameApplication {
 
         //background_1st.setY(penguin.getY());
 
-        if (penguin.getX() >= 200) {
+        if (penguin.getX() >= 0) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
-
+            speedometer.setX(penguinX+425);
+            speedometer.setY(penguinY-230);
+            speed_curve.setX(penguinX+425);
+            speed_curve.setY(penguinY-375);
             // Get the width and height  of the game window
             double windowWidth = getAppWidth();
             double windowHeight = getAppHeight();
@@ -157,24 +172,27 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
 
-//            if(background_1st.getX() < getGameScene().getViewport().getX()){
-//                background_1st.setX(getGameScene().getViewport().getX());
-//            }
+
 
             //At this configuration, the penguin is at the middle of the image
             //background_1st.setX(penguin.getX()-getAppWidth()/2);
 
             //If statement checks if the penguin is halfway done through the length of the image
-            if(penguin.getX()%(getAppWidth()/2) < 15) {
-                System.out.println("safksdbgdfskgsbdfkgsbdkgsgd");
-                //bring the sencond IDENTICAL background half a image width from the penguin
-                background_2nd.setX(penguin.getX()+getAppWidth()/2);
-                //GOOD UNTIL HERE
-                if(penguin.getX()%getAppWidth() < 15) {
-                    background_1st.setX(penguin.getX());
-                    background_2nd.setX(penguin.getX() - getAppWidth());
-                }
-            }
+//            System.out.println(penguin.getX()%getAppWidth()/2);
+//            if(penguin.getX()%(getAppWidth()/2) < 10) {
+//
+//                //bring the sencond IDENTICAL background half a image width from the penguin
+//                background_2nd.setX(penguin.getX()+getAppWidth()/2);
+//                //background2_2nd.setX(50+penguin.getX()+getAppWidth()/2);
+//                //GOOD UNTIL HERE
+//                if(penguin.getX()%getAppWidth() < 15) {
+//                    background_3rd.setX(penguin.getX());
+//                    //background2_1st.setX(penguin.getX());
+//                    background_2nd.setX(penguin.getX() - getAppWidth());
+//                    background_1st.setX(penguin.getX() + getAppWidth());
+//                    //background2_2nd.setX(penguin.getX() - getAppWidth());
+//                }
+//            }
 
         } else {
             getGameScene().getViewport().setX(0);
@@ -182,10 +200,9 @@ public class FallingPenguinGame extends GameApplication {
         }
 
 
+        //speedometer
+        speedometer.rotateBy(((Math.sqrt((Math.pow(penguin_x_velocity(),2))+Math.pow(penguin_y_velocity(),2)))*90)/120);
 
-        //if the image scrolls too far to the left reset it to the right of the view port
-        //offset every image so you have parallax
-        //System.out.println(penguin.getX()%384);
 
 
         //Restarts game when penguin reaches the bottom

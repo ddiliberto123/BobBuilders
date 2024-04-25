@@ -5,16 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2bbd8024-6f2a-4ab4-af41-fd6a624c5fb2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/cloud_lonely.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_bg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_1_lightened.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/clouds_mg_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/glacial_mountains_lightened.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/glacialmountains.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/sky.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrenzyPenguins/sky_lightened.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/CustomEntityFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/CustomEntityFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/FallingPenguinGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/FrenzyPenguins/src/main/java/org/BobBuilders/FrenzyPenguins/FallingPenguinGame.java" afterDir="false" />

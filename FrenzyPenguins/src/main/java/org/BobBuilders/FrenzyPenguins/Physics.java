@@ -76,10 +76,10 @@ public class Physics {
     //Very painless way of implementing "buoyancy"
     public static Vec2 B_mockup(double p_angle){
         double vx = Math.round(penguin_x_velocity());
-        System.out.println(vx);
+        //System.out.println(vx);
         Vec2 fake_buoyancy = new Vec2();
         if(vx!=0){
-            System.out.println("wtf");
+            //System.out.println("wtf");
             //double force = Math.random()*15;
             double force  = penguin_x_velocity(); //yes this is janky but i think it will work
             fake_buoyancy.set((float)(force*Math.sin(Math.toRadians(p_angle))),(float)(force*Math.cos(Math.toRadians(p_angle))));
