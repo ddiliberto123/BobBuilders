@@ -49,7 +49,7 @@ public class CustomGameMenu extends FXGLMenu {
 
 
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
-        back.setFill(Color.WHITESMOKE);
+        back.setFill(Color.LIGHTBLUE);
         StackPane stack = new StackPane();
         getContentRoot().setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY, null)));
         Text title = FXGL.getUIFactoryService().newText("Store", Color.BLACK, 70);

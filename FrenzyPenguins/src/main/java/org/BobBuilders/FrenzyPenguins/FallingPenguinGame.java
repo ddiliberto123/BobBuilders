@@ -55,6 +55,7 @@ public class FallingPenguinGame extends GameApplication {
     private double cloud2SpawnTimer = 0;
     private double cloud1SpawnInterval = 0.5;
     private double cloud2SpawnInterval = 0.5;
+    private boolean beginAnimation = false;
 
     public static void main(String[] args) {
         Database.dbInit();
@@ -105,7 +106,7 @@ public class FallingPenguinGame extends GameApplication {
 //        getGameScene().getRoot().setBackground(new Background(backgroundFill));
 
         //Spawn moving background
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             FXGL.spawn(EntitySpawner.BACKGROUND, i * getAppWidth(), 2300);
         }
         //Spawning the penguin entity
@@ -128,6 +129,12 @@ public class FallingPenguinGame extends GameApplication {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -9.8);
         physics.applyBodyForceToCenter(forceful);
+
+        //Displays control functions t the beginning of each game
+        Text instructions = new Text("To change penguin angle, use keys A and D\nTo use jetpack, hold space key\n To start the game press the right key\nHave fun");
+        instructions.setFill(Color.WHITE);
+        instructions.setTranslateX(600);
+        instructions.setTranslateY(200);
     }
 
 
@@ -137,26 +144,26 @@ public class FallingPenguinGame extends GameApplication {
 
         super.onUpdate(tpf);
 
-// Define the transition heights where the color will start to change
-        double transitionHeight1 = 300;
+        // Define the transition heights where the color will start to change
+        double transitionHeight1 = -500;
         double transitionHeight2 = 800; // Increase the distance between transitionHeight1 and transitionHeight2
 
-// Define the colors
-        Color lightBlue = Color.LIGHTBLUE;
+        // Define the colors
+        Color lightBlue = Color.DARKBLUE;
         Color midBlue = Color.CADETBLUE;
-        Color darkBlue = Color.DARKBLUE;
+        Color darkBlue = Color.LIGHTBLUE;
 
-// Get the root of the game scene
+        // Get the root of the game scene
         Pane root = (Pane) getGameScene().getRoot();
 
-// Calculate the relative height of the penguin
+        // Calculate the relative height of the penguin
         double relativeHeight = penguin.getY() / getAppHeight();
 
-// Define transition factors to control the interpolation
+        // Define transition factors to control the interpolation
         double transitionFactor1 = (relativeHeight - transitionHeight1 / getAppHeight()) / (transitionHeight2 / getAppHeight() - transitionHeight1 / getAppHeight());
         double transitionFactor2 = (relativeHeight - transitionHeight2 / getAppHeight()) / (1 - transitionHeight2 / getAppHeight());
 
-// Interpolate between the colors based on relative height
+        // Interpolate between the colors based on relative height
         Color backgroundColor;
         if (relativeHeight < transitionHeight1 / getAppHeight()) {
             backgroundColor = lightBlue;
@@ -168,9 +175,19 @@ public class FallingPenguinGame extends GameApplication {
             backgroundColor = midBlue.interpolate(darkBlue, transitionFactor2);
         }
 
-// Set the background color
+        // Set the background color
         root.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
 
+
+        if(beginAnimation){
+            if (penguin.getX() < 230) {
+                physics.setVelocityX(40);
+            }
+            if (penguin.getX() == 250) {
+                Vec2 downtime = new Vec2(-10, -50);
+                physics.applyBodyForceToCenter(downtime);
+            }
+        }
 
 
         //Constantly updates the x coordinates displayed in distanceText
@@ -200,34 +217,27 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setY(0);
         }
 
-        //Restarts game when penguin reaches the bottom
-        if (penguin.getY() >= 2970) {
-            // Update the points based on the distance traveled
-            inventory.addPoints((int) penguin.getX());
-            //goToMenu();
-            jetpackTimeElapsed = 0;
-        }
+//        //Restarts game when penguin reaches the bottom
+//        if (penguin.getY() >= 2970) {
+//            // Update the points based on the distance traveled
+//            inventory.addPoints((int) penguin.getX());
+//            //goToMenu();
+//            jetpackTimeElapsed = 0;
+//        }
         if(penguin.getX() >= 151000){
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
         }
 
-        if (penguin.getX() < 230) {
-            physics.setVelocityX(40);
-        }
-        if (penguin.getX() == 250) {
-            Vec2 downtime = new Vec2(-10, -50);
-            physics.applyBodyForceToCenter(downtime);
-        }
+
 
         //Temporary until full floor is constructed
-        if (penguin.getX() > 1000) {
-            if (!physics.isMoving()) {
-                inventory.addPoints((int) (penguin.getX()/100));
-                goToMenu();
-                jetpackTimeElapsed = 0;
-                //Applies Drag without having a glider equiped
-                physics.applyBodyForceToCenter(Drag(angle));
-            }
+        if (!physics.isMoving() && beginAnimation) {
+            inventory.addPoints((int) (penguin.getX()));
+            goToMenu();
+            beginAnimation = false;
+            jetpackTimeElapsed = 0;
+            //Applies Drag without having a glider equiped
+            physics.applyBodyForceToCenter(Drag(angle));
         }
 
         angle = penguin.getRotation();
@@ -307,6 +317,13 @@ public class FallingPenguinGame extends GameApplication {
                 event.consume();
             }
         });
+
+        getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.RIGHT) {
+                beginAnimation = true;
+            }
+        });
+
         //Gives penguin the ability to change angle which it faces
         onKey(KeyCode.D, () -> {
             if(penguin.getX() >= 1000) {
@@ -363,7 +380,7 @@ public class FallingPenguinGame extends GameApplication {
         //Creates the initial ramp
         EntitySpawner.spawnRectangle(-500, 100, 700, 2000);
         EntitySpawner.spawnCircle(200 - 50, 100, 50);
-        EntitySpawner.spawnRectangle(200, 150, 50, 1950);
+        EntitySpawner.spawnRectangle(190, 150, 60, 1950);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
         EntitySpawner.spawnRectangle(250, 1600, 2 * rampRadius, 400);
@@ -421,6 +438,9 @@ public class FallingPenguinGame extends GameApplication {
             Entity cloud = FXGL.spawn("cloud1", penguin.getX() + getAppWidth() / 2, penguin.getY() + randomY - 300);
             PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
             physics.setVelocityX(-10);
+            if(penguin.getX() >= cloud.getX()){
+                cloud.removeFromWorld();
+            }
         }
     }
     //Method to spawn cloud 2
@@ -433,6 +453,19 @@ public class FallingPenguinGame extends GameApplication {
             Entity cloud = FXGL.spawn("cloud2", penguin.getX() + getAppWidth() / 2, penguin.getY() + randomY - 300);
             PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
             physics.setVelocityX(-10);
+            if(penguin.getX() > cloud.getX()){
+                cloud.removeFromWorld();
+            }
+        }
+    }
+    private void startAnimation(){
+        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
+        if (penguin.getX() < 230) {
+            physics.setVelocityX(40);
+        }
+        if (penguin.getX() == 250) {
+            Vec2 downtime = new Vec2(-10, -50);
+            physics.applyBodyForceToCenter(downtime);
         }
     }
 

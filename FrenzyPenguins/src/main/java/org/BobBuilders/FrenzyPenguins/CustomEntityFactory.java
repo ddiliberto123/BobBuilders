@@ -43,7 +43,7 @@ public class CustomEntityFactory implements EntityFactory {
             System.out.println("Width or Height formatting not defined correctly, defaulting to 1");
         }
         Rectangle rectangle = new Rectangle(width, height);
-        rectangle.setFill(Color.BLACK);
+        rectangle.setFill(Color.WHITE);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
@@ -63,7 +63,7 @@ public class CustomEntityFactory implements EntityFactory {
         FixtureDef fix = new FixtureDef().density(0.1f).friction(10f);
         physics.setFixtureDef(fix);
         Rectangle rectangle = new Rectangle(150000, 500);
-        rectangle.setFill(Color.BLACK);
+        rectangle.setFill(Color.WHITE);
         return entityBuilder()
                 .from(data)
                 .type(GROUND)
@@ -93,7 +93,7 @@ public class CustomEntityFactory implements EntityFactory {
         Circle circle = new Circle(radius);
         circle.setTranslateX(radius);
         circle.setTranslateY(radius);
-        circle.setFill(Color.BLACK);
+        circle.setFill(Color.WHITE);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
@@ -177,6 +177,8 @@ public class CustomEntityFactory implements EntityFactory {
         }
         //Makes a polygon as the view surface with a chain hitbox
         poly.getPoints().addAll(polyPoints);
+        poly.setStroke(Color.WHITE);
+        poly.setFill(Color.WHITE);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
