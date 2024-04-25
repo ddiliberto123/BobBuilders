@@ -1,5 +1,6 @@
 package org.BobBuilders.FrenzyPenguins;
 
+import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.dsl.components.view.ChildViewComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
@@ -17,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
@@ -187,6 +189,33 @@ public class CustomEntityFactory implements EntityFactory {
         fix.setDensity(0.1f);
         physics.setFixtureDef(fix);
         return entity;
+    }
+    @Spawns("cloud1")
+    public static Entity newCloud1(SpawnData data){
+        PhysicsComponent cloudPhysics = new PhysicsComponent();
+        cloudPhysics.setBodyType(BodyType.KINEMATIC);
+        Image cloud1 = new Image("file:cloud_1.png");
+        ImageView view1 = new ImageView(cloud1);
+        return entityBuilder()
+                .from(data)
+                .type(CLOUD)
+                .view(view1)
+                .with(cloudPhysics)
+                .build();
+    }
+    @Spawns("cloud2")
+    public static Entity newCloud2(SpawnData data){
+        PhysicsComponent cloudPhysics = new PhysicsComponent();
+//        cloudPhysics.setVelocityX(-10);
+        cloudPhysics.setBodyType(BodyType.KINEMATIC);
+        Image cloud1 = new Image("file:cloud_2.png");
+        ImageView view1 = new ImageView(cloud1);
+        return entityBuilder()
+                .from(data)
+                .type(CLOUD)
+                .view(view1)
+                .with(cloudPhysics)
+                .build();
     }
 
     @Spawns("penguin")
