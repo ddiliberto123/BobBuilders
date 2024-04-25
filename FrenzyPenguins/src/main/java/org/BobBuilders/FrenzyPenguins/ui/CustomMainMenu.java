@@ -21,6 +21,7 @@ import javafx.scene.text.Text;
 import lombok.Data;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
+import org.BobBuilders.FrenzyPenguins.data.TableData;
 import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
@@ -98,16 +99,26 @@ public class CustomMainMenu extends FXGLMenu {
             vboxAdminMenu.setTranslateX(200);
             vboxAdminMenu.setTranslateY(100);
             Text text = new Text("ADMIN");
-            TableView<String[]> table = new TableView<>();
-            TableColumn<String[], String> usernameColumn = new TableColumn<>("Username");
+            TableView<TableData> table = new TableView<>();
 
-            TableColumn<String[], Integer> totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
-            TableColumn<String[], Integer> maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
-            TableColumn<String[], CheckBox> deleteColumn = new TableColumn<>("Delete");
+            TableColumn usernameColumn = new TableColumn<>("Username");
+            usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-            table.getColumns().addAll(usernameColumn,totalDistanceFlownColumn,maxDistanceFlownColumn,deleteColumn);
+            TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
+            totalDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistanceFlown"));
 
-            try (Connection con = Database.connect()){
+            TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
+            maxDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("maxDistanceFlown"));
+
+            TableColumn networthColumn = new TableColumn<>("Networth");
+            networthColumn.setCellValueFactory(new PropertyValueFactory<>("networth"));
+
+            TableColumn deleteColumn = new TableColumn<>("Delete");
+            deleteColumn.setCellValueFactory(new PropertyValueFactory<>("delete"));
+
+            table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);
+
+            try (Connection con = Database.connect()) {
                 String idStatement = "SELECT id FROM Users";
                 String usernameStatement = "SELECT username FROM Users WHERE id = ?";
                 String inventoryStatement = "SELECT inventory FROM Inventories WHERE user_id = ?";
@@ -118,24 +129,10 @@ public class CustomMainMenu extends FXGLMenu {
                 }
 
                 for (int id : allUserIds) {
-                    PreparedStatement preparedStatement = con.prepareStatement(usernameStatement);
-                    preparedStatement.setInt(1,id);
-
-                    String username = preparedStatement.getResultSet().getString("username");
-                    Inventory inventory = Inventory.createInstance();
-                    preparedStatement = con.prepareStatement(inventoryStatement);
-                    preparedStatement.setInt(1,id);
-                    if (preparedStatement.executeQuery().getString("inventory") == null){
-                        String[] str = {"A","A","A","A"};
-                        table.getItems().add(str);
-                    } else {
-                        inventory = InventoryMapper.unconvert(preparedStatement.executeQuery()
-                                .getString("inventory"));
-                        String[] str = {username,"de","de","de"};
-                        System.out.println(str.toString());
-                        table.getItems().add(str);
-                    }
+                    table.getItems().add(new TableData(id));
                 }
+
+
             } catch (SQLException ex) {
 
             }

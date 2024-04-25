@@ -72,7 +72,6 @@ public class FallingPenguinGame extends GameApplication {
         gameSettings.setMainMenuEnabled(true);
         gameSettings.setTitle("Game");
         gameSettings.setVersion("1.0");
-
     }
 
     @Override
@@ -173,7 +172,6 @@ public class FallingPenguinGame extends GameApplication {
         if (penguin.getX() > 1000) {
             if (!physics.isMoving()) {
                 double currencyToAdd = penguin.getX() * 0.05;
-                System.out.println(currencyToAdd);
                 inventory.addPoints((int) currencyToAdd);
                 inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
                 if (inventory.getMaxDistanceFlown() < (int) penguin.getX()){

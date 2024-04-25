@@ -9,6 +9,9 @@ import java.sql.*;
 public class Database {
 
     private static final String CONNECTION_URL = "jdbc:sqlite:FrenzyPenguins.db";
+    public static final String USERNAME_REQUEST = "SELECT username FROM Users WHERE id = ?";
+    public static final String USERNAME = "username";
+    public static final String INVENTORY = "inventory";
 
     /**
      * Connects to the database
