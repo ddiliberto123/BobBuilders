@@ -7,7 +7,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
@@ -17,10 +18,14 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import lombok.Data;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
+import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -31,6 +36,7 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxMainMenu;
     private VBox vboxAccount;
     private VBox vboxLoggedIn;
+    private VBox vboxAdminMenu = new VBox();
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
 
     //    private ObjectProperty<customMenuButton> selectedButton;
@@ -84,8 +90,57 @@ public class CustomMainMenu extends FXGLMenu {
             vboxLoggedIn.setVisible(false);
         });
 
-        customMenuButton btnAdmin = new customMenuButton("Admin Menu", () -> {
 
+        customMenuButton btnAdmin = new customMenuButton("Admin Menu", () -> {
+            vboxLoggedIn.setVisible(false);
+            vboxAdminMenu.setVisible(true);
+            vboxAdminMenu.setAlignment(Pos.CENTER);
+            vboxAdminMenu.setTranslateX(200);
+            vboxAdminMenu.setTranslateY(100);
+            Text text = new Text("ADMIN");
+            TableView<String[]> table = new TableView<>();
+            TableColumn<String[], String> usernameColumn = new TableColumn<>("Username");
+
+            TableColumn<String[], Integer> totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
+            TableColumn<String[], Integer> maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
+            TableColumn<String[], CheckBox> deleteColumn = new TableColumn<>("Delete");
+
+            table.getColumns().addAll(usernameColumn,totalDistanceFlownColumn,maxDistanceFlownColumn,deleteColumn);
+
+            try (Connection con = Database.connect()){
+                String idStatement = "SELECT id FROM Users";
+                String usernameStatement = "SELECT username FROM Users WHERE id = ?";
+                String inventoryStatement = "SELECT inventory FROM Inventories WHERE user_id = ?";
+                ResultSet allUsers = con.createStatement().executeQuery(idStatement);
+                ArrayList<Integer> allUserIds = new ArrayList<>();
+                while (allUsers.next()){
+                    allUserIds.add(allUsers.getInt(1));
+                }
+
+                for (int id : allUserIds) {
+                    PreparedStatement preparedStatement = con.prepareStatement(usernameStatement);
+                    preparedStatement.setInt(1,id);
+
+                    String username = preparedStatement.getResultSet().getString("username");
+                    Inventory inventory = Inventory.createInstance();
+                    preparedStatement = con.prepareStatement(inventoryStatement);
+                    preparedStatement.setInt(1,id);
+                    if (preparedStatement.executeQuery().getString("inventory") == null){
+                        String[] str = {"A","A","A","A"};
+                        table.getItems().add(str);
+                    } else {
+                        inventory = InventoryMapper.unconvert(preparedStatement.executeQuery()
+                                .getString("inventory"));
+                        String[] str = {username,"de","de","de"};
+                        System.out.println(str.toString());
+                        table.getItems().add(str);
+                    }
+                }
+            } catch (SQLException ex) {
+
+            }
+
+            vboxAdminMenu.getChildren().addAll(text, table);
         });
 
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
@@ -139,7 +194,8 @@ public class CustomMainMenu extends FXGLMenu {
                 user.setUsername(username);
                 user.setUserId(userId);
 
-                Database.loadInventory(user.getUserId());
+                Inventory inventory = Inventory.getInstance();
+                inventory = Database.loadInventory(user.getUserId());
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 vboxLoggedIn.setVisible(true);
@@ -203,10 +259,11 @@ public class CustomMainMenu extends FXGLMenu {
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
 
-        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
+        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn, vboxAdminMenu);
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         vboxLoggedIn.setVisible(false);
+        vboxAdminMenu.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
     }
 

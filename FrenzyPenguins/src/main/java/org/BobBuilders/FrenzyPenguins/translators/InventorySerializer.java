@@ -7,6 +7,9 @@ import org.BobBuilders.FrenzyPenguins.Inventory;
 
 import java.io.IOException;
 
+/**
+ * Overrides the serializaton of the {@code Inventory} class
+ */
 public class InventorySerializer extends StdSerializer<Inventory> {
 
     protected InventorySerializer() {

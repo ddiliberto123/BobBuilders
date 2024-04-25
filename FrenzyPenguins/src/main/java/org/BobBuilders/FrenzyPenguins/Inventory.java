@@ -58,6 +58,10 @@ public class Inventory {
         return instance = (instance == null) ? new Inventory() : instance;
     }
 
+    public static Inventory createInstance() {
+        return new Inventory();
+    }
+
     public void setHasJetpack(boolean answer) {
         hasJetpack.set(answer);
     }
