@@ -3,6 +3,7 @@ package org.BobBuilders.FrenzyPenguins.ui;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
+import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,12 +16,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.*;
 
+import java.util.Random;
+
 import static org.BobBuilders.FrenzyPenguins.CustomEntityFactory.fix_for_Mac;
 
 
 public class CustomGameMenu extends FXGLMenu {
-    private static final Color SELECTED_COLOR = Color.BLACK;
-    private static final Color NOT_SELECTED_COLOR = Color.GRAY;
+    private static final Color SELECTED_COLOR = Color.WHITE;
+    private static final Color NOT_SELECTED_COLOR = Color.WHITE;
     private CustomGameMenu.customMenuButton btnOptions1;
     private CustomGameMenu.customMenuButton btnOptions2;
     private CustomGameMenu.customMenuButton btnOptions3;
@@ -41,6 +44,7 @@ public class CustomGameMenu extends FXGLMenu {
     private VBox unequip3;
     private Inventory inventory;
     private Store store;
+    private double timer;
 
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
@@ -48,23 +52,22 @@ public class CustomGameMenu extends FXGLMenu {
         inventory = Inventory.getInstance();
         store = Store.getInstance();
 
-
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
-        back.setFill(Color.LIGHTBLUE);
+        back.setFill(Color.CORNFLOWERBLUE);
         StackPane stack = new StackPane();
-        getContentRoot().setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY, null)));
-        Text title = FXGL.getUIFactoryService().newText("Store", Color.BLACK, 70);
+//        getContentRoot().setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY, null)));
+        Text title = FXGL.getUIFactoryService().newText("Store", Color.WHITE, 70);
         title.setTranslateX(0);
         title.setTranslateY(-(getAppHeight() / 2 - 100));
 
         FallingPenguinGame fall = new FallingPenguinGame();
 
         //Placeholder to demonstrate where username and points possessed are displayed
-        Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.BLACK, 30);
+        Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.WHITE, 30);
         userName.setTranslateX(-(getAppWidth() / 2 - 200));
         userName.setTranslateY(-(getAppHeight() / 2 - 150));
 
-        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPointsPropertyValue(), Color.BLACK, 30);
+        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPointsPropertyValue(), Color.WHITE, 30);
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 
@@ -193,9 +196,9 @@ public class CustomGameMenu extends FXGLMenu {
             this.name = name;
             this.action = action;
             //Calls the UI factory apart of FXGL to create a text box
-            text = FXGL.getUIFactoryService().newText(name, Color.BLACK, 20.0);
+            text = FXGL.getUIFactoryService().newText(name, Color.WHITE, 20.0);
             //This is the rectangle next to the buttons that show its been selected (color of button also changes)
-            selector = new Rectangle(8, 20, Color.BLACK);
+            selector = new Rectangle(8, 20, Color.WHITE);
             selector.setTranslateX(-20);
             //Sets it visible if its focused
             selector.visibleProperty().bind(focusedProperty());
@@ -278,5 +281,55 @@ public class CustomGameMenu extends FXGLMenu {
         unequipGear3 = new CustomGameMenu.customMenuButton("Unequip Slide", () -> {
             store.setEquipSlide(false);
         });
+    }
+
+    @Override
+    protected void onUpdate(double tpf) {
+        super.onUpdate(tpf);
+        timer += tpf;
+        if(timer >= 1){
+            ImageView snowflakeImage = new ImageView("file:snowflake.png");
+            snowflakeImage.setTranslateX(Math.random()*getAppWidth());
+            snowflakeImage.setTranslateY(-50);
+            snowflakeImage.setFitWidth(30);
+            snowflakeImage.setPreserveRatio(true);
+
+            Random random = new Random();
+            int randomRotate = random.nextInt(4);
+            if(randomRotate == 1){
+                snowflakeImage.setRotate(30);
+            }
+            if(randomRotate == 2){
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.7);
+                snowflakeImage.setPreserveRatio(true);
+            }
+            if(randomRotate == 3){
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.4);
+                snowflakeImage.setPreserveRatio(true);
+            }
+
+            getRoot().getChildren().add(snowflakeImage);
+            AnimationTimer animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    // Calculate the new Y position
+                    double newY = snowflakeImage.getTranslateY() + 10 * tpf;
+
+                    // Set the new Y position
+                    snowflakeImage.setTranslateY(newY);
+
+                    // Remove the animation when the snowflake is out of the screen
+                    if (newY >= getAppHeight()) {
+                        getRoot().getChildren().remove(snowflakeImage);
+                        this.stop(); // Stop the animation
+                    }
+                }
+            };
+
+            // Start the animation
+            animationTimer.start();
+
+            timer = 0;
+        }
     }
 }

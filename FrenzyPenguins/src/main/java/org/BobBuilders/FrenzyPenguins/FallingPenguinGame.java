@@ -372,7 +372,8 @@ public class FallingPenguinGame extends GameApplication {
         //Creates the initial ramp
         EntitySpawner.spawnRectangle(-500, 100, 700, 2000);
         EntitySpawner.spawnCircle(200 - 50, 100, 50);
-        EntitySpawner.spawnRectangle(200 - buffer, 150 - buffer, 50 + buffer, 1950 + buffer);
+        EntitySpawner.spawnRectangle(200 - buffer, 150, 50 + buffer, 1950 + buffer);
+        EntitySpawner.spawnRectangle(190, 150 - 1, 60, 1950);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
         EntitySpawner.spawnRectangle(250, 1600 - buffer, 2 * rampRadius, 400 + buffer);
