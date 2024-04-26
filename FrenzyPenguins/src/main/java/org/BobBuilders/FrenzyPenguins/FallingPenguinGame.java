@@ -47,6 +47,7 @@ public class FallingPenguinGame extends GameApplication {
     private Text distanceText;
     private Text speedText;
     private Text altituteText;
+    private Rectangle cluster = new Rectangle(310,20);
     private double beginPoints = 0;
     private double angle;
     Inventory inventory = Inventory.getInstance();
@@ -132,18 +133,28 @@ public class FallingPenguinGame extends GameApplication {
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
 
-        //Gives us speed accuratley
+        cluster.setFill(Color.LIGHTGRAY);
+        cluster.setStroke(Color.GRAY);
+        cluster.setStrokeWidth(3);
+        cluster.setTranslateX(865);cluster.setTranslateY(185);
+        getGameScene().addUINode(cluster);
+
+        //Gives us speed accurately
         speedText = getUIFactoryService().newText("", Color.GREEN, 16);
         speedText.setTranslateX(1055);
         speedText.setTranslateY(200);
         speedText.setStroke(Color.LIGHTSEAGREEN);
         speedText.setStrokeWidth(1);
         getGameScene().addUINode(speedText);
-
+        //Gives us altitude accurately
         altituteText = getUIFactoryService().newText("", Color.GREEN, 16);
-        altituteText.setTranslateX(1055);
-        altituteText.setTranslateY(250);
+        altituteText.setTranslateX(875);
+        altituteText.setTranslateY(200);
+        altituteText.setStroke(Color.LIGHTSEAGREEN);
+        altituteText.setStrokeWidth(1);
         getGameScene().addUINode(altituteText);
+
+
 
 
 
@@ -172,10 +183,10 @@ public class FallingPenguinGame extends GameApplication {
         if (penguin.getX() >= 0) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
-            speedometer.setX(penguinX+425);altimeter.setX(penguinX+200);
-            speedometer.setY(penguinY-230);altimeter.setY(penguinY-300);
-            speed_curve.setX(penguinX+425);altimeter_circle.setX(penguinX+275);
-            speed_curve.setY(penguinY-375);altimeter_circle.setY(penguinY-300);
+            speedometer.setX(penguinX+425);altimeter.setX(penguinX+260);
+            speedometer.setY(penguinY-235);altimeter.setY(penguinY-297);
+            speed_curve.setX(penguinX+425);altimeter_circle.setX(penguinX+250);
+            speed_curve.setY(penguinY-380);altimeter_circle.setY(penguinY-375);
 
             // Get the width and height  of the game window
             double windowWidth = getAppWidth();
@@ -221,8 +232,8 @@ public class FallingPenguinGame extends GameApplication {
         speedometer.rotateBy(((Math.sqrt((Math.pow(penguin_x_velocity(),2))+Math.pow(penguin_y_velocity(),2)))*90)/120);
         speedText.setText("speed:" + Math.round(penguin_velocity())+" km/h");
         //Alitude seems to top out at -22974 units
-        altimeter.rotateBy(((altimeter_height()*360)/20000)+90);
-        altituteText.setText("altitude:" + (-1*penguin.getY()+2974));
+        altimeter.rotateBy(((altimeter_height()*360)/6000)+90);
+        altituteText.setText("altitude:" + (-1*penguin.getY()+2974)/10+" m");
 
 
         //Restarts game when penguin reaches the bottom

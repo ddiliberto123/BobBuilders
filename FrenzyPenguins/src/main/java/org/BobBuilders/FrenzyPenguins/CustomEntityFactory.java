@@ -357,17 +357,17 @@ public class CustomEntityFactory implements EntityFactory {
     @Spawns("altimeter")
     public Entity altimeter(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
-        double width = 75;
+        double width = 70;
         double height = 5;
         Rectangle rectangle = new Rectangle(width, height);
 
         rectangle.setFill(Color.RED);
-        rectangle.setOpacity(1);
+        rectangle.setOpacity(0.6);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
                 .viewWithBBox(rectangle)
-                .rotationOrigin(75,0)
+                .rotationOrigin(70,0)
                 .with(physics)
                 .build();
         FixtureDef fix = new FixtureDef();
@@ -380,13 +380,27 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity altimeter_circle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         Circle altimeter = new Circle(75);
+        altimeter.setOpacity(0.90);
         altimeter.setFill(Color.BLACK);
         altimeter.setStroke(Color.GRAY);
         altimeter.setStrokeWidth(5);
+        StackPane sp = new StackPane(altimeter);
+        Rectangle indicator1 = new Rectangle(30,5); Rectangle indicator2 = new Rectangle(30,5); Rectangle indicator3 = new Rectangle(30,5);Rectangle indicator4 = new Rectangle(30,5);
+        indicator1.setFill(Color.WHITESMOKE);indicator2.setFill(Color.WHITESMOKE);indicator3.setFill(Color.WHITESMOKE);indicator4.setFill(Color.WHITESMOKE);
+        indicator1.setOpacity(0.85);indicator2.setOpacity(0.85);indicator3.setOpacity(0.85);indicator4.setOpacity(0.85);
+        sp.getChildren().addAll(indicator1,indicator2,indicator3,indicator4);
+
+        //sets the horizontal indicators in place
+        sp.getChildren().get(1).setTranslateX(-58);sp.getChildren().get(2).setTranslateX(58);
+        //sets the vertical indicators in place
+        sp.getChildren().get(3).setRotate(90);sp.getChildren().get(4).setRotate(90);
+        sp.getChildren().get(3).setTranslateY(58);sp.getChildren().get(4).setTranslateY(-58);
+
+
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
-                .viewWithBBox(altimeter)
+                .viewWithBBox(sp)
                 .rotationOrigin(75,5)
                 .with(physics)
                 .build();
