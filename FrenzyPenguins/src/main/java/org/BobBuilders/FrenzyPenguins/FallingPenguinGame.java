@@ -23,6 +23,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
@@ -51,6 +53,7 @@ public class FallingPenguinGame extends GameApplication {
 
     private Entity bottom;
     private Text distanceText;
+    private Text speedText;
     private double beginPoints = 0;
     private double angle;
     Inventory inventory = Inventory.getInstance();
@@ -132,6 +135,15 @@ public class FallingPenguinGame extends GameApplication {
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
 
+        //Gives us speed accuratley
+        speedText = getUIFactoryService().newText("", Color.GREEN, 16);
+        speedText.setTranslateX(1055);
+        speedText.setTranslateY(200);
+        speedText.setStroke(Color.LIGHTSEAGREEN);
+        speedText.setStrokeWidth(1);
+        getGameScene().addUINode(speedText);
+
+
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -9.8);
@@ -149,6 +161,7 @@ public class FallingPenguinGame extends GameApplication {
                 "Velocity x: (" + penguin_x_velocity() + ") Velocity y: (" + penguin_y_velocity() + ")" +
                 "Angle: (" + Math.round(get_penguin_angle()) + ")" +
                 "FPS: (" + 1 / tpf() + ")");
+
 
 
         //background_1st.setY(penguin.getY());
@@ -203,6 +216,7 @@ public class FallingPenguinGame extends GameApplication {
         //speedometer
         speedometer.rotateBy(((Math.sqrt((Math.pow(penguin_x_velocity(),2))+Math.pow(penguin_y_velocity(),2)))*90)/120);
 
+        speedText.setText("speed:" + Math.round(penguin_velocity())+" km/h");
 
 
         //Restarts game when penguin reaches the bottom
@@ -375,6 +389,9 @@ public class FallingPenguinGame extends GameApplication {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vy = physics.getVelocityY();
         return Math.round(getPhysicsWorld().toMeters(vy));
+    }
+    public static double penguin_velocity(){
+        return (Math.sqrt(Math.pow(penguin_x_velocity(),2)+Math.pow(penguin_y_velocity(),2)));
     }
     public static double wing_area(){
         //This is temporary, the wing_area should be taken from the area of the gliders

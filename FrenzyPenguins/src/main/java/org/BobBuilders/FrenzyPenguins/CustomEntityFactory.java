@@ -14,14 +14,19 @@ import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.ui.FXGLScrollPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.chart.PieChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
@@ -282,9 +287,6 @@ public class CustomEntityFactory implements EntityFactory {
     }
     @Spawns("speed_curve")
     public Entity speed_curve(SpawnData data) {
-        PhysicsComponent physics = new PhysicsComponent();
-        double width = 150;
-        double height = 5;
 //        try {
 //            width = Double.parseDouble(data.get(Constant.WIDTH).toString());
 //            height = Double.parseDouble(data.get(Constant.HEIGHT).toString());
@@ -299,40 +301,59 @@ public class CustomEntityFactory implements EntityFactory {
         arc.setStartAngle(-180.0f);
         arc.setLength(-90.0f);
         arc.setType(ArcType.ROUND);
+        arc.setStroke(Color.GRAY);
+        arc.setStrokeWidth(5);
+
         StackPane sp = new StackPane(arc);
-        Rectangle indicator1 = new Rectangle(20,5);
+        Rectangle indicator1 = new Rectangle(30,5);
         indicator1.setFill(Color.WHITESMOKE);
-        Rectangle indicator2 = new Rectangle(20,5);
-        indicator1.setFill(Color.WHITESMOKE);
-        Rectangle indicator3 = new Rectangle(20,5);
-        indicator1.setFill(Color.WHITESMOKE);
+        Rectangle indicator2 = new Rectangle(30,5);
+        indicator2.setFill(Color.WHITESMOKE);
+        Rectangle indicator3 = new Rectangle(30,5);
+        indicator3.setFill(Color.WHITESMOKE);
         sp.getChildren().add(indicator1);
         sp.getChildren().get(1).setTranslateY(70);
-        sp.getChildren().get(1).setTranslateX(-65);
+        sp.getChildren().get(1).setTranslateX(-58);
         sp.getChildren().add(indicator2);
-        sp.getChildren().get(1).setTranslateY(70);
-        sp.getChildren().get(1).setTranslateX(-65);
+        sp.getChildren().get(2).setTranslateY(-15);
+        sp.getChildren().get(2).setTranslateX(-25);
+        sp.getChildren().get(2).setRotate(40);
         sp.getChildren().add(indicator3);
-        sp.getChildren().get(1).setTranslateY(70);
-        sp.getChildren().get(1).setTranslateX(-65);
-//        for(Rectangle indicator: indicators){
-//            for(int z=20; z<100; z+=20) {
-//                indicator.setFill(Color.WHITE);
-//                indicator.setRotate(z);
-//                sp.getChildren().add(indicator);
-//            }
+        sp.getChildren().get(3).setTranslateY(-58);
+        sp.getChildren().get(3).setTranslateX(69);
+        sp.getChildren().get(3).setRotate(90);
+
+//        Group g = new Group();
+//        for(int i=0; i<90; i+=15){
+//            System.out.println("hello");
+//            Rectangle r = new Rectangle(20,5);
+//            r.setFill(Color.HOTPINK);
+//            g.getChildren().add(r);
+//            System.out.println(g.getChildren().size());
 //        }
+//        int j=-20;
+//        int z=0;
+//        for (int i = 0; i < 90; i+=15) {
+//            sp.getChildren().add(g.getChildren().get(z));
+//            System.out.println(sp.getChildren().size());
+//            sp.getChildren().get(z).setRotate(i);
+//            sp.getChildren().get(z).setTranslateX(j);
+//            j+=20;
+//            z+=1;
+//        }
+
+
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)
                 .viewWithBBox(sp)
-                .with(physics)
                 .build();
         FixtureDef fix = new FixtureDef();
         fix.setDensity(0.1f);
-        physics.setFixtureDef(fix);
         return entity;
     }
+
+
     public static String fix_for_Mac() {
         if ((System.getProperty("os.name").toLowerCase()).contains("mac")) {
             String home = System.getProperty("user.home");
