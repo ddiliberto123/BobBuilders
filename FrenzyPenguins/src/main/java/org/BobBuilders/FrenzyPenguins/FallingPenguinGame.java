@@ -42,7 +42,6 @@ import static org.BobBuilders.FrenzyPenguins.Physics.Lift;
 import static org.BobBuilders.FrenzyPenguins.Physics.penguin_velocity;
 
 
-
 public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
     private Text distanceText;
@@ -137,7 +136,7 @@ public class FallingPenguinGame extends GameApplication {
 
         super.onUpdate(tpf);
 
-        if(penguin.getX() != 10){
+        if (penguin.getX() != 10) {
             welcomeText.setVisible(false);
         }
 
@@ -297,7 +296,7 @@ public class FallingPenguinGame extends GameApplication {
 
         getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                if(store.isEquipJetpack() && penguin.getX() >= 1000) {
+                if (store.isEquipJetpack() && penguin.getX() >= 1000) {
                     spaceKeyPressed = true;  // Set the flag to true when space key is released
                     CustomEntityFactory.penguinJet.setVisible(false);
                     CustomEntityFactory.penguinJetActive.setVisible(true);
@@ -307,7 +306,7 @@ public class FallingPenguinGame extends GameApplication {
 
         getInput().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                if(store.isEquipJetpack() && penguin.getX() >= 1000) {
+                if (store.isEquipJetpack() && penguin.getX() >= 1000) {
                     spaceKeyPressed = false;  // Set the flag to false when space key is released
                     CustomEntityFactory.penguinJet.setVisible(true);
                     CustomEntityFactory.penguinJetActive.setVisible(false);
@@ -367,14 +366,16 @@ public class FallingPenguinGame extends GameApplication {
         int lowerRampLength = 200;
         int secondRampLength = 300;
         double rampRadius = 300;
+        //Buffer so that there is overlay
+        double buffer = 1;
 
         //Creates the initial ramp
         EntitySpawner.spawnRectangle(-500, 100, 700, 2000);
         EntitySpawner.spawnCircle(200 - 50, 100, 50);
-        EntitySpawner.spawnRectangle(190, 150, 60, 1950);
+        EntitySpawner.spawnRectangle(200 - buffer, 150 - buffer, 50 + buffer, 1950 + buffer);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
-        EntitySpawner.spawnRectangle(250, 1600, 2 * rampRadius, 400);
+        EntitySpawner.spawnRectangle(250, 1600 - buffer, 2 * rampRadius, 400 + buffer);
 
         //Creates floor for penguin to run into
         FXGL.spawn("ground", 1000, 3000);
@@ -456,7 +457,8 @@ public class FallingPenguinGame extends GameApplication {
             physics.setVelocityX(-10);
         }
     }
-    public static boolean isSpaceKeyPressed(){
+
+    public static boolean isSpaceKeyPressed() {
         return spaceKeyPressed;
     }
 }
