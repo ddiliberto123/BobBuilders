@@ -45,6 +45,7 @@ public class CustomMainMenu extends FXGLMenu {
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
     private double timer = 0;
     private double penguinTimer = 0;
+    private ImageView penguinView;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -213,7 +214,7 @@ public class CustomMainMenu extends FXGLMenu {
 
     protected void onUpdate(double tpf) {
         timer += tpf;
-        if(timer >= 2){
+        if(timer >= 1){
             ImageView snowflakeImage = new ImageView("file:snowflake.png");
             snowflakeImage.setTranslateX(Math.random()*getAppWidth());
             snowflakeImage.setTranslateY(-50);
@@ -221,13 +222,19 @@ public class CustomMainMenu extends FXGLMenu {
             snowflakeImage.setPreserveRatio(true);
 
             Random random = new Random();
-            int randomRotate = random.nextInt(3);
+            int randomRotate = random.nextInt(4);
             if(randomRotate == 1){
                 snowflakeImage.setRotate(30);
             }
             if(randomRotate == 2){
-                snowflakeImage.setRotate(50);
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.7);
+                snowflakeImage.setPreserveRatio(true);
             }
+            if(randomRotate == 3){
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.4);
+                snowflakeImage.setPreserveRatio(true);
+            }
+
             getRoot().getChildren().add(snowflakeImage);
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
@@ -252,11 +259,53 @@ public class CustomMainMenu extends FXGLMenu {
             timer = 0;
         }
 
-        ImageView penguinView = new ImageView("file:penguin.png");
-        penguinView.setRotate(-30);
-        penguinView.setFitHeight(125);
-        penguinView.setPreserveRatio(true);
-        getRoot().getChildren().add(penguinView);
+        penguinTimer += tpf;
+        if(penguinTimer >= 2 && penguinView == null){
+            Random random = new Random();
+            int randomPenguin = random.nextInt(4);
+            switch (randomPenguin){
+                case 0:penguinView = new ImageView("file:penguin.png");break;
+                case 1:penguinView = new ImageView("file:penguin_and_glider.png");break;
+                case 2:penguinView = new ImageView("file:penguin_and_sled.png");break;
+                case 3:penguinView = new ImageView("file:jetpack_active.gif");break;
+            }
+            penguinView.setTranslateX(0);
+            penguinView.setTranslateY(getAppHeight());
+            penguinView.setRotate(-30);
+            penguinView.setFitHeight(125);
+            penguinView.setPreserveRatio(true);
+            getRoot().getChildren().add(penguinView);
+            AnimationTimer animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    // Calculate the new Y position
+                    double newY = penguinView.getTranslateY() - 10 * tpf;
+
+                    // Set the new Y position
+                    penguinView.setTranslateY(newY);
+
+                    // Calculate the new Y position
+                    double newX = penguinView.getTranslateX() + 12 * tpf;
+
+                    // Set the new Y position
+                    penguinView.setTranslateX(newX);
+
+                    //Change rotation of penguin
+                    penguinView.setRotate(penguinView.getRotate() + 5*tpf);
+
+                    // Remove the animation when the snowflake is out of the screen
+                    if (newX >= getAppWidth()) {
+                        getRoot().getChildren().remove(penguinView);
+                        this.stop(); // Stop the animation
+                    }
+                }
+            };
+
+            // Start the animation
+            animationTimer.start();
+
+            penguinTimer = 0;
+        }
     }
 
     private static class customTextField extends StackPane {
