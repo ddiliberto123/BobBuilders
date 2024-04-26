@@ -362,7 +362,7 @@ public class CustomEntityFactory implements EntityFactory {
         Rectangle rectangle = new Rectangle(width, height);
 
         rectangle.setFill(Color.RED);
-        rectangle.setOpacity(0.6);
+        rectangle.setOpacity(0.75);
         Entity entity = entityBuilder()
                 .from(data)
                 .type(GROUND)

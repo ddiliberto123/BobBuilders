@@ -101,22 +101,11 @@ public class FallingPenguinGame extends GameApplication {
         altimeter_circle = FXGL.spawn("altimeter_circle", -200,-300);
         altimeter = FXGL.spawn("altimeter",-200,-900);
 
-
-
-
-
         createEntireRamp(0, 150);
 
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
 
-//        bottom = FXGL.entityBuilder()
-//                .at(300, 10000)
-//                .type(EXIT)
-//                .viewWithBBox(new Rectangle(20000, 20))
-//                .collidable()
-//                .with(floor)
-//                .buildAndAttach();
 
         //Circle trail to help keep track of penguin position and movement
         for(int i =0; i < 100; i++){
@@ -133,6 +122,7 @@ public class FallingPenguinGame extends GameApplication {
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
 
+        //Adds rectangle for looks
         cluster.setFill(Color.LIGHTGRAY);
         cluster.setStroke(Color.GRAY);
         cluster.setStrokeWidth(3);
@@ -176,17 +166,18 @@ public class FallingPenguinGame extends GameApplication {
                 "Angle: (" + Math.round(get_penguin_angle()) + ")" +
                 "FPS: (" + 1 / tpf() + ")");
 
-
+        speedText.setVisible(false);altituteText.setVisible(false);cluster.setVisible(false);
 
         //background_1st.setY(penguin.getY());
 
-        if (penguin.getX() >= 0) {
+        if (penguin.getX() >= 200) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
             speedometer.setX(penguinX+425);altimeter.setX(penguinX+260);
             speedometer.setY(penguinY-235);altimeter.setY(penguinY-297);
             speed_curve.setX(penguinX+425);altimeter_circle.setX(penguinX+250);
             speed_curve.setY(penguinY-380);altimeter_circle.setY(penguinY-375);
+            speedText.setVisible(true);altituteText.setVisible(true);cluster.setVisible(true);
 
             // Get the width and height  of the game window
             double windowWidth = getAppWidth();
@@ -228,10 +219,10 @@ public class FallingPenguinGame extends GameApplication {
         }
 
 
-        //speedometer
+        //Speedometer
         speedometer.rotateBy(((Math.sqrt((Math.pow(penguin_x_velocity(),2))+Math.pow(penguin_y_velocity(),2)))*90)/120);
         speedText.setText("speed:" + Math.round(penguin_velocity())+" km/h");
-        //Alitude seems to top out at -22974 units
+        //Altimeter
         altimeter.rotateBy(((altimeter_height()*360)/6000)+90);
         altituteText.setText("altitude:" + (-1*penguin.getY()+2974)/10+" m");
 

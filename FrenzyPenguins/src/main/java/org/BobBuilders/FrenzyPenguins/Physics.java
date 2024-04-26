@@ -9,7 +9,6 @@ public class Physics {
     static final double air_density = 1.293; // Kg/m^3
     static final double water_density = 1000; //Kg/m^3
     static final double gravity = -9.8;
-    static final double temp_wing_area = 1;
     public static final double temp_lift_c = 1.5;
     public static final double temp_drag_c = 0.1;
 
@@ -81,9 +80,15 @@ public class Physics {
         if(vx!=0){
             //System.out.println("wtf");
             //double force = Math.random()*15;
-            double force  = penguin_x_velocity(); //yes this is janky but i think it will work
+            double force  = penguin_x_velocity()*0.5; //yes this is janky but i think it will work
             fake_buoyancy.set((float)(force*Math.sin(Math.toRadians(p_angle))),(float)(force*Math.cos(Math.toRadians(p_angle))));
-            return fake_buoyancy;
+            if(fake_buoyancy.length() > 20){
+                fake_buoyancy.set((float)Math.sin(Math.toRadians(p_angle))*20,(float)Math.sin(Math.toRadians(p_angle))*20);
+                return fake_buoyancy;
+            }
+            else {
+                return fake_buoyancy;
+            }
         }
         else{
             fake_buoyancy.set(0,0);
