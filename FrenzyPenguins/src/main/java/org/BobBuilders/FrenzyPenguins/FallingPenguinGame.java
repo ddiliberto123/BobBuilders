@@ -180,7 +180,7 @@ public class FallingPenguinGame extends GameApplication {
                 physics.setVelocityX(40);
             }
             if (penguin.getX() == 250) {
-                Vec2 downtime = new Vec2(-10, -50);
+                Vec2 downtime = new Vec2(-10, -10*store.getRampLevel());
                 physics.applyBodyForceToCenter(downtime);
             }
         }

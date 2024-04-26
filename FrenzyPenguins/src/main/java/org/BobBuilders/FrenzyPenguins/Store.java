@@ -13,9 +13,12 @@ public class Store {
     private int jetPackLevel;
     private  int gliderLevel;
     private int slideLevel;
+    private int rampLevel;
+    private IntegerProperty rampLevelProperty;
     private IntegerProperty jetPackLevelProperty;
     private IntegerProperty gliderLevelProperty;
     private IntegerProperty slideLevelProperty;
+
 
     public Store() {
         equipJetpack = new SimpleBooleanProperty(false);
@@ -24,9 +27,11 @@ public class Store {
         jetPackLevel = 1;
         gliderLevel = 1;
         slideLevel = 1;
+        rampLevel = 1;
         jetPackLevelProperty = new SimpleIntegerProperty(jetPackLevel);
         gliderLevelProperty = new SimpleIntegerProperty(gliderLevel);
         slideLevelProperty = new SimpleIntegerProperty(slideLevel);
+        rampLevelProperty = new SimpleIntegerProperty(rampLevel);
     }
 
     public static Store getInstance() {
@@ -91,6 +96,13 @@ public class Store {
     public void setSlideLevel(int slideLevel) {
         this.slideLevel = slideLevel;
     }
+    public int getRampLevel() {
+        return rampLevel;
+    }
+
+    public void setRampLevel(int rampLevel) {
+        this.rampLevel = rampLevel;
+    }
 
     public IntegerProperty getJetPackLevelProperty() {
         return jetPackLevelProperty;
@@ -115,6 +127,9 @@ public class Store {
 
     public void setSlideLevelProperty(int slideLevelProperty) {
         this.slideLevelProperty.set(slideLevelProperty);
+    }
+    public void setRampLevelProperty(int rampLevelProperty) {
+        this.rampLevelProperty.set(rampLevelProperty);
     }
 
     private void withdrawMoney() {
