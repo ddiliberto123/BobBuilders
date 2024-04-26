@@ -1,13 +1,19 @@
 package org.BobBuilders.FrenzyPenguins.ui;
 
+import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.texture.Texture;
+import javafx.animation.AnimationTimer;
+import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
@@ -17,24 +23,39 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
+import org.BobBuilders.FrenzyPenguins.EntityType;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
+import java.util.Random;
+
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
+
 
 public class CustomMainMenu extends FXGLMenu {
-    private static final Color SELECTED_COLOR = Color.BLACK;
+    private static final Color SELECTED_COLOR = Color.WHITE;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
     private VBox vboxOptions;
     private VBox vboxMainMenu;
     private VBox vboxAccount;
     private VBox vboxLoggedIn;
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
+    private double timer = 0;
+    private double penguinTimer = 0;
+    private ImageView penguinView;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
 
+        getGameWorld().addEntityFactory(new CustomEntityFactory());
+
+        ImageView mainMenuImage = new ImageView("file:pixel_mountain.png");
+        mainMenuImage.setFitWidth(getAppWidth());
+        mainMenuImage.setFitHeight(getAppHeight());
 
         if (User.getInstance().getUserId() == 0) {
             usernameProperty.set("Not Logged in");
@@ -93,8 +114,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 menuUsernameText);
-        vboxMainMenu.setTranslateX(100);
-        vboxMainMenu.setTranslateY(450);
+        vboxMainMenu.setTranslateX(75);
+        vboxMainMenu.setTranslateY(500);
 
         //Creates a vbox for options
         vboxOptions = new VBox(10,
@@ -104,8 +125,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 optionsUsernameText);
-        vboxOptions.setTranslateX(100);
-        vboxOptions.setTranslateY(450);
+        vboxOptions.setTranslateX(75);
+        vboxOptions.setTranslateY(500);
 
         //Account
         customTextField usernameField = new customTextField("Username");
@@ -166,8 +187,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 accountUsernameText);
-        vboxAccount.setTranslateX(100);
-        vboxAccount.setTranslateY(450);
+        vboxAccount.setTranslateX(75);
+        vboxAccount.setTranslateY(500);
 
         vboxLoggedIn = new VBox(10,
                 btnLogout,
@@ -175,8 +196,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 loggedInUsernameText);
-        vboxLoggedIn.setTranslateX(100);
-        vboxLoggedIn.setTranslateY(450);
+        vboxLoggedIn.setTranslateX(75);
+        vboxLoggedIn.setTranslateY(500);
 
         menuUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
         optionsUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
@@ -184,11 +205,107 @@ public class CustomMainMenu extends FXGLMenu {
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
 
-        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
+        StackPane stackMenu = new StackPane(mainMenuImage, vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         vboxLoggedIn.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
+    }
+
+    protected void onUpdate(double tpf) {
+        timer += tpf;
+        if(timer >= 1){
+            ImageView snowflakeImage = new ImageView("file:snowflake.png");
+            snowflakeImage.setTranslateX(Math.random()*getAppWidth());
+            snowflakeImage.setTranslateY(-50);
+            snowflakeImage.setFitWidth(30);
+            snowflakeImage.setPreserveRatio(true);
+
+            Random random = new Random();
+            int randomRotate = random.nextInt(4);
+            if(randomRotate == 1){
+                snowflakeImage.setRotate(30);
+            }
+            if(randomRotate == 2){
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.7);
+                snowflakeImage.setPreserveRatio(true);
+            }
+            if(randomRotate == 3){
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.4);
+                snowflakeImage.setPreserveRatio(true);
+            }
+
+            getRoot().getChildren().add(snowflakeImage);
+            AnimationTimer animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    // Calculate the new Y position
+                    double newY = snowflakeImage.getTranslateY() + 10 * tpf;
+
+                    // Set the new Y position
+                    snowflakeImage.setTranslateY(newY);
+
+                    // Remove the animation when the snowflake is out of the screen
+                    if (newY >= getAppHeight()) {
+                        getRoot().getChildren().remove(snowflakeImage);
+                        this.stop(); // Stop the animation
+                    }
+                }
+            };
+
+            // Start the animation
+            animationTimer.start();
+
+            timer = 0;
+        }
+
+        penguinTimer += tpf;
+        if(penguinTimer >= 2 && penguinView == null){
+            Random random = new Random();
+            int randomPenguin = random.nextInt(4);
+            switch (randomPenguin){
+                case 0:penguinView = new ImageView("file:penguin.png");break;
+                case 1:penguinView = new ImageView("file:penguin_and_glider.png");break;
+                case 2:penguinView = new ImageView("file:penguin_and_sled.png");break;
+                case 3:penguinView = new ImageView("file:jetpack_active.gif");break;
+            }
+            penguinView.setTranslateX(0);
+            penguinView.setTranslateY(getAppHeight());
+            penguinView.setRotate(-30);
+            penguinView.setFitHeight(125);
+            penguinView.setPreserveRatio(true);
+            getRoot().getChildren().add(penguinView);
+            AnimationTimer animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    // Calculate the new Y position
+                    double newY = penguinView.getTranslateY() - 10 * tpf;
+
+                    // Set the new Y position
+                    penguinView.setTranslateY(newY);
+
+                    // Calculate the new Y position
+                    double newX = penguinView.getTranslateX() + 12 * tpf;
+
+                    // Set the new Y position
+                    penguinView.setTranslateX(newX);
+
+                    //Change rotation of penguin
+                    penguinView.setRotate(penguinView.getRotate() + 5*tpf);
+
+                    // Remove the animation when the snowflake is out of the screen
+                    if (newX >= getAppWidth()) {
+                        getRoot().getChildren().remove(penguinView);
+                        this.stop(); // Stop the animation
+                    }
+                }
+            };
+
+            // Start the animation
+            animationTimer.start();
+
+            penguinTimer = 0;
+        }
     }
 
     private static class customTextField extends StackPane {
@@ -263,9 +380,9 @@ public class CustomMainMenu extends FXGLMenu {
             this.action = action;
 
             //Calls the UI factory apart of FXGL to create a text box
-            text = FXGL.getUIFactoryService().newText(name, Color.BLACK, 20.0);
+            text = FXGL.getUIFactoryService().newText(name, Color.WHITE, 20.0);
             //This is the rectangle next to the buttons that show its been selected (color of button also changes)
-            selector = new Rectangle(8, 20, Color.BLACK);
+            selector = new Rectangle(8, 20, Color.WHITE);
             selector.setTranslateX(-20);
             //Sets it visible if its focused
             selector.visibleProperty().bind(focusedProperty());
@@ -306,8 +423,8 @@ public class CustomMainMenu extends FXGLMenu {
 
         public LineSeparator() {
             var gradient = new LinearGradient(0, 0, 0.5, 0.5, true, CycleMethod.NO_CYCLE,
-                    new Stop(0, Color.BLACK),
-                    new Stop(0.5, Color.GRAY),
+                    new Stop(0, Color.GRAY),
+                    new Stop(0.5, Color.WHITE),
                     new Stop(2.0, Color.TRANSPARENT));
 
             line.setFill(gradient);
