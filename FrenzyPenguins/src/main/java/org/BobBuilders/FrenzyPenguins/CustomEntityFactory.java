@@ -15,12 +15,15 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
+import  org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
@@ -30,7 +33,23 @@ import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
     Store store = Store.getInstance();
+    Image penguinImage = new Image("file:"+fix_for_Mac()+"penguin.png");
+    Image penguinJ = new Image("file:"+fix_for_Mac()+"penguin_and_jetpack.png");
+    Image penguinJactive = new Image("file:"+fix_for_Mac()+"jetpack_active.gif");
+    Image penguinG = new Image("file:"+fix_for_Mac()+"penguin_and_glider.png");
+    Image penguinS = new Image("file:"+fix_for_Mac()+"penguin_and_sled.png");
+    public static ImageView penguin;
+    public static ImageView penguinJet;
+    public static ImageView penguinJetActive;
 
+
+    public ImageView getPenguin() {
+        return penguin;
+    }
+
+    public void setPenguin(ImageView penguin) {
+        this.penguin = penguin;
+    }
     @Spawns(EntitySpawner.RECTANGLE)
     public Entity createRectangle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
@@ -208,7 +227,6 @@ public class CustomEntityFactory implements EntityFactory {
     @Spawns("cloud2")
     public static Entity newCloud2(SpawnData data){
         PhysicsComponent cloudPhysics = new PhysicsComponent();
-//        cloudPhysics.setVelocityX(-10);
         cloudPhysics.setBodyType(BodyType.KINEMATIC);
         Image cloud1 = new Image("file:cloud_2.png");
         ImageView view1 = new ImageView(cloud1);
@@ -229,15 +247,13 @@ public class CustomEntityFactory implements EntityFactory {
             physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.001f));
         }
 
-        Image penguinImage = new Image("file:"+fix_for_Mac()+"penguin.png");
-        Image penguinJ = new Image("file:"+fix_for_Mac()+"penguin_and_jetpack.png");
-        Image penguinG = new Image("file:"+fix_for_Mac()+"penguin_and_glider.png");
-        Image penguinS = new Image("file:"+fix_for_Mac()+"penguin_and_sled.png");
-
         Image penguinView = penguinImage;
 
-        if (store.isEquipJetpack()) {
+        if (store.isEquipJetpack() && !FallingPenguinGame.isSpaceKeyPressed()) {
             penguinView = penguinJ;
+        }
+        if (store.isEquipJetpack() && FallingPenguinGame.isSpaceKeyPressed()){
+            penguinView = penguinJactive;
         }
         if (store.isEquipGlider()) {
             penguinView = penguinG;
@@ -246,20 +262,50 @@ public class CustomEntityFactory implements EntityFactory {
             penguinView = penguinS;
         }
 
-        ImageView penguin = new ImageView(penguinView);
+        penguin = new ImageView(penguinView);
+        penguinJet = new ImageView(penguinJ);
+        penguinJetActive = new ImageView(penguinJactive);
 
         penguin.setFitHeight(125);
         penguin.setPreserveRatio(true);
         penguin.setTranslateX(-40);
         penguin.setTranslateY(-50);
+
+        penguinJet.setFitHeight(125);
+        penguinJet.setPreserveRatio(true);
+        penguinJet.setTranslateX(-40);
+        penguinJet.setTranslateY(-50);
+        penguinJet.setVisible(false);
+
+        penguinJetActive.setFitHeight(125);
+        penguinJetActive.setPreserveRatio(true);
+        penguinJetActive.setTranslateX(-40);
+        penguinJetActive.setTranslateY(-50);
+        penguinJetActive.setVisible(false);
+
         Rectangle view = new Rectangle(50, 25, Color.TRANSPARENT);
 
         return entityBuilder(data)
                 .type(PENGUIN)
                 .viewWithBBox(view)
                 .view(penguin)
+                .view(penguinJet)
+                .view(penguinJetActive)
                 .collidable()
                 .with(physics)
+                .build();
+    }
+    @Spawns("snowflake")
+    public Entity newSnowflake(SpawnData data){
+        PhysicsComponent snowflakePhysics = new PhysicsComponent();
+        snowflakePhysics.setBodyType(BodyType.KINEMATIC);
+        ImageView snowflakeView = new ImageView("file:snowflake.png");
+        snowflakeView.setFitWidth(30);
+        snowflakeView.setPreserveRatio(true);
+        return entityBuilder()
+                .from(data)
+                .type(SNOWFLAKE)
+                .view(snowflakeView)
                 .build();
     }
 
@@ -287,6 +333,5 @@ public class CustomEntityFactory implements EntityFactory {
         } else {
             return "";
         }
-
     }
 }

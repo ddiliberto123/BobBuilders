@@ -1,5 +1,5 @@
 package org.BobBuilders.FrenzyPenguins;
 
 public enum EntityType {
-    PENGUIN, EXIT, GROUND,CLOUD
+    PENGUIN, EXIT, GROUND,CLOUD,SNOWFLAKE
 }

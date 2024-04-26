@@ -56,6 +56,9 @@ public class FallingPenguinGame extends GameApplication {
     private double cloud1SpawnInterval = 0.5;
     private double cloud2SpawnInterval = 0.5;
     private boolean beginAnimation = false;
+    private static boolean spaceKeyPressed = false;
+    private ImageView penguinViewJ;
+    private ImageView penguinViewJactive;
 
     public static void main(String[] args) {
         Database.dbInit();
@@ -109,8 +112,9 @@ public class FallingPenguinGame extends GameApplication {
         for (int i = 0; i < 20; i++) {
             FXGL.spawn(EntitySpawner.BACKGROUND, i * getAppWidth(), 2300);
         }
+
         //Spawning the penguin entity
-        penguin = FXGL.spawn("penguin", 10, 0);
+        penguin = FXGL.spawn("penguin", 10, 0, 0);
 
         //Random clouds placed at the beginning of the game
         spawnCloud1();
@@ -150,8 +154,8 @@ public class FallingPenguinGame extends GameApplication {
 
         // Define the colors
         Color lightBlue = Color.DARKBLUE;
-        Color midBlue = Color.CADETBLUE;
-        Color darkBlue = Color.LIGHTBLUE;
+        Color midBlue = Color.DODGERBLUE;
+        Color darkBlue = Color.DEEPSKYBLUE;
 
         // Get the root of the game scene
         Pane root = (Pane) getGameScene().getRoot();
@@ -179,7 +183,7 @@ public class FallingPenguinGame extends GameApplication {
         root.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
 
 
-        if(beginAnimation){
+        if (beginAnimation) {
             if (penguin.getX() < 230) {
                 physics.setVelocityX(40);
             }
@@ -224,10 +228,9 @@ public class FallingPenguinGame extends GameApplication {
 //            //goToMenu();
 //            jetpackTimeElapsed = 0;
 //        }
-        if(penguin.getX() >= 151000){
+        if (penguin.getX() >= 151000) {
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
         }
-
 
 
         //Temporary until full floor is constructed
@@ -265,7 +268,7 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Spawns clouds once animation is complete
-        if(penguin.getX() > 1000) {
+        if (penguin.getX() > 1000) {
             super.onUpdate(tpf);
             Random random = new Random();
             //Keeps track of time since last cloud spawned
@@ -287,6 +290,8 @@ public class FallingPenguinGame extends GameApplication {
                 cloud2SpawnTimer = 0;
             }
         }
+        System.out.println(spaceKeyPressed);
+
     }
 
 //        @Override
@@ -324,15 +329,35 @@ public class FallingPenguinGame extends GameApplication {
             }
         });
 
+        getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                if(store.isEquipJetpack() && penguin.getX() >= 1000) {
+                    spaceKeyPressed = true;  // Set the flag to true when space key is released
+                    CustomEntityFactory.penguinJet.setVisible(false);
+                    CustomEntityFactory.penguinJetActive.setVisible(true);
+                }
+            }
+        });
+
+        getInput().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                if(store.isEquipJetpack() && penguin.getX() >= 1000) {
+                    spaceKeyPressed = false;  // Set the flag to false when space key is released
+                    CustomEntityFactory.penguinJet.setVisible(true);
+                    CustomEntityFactory.penguinJetActive.setVisible(false);
+                }
+            }
+        });
+
         //Gives penguin the ability to change angle which it faces
         onKey(KeyCode.D, () -> {
-            if(penguin.getX() >= 1000) {
+            if (penguin.getX() >= 1000) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                 physics.setAngularVelocity(120);
             }
         });
         onKey(KeyCode.A, () -> {
-            if(penguin.getX() >= 1000) {
+            if (penguin.getX() >= 1000) {
                 PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                 physics.setAngularVelocity(-120);
             }
@@ -344,7 +369,7 @@ public class FallingPenguinGame extends GameApplication {
                 if (jetpackTimeElapsed < 5) {
                     PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                     double speedMultiplier = 2;
-                    
+
                     double jetAngle = penguin.getRotation() % 360;
                     if (jetAngle < 0) {
                         jetAngle += 360;
@@ -386,8 +411,8 @@ public class FallingPenguinGame extends GameApplication {
         EntitySpawner.spawnRectangle(250, 1600, 2 * rampRadius, 400);
 
         //Creates floor for penguin to run into
-        FXGL.spawn("ground",1000,3000);
-        FXGL.spawn("water",151000,3000);
+        FXGL.spawn("ground", 1000, 3000);
+        FXGL.spawn("water", 151000, 3000);
     }
 
     private void goToMenu() {
@@ -399,76 +424,75 @@ public class FallingPenguinGame extends GameApplication {
         getGameScene().getViewport().setY(0);
         jetpackTimeElapsed = 0;
     }
-    public static double penguin_x_velocity(){
+
+    public static double penguin_x_velocity() {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vx = physics.getVelocityX();
         return Math.round(getPhysicsWorld().toMeters(vx));
     }
-    public static double penguin_y_velocity(){
+
+    public static double penguin_y_velocity() {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vy = physics.getVelocityY();
         return Math.round(getPhysicsWorld().toMeters(vy));
     }
-    public static double wing_area(){
+
+    public static double wing_area() {
         //This is temporary, the wing_area should be taken from the area of the gliders
         //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
-        return (penguin.getWidth()*penguin.getHeight())/10;
+        return (penguin.getWidth() * penguin.getHeight()) / 10;
     }
-    public static double get_penguin_angle(){
+
+    public static double get_penguin_angle() {
         double angle = penguin.getRotation();
-        if(angle > 360){
+        if (angle > 360) {
             angle = angle % 360;
         }
         return Math.round(angle);
     }
+
     //Get the area of the penguin
-    public static double get_penguin_area(){
-        double p_area = getPhysicsWorld().toMeters(penguin.getWidth()*penguin.getHeight());
+    public static double get_penguin_area() {
+        double p_area = getPhysicsWorld().toMeters(penguin.getWidth() * penguin.getHeight());
         return p_area;
     }
+
     //Method to spawn cloud 1
     private void spawnCloud1() {
         //Ensures that clouds do not spawn once the penguin approaches bottom
         //This ensures that clouds will not spawn over the floor
-        if(penguin.getY() < 2900-getAppHeight()) {
+        if (penguin.getY() < 2900 - getAppHeight()) {
             Random random = new Random();
             //Generates a random number within the app height
             double randomY = random.nextDouble() * getAppHeight();
             //Spawns a cloud slightly out of frame within the penguin's y coordinates
             Entity cloud = FXGL.spawn("cloud1", penguin.getX() + getAppWidth() / 2, penguin.getY() + randomY - 300);
-            PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
-            physics.setVelocityX(-10);
-            if(penguin.getX() >= cloud.getX()){
+            if (penguin.getX() >= cloud.getX()) {
                 cloud.removeFromWorld();
             }
+            PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
+            physics.setVelocityX(-10);
         }
     }
+
     //Method to spawn cloud 2
-    private void spawnCloud2(){
-        if(penguin.getY() < 2900-getAppHeight()) {
+    private void spawnCloud2() {
+        if (penguin.getY() < 2900 - getAppHeight()) {
             Random random = new Random();
             //Generates a random number within the app height
             double randomY = random.nextDouble() * getAppHeight();
             //Spawns a cloud slightly out of frame within the penguin's y coordinates
-            Entity cloud = FXGL.spawn("cloud2", penguin.getX() + getAppWidth() / 2, penguin.getY() + randomY - 300);
-            PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
-            physics.setVelocityX(-10);
-            if(penguin.getX() > cloud.getX()){
+            Entity cloud = FXGL.spawn("cloud2", penguin.getX() + getAppWidth() / 2, penguin.getY() + randomY);
+            if (penguin.getX() >= cloud.getX()) {
                 cloud.removeFromWorld();
             }
+            PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
+            physics.setVelocityX(-10);
         }
     }
-    private void startAnimation(){
-        PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-        if (penguin.getX() < 230) {
-            physics.setVelocityX(40);
-        }
-        if (penguin.getX() == 250) {
-            Vec2 downtime = new Vec2(-10, -50);
-            physics.applyBodyForceToCenter(downtime);
-        }
+    public static boolean isSpaceKeyPressed(){
+        return spaceKeyPressed;
     }
-
 }
 
 

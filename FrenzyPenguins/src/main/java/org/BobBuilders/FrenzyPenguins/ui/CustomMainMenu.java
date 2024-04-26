@@ -1,13 +1,19 @@
 package org.BobBuilders.FrenzyPenguins.ui;
 
+import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.texture.Texture;
+import javafx.animation.AnimationTimer;
+import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
@@ -17,9 +23,16 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
+import org.BobBuilders.FrenzyPenguins.EntityType;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
 import org.BobBuilders.FrenzyPenguins.util.Database;
+
+import java.util.Random;
+
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
 
 
 public class CustomMainMenu extends FXGLMenu {
@@ -30,11 +43,18 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxAccount;
     private VBox vboxLoggedIn;
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
+    private double timer = 0;
+    private double penguinTimer = 0;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
 
+        getGameWorld().addEntityFactory(new CustomEntityFactory());
+
+        ImageView mainMenuImage = new ImageView("file:pixel_mountain.png");
+        mainMenuImage.setFitWidth(getAppWidth());
+        mainMenuImage.setFitHeight(getAppHeight());
 
         if (User.getInstance().getUserId() == 0) {
             usernameProperty.set("Not Logged in");
@@ -184,11 +204,59 @@ public class CustomMainMenu extends FXGLMenu {
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
 
-        StackPane stackMenu = new StackPane(vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
+        StackPane stackMenu = new StackPane(mainMenuImage, vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         vboxLoggedIn.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
+    }
+
+    protected void onUpdate(double tpf) {
+        timer += tpf;
+        if(timer >= 2){
+            ImageView snowflakeImage = new ImageView("file:snowflake.png");
+            snowflakeImage.setTranslateX(Math.random()*getAppWidth());
+            snowflakeImage.setTranslateY(-50);
+            snowflakeImage.setFitWidth(30);
+            snowflakeImage.setPreserveRatio(true);
+
+            Random random = new Random();
+            int randomRotate = random.nextInt(3);
+            if(randomRotate == 1){
+                snowflakeImage.setRotate(30);
+            }
+            if(randomRotate == 2){
+                snowflakeImage.setRotate(50);
+            }
+            getRoot().getChildren().add(snowflakeImage);
+            AnimationTimer animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    // Calculate the new Y position
+                    double newY = snowflakeImage.getTranslateY() + 10 * tpf;
+
+                    // Set the new Y position
+                    snowflakeImage.setTranslateY(newY);
+
+                    // Remove the animation when the snowflake is out of the screen
+                    if (newY >= getAppHeight()) {
+                        getRoot().getChildren().remove(snowflakeImage);
+                        this.stop(); // Stop the animation
+                    }
+                }
+            };
+
+            // Start the animation
+            animationTimer.start();
+
+            timer = 0;
+        }
+
+        ImageView penguinView = new ImageView("file:penguin.png");
+        penguinView.setRotate(-30);
+        penguinView.setFitHeight(125);
+        penguinView.setPreserveRatio(true);
+        getRoot().getChildren().add(penguinView);
     }
 
     private static class customTextField extends StackPane {
