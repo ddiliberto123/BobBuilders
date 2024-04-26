@@ -11,11 +11,6 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.almasb.fxgl.ui.FXGLButton;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -23,8 +18,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
@@ -36,15 +29,14 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
 import static org.BobBuilders.FrenzyPenguins.EntityType.GROUND;
-import static org.BobBuilders.FrenzyPenguins.Physics.Lift;
-import static org.BobBuilders.FrenzyPenguins.Physics.penguin_velocity;
-
 
 
 public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
     private static Entity speedometer;
     private static Entity speed_curve;
+    private static Entity altimeter;
+    private static Entity altimeter_circle;
     private static Entity background_1st;
     private static Entity background_2nd;
     private static Entity background_3rd;
@@ -54,6 +46,7 @@ public class FallingPenguinGame extends GameApplication {
     private Entity bottom;
     private Text distanceText;
     private Text speedText;
+    private Text altituteText;
     private double beginPoints = 0;
     private double angle;
     Inventory inventory = Inventory.getInstance();
@@ -104,6 +97,10 @@ public class FallingPenguinGame extends GameApplication {
         penguin = FXGL.spawn("penguin", 10, 0);
         speed_curve = FXGL.spawn("speed_curve",-200,-300);
         speedometer = FXGL.spawn("speedometer", -200,-200);
+        altimeter_circle = FXGL.spawn("altimeter_circle", -200,-300);
+        altimeter = FXGL.spawn("altimeter",-200,-900);
+
+
 
 
 
@@ -143,6 +140,12 @@ public class FallingPenguinGame extends GameApplication {
         speedText.setStrokeWidth(1);
         getGameScene().addUINode(speedText);
 
+        altituteText = getUIFactoryService().newText("", Color.GREEN, 16);
+        altituteText.setTranslateX(1055);
+        altituteText.setTranslateY(250);
+        getGameScene().addUINode(altituteText);
+
+
 
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
@@ -169,10 +172,11 @@ public class FallingPenguinGame extends GameApplication {
         if (penguin.getX() >= 0) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
-            speedometer.setX(penguinX+425);
-            speedometer.setY(penguinY-230);
-            speed_curve.setX(penguinX+425);
-            speed_curve.setY(penguinY-375);
+            speedometer.setX(penguinX+425);altimeter.setX(penguinX+200);
+            speedometer.setY(penguinY-230);altimeter.setY(penguinY-300);
+            speed_curve.setX(penguinX+425);altimeter_circle.setX(penguinX+275);
+            speed_curve.setY(penguinY-375);altimeter_circle.setY(penguinY-300);
+
             // Get the width and height  of the game window
             double windowWidth = getAppWidth();
             double windowHeight = getAppHeight();
@@ -215,8 +219,10 @@ public class FallingPenguinGame extends GameApplication {
 
         //speedometer
         speedometer.rotateBy(((Math.sqrt((Math.pow(penguin_x_velocity(),2))+Math.pow(penguin_y_velocity(),2)))*90)/120);
-
         speedText.setText("speed:" + Math.round(penguin_velocity())+" km/h");
+        //Alitude seems to top out at -22974 units
+        altimeter.rotateBy(((altimeter_height()*360)/20000)+90);
+        altituteText.setText("altitude:" + (-1*penguin.getY()+2974));
 
 
         //Restarts game when penguin reaches the bottom
@@ -409,6 +415,10 @@ public class FallingPenguinGame extends GameApplication {
     public static double get_penguin_area(){
         double p_area = getPhysicsWorld().toMeters(penguin.getWidth()*penguin.getHeight());
         return p_area;
+    }
+
+    public static double altimeter_height(){
+        return (-1*penguin.getY()+2974);
     }
 }
 

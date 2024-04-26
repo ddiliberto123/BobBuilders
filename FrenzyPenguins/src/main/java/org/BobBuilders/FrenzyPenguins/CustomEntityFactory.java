@@ -354,6 +354,49 @@ public class CustomEntityFactory implements EntityFactory {
     }
 
 
+    @Spawns("altimeter")
+    public Entity altimeter(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        double width = 75;
+        double height = 5;
+        Rectangle rectangle = new Rectangle(width, height);
+
+        rectangle.setFill(Color.RED);
+        rectangle.setOpacity(1);
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(rectangle)
+                .rotationOrigin(75,0)
+                .with(physics)
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
+
+    @Spawns("altimeter_circle")
+    public Entity altimeter_circle(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        Circle altimeter = new Circle(75);
+        altimeter.setFill(Color.BLACK);
+        altimeter.setStroke(Color.GRAY);
+        altimeter.setStrokeWidth(5);
+        Entity entity = entityBuilder()
+                .from(data)
+                .type(GROUND)
+                .viewWithBBox(altimeter)
+                .rotationOrigin(75,5)
+                .with(physics)
+                .build();
+        FixtureDef fix = new FixtureDef();
+        fix.setDensity(0.1f);
+        physics.setFixtureDef(fix);
+        return entity;
+    }
+
+
     public static String fix_for_Mac() {
         if ((System.getProperty("os.name").toLowerCase()).contains("mac")) {
             String home = System.getProperty("user.home");
