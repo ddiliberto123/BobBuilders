@@ -23,6 +23,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
@@ -44,7 +45,6 @@ import static org.BobBuilders.FrenzyPenguins.Physics.penguin_velocity;
 
 public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
-    private Entity bottom;
     private Text distanceText;
     private double beginPoints = 0;
     private double angle;
@@ -57,8 +57,7 @@ public class FallingPenguinGame extends GameApplication {
     private double cloud2SpawnInterval = 0.5;
     private boolean beginAnimation = false;
     private static boolean spaceKeyPressed = false;
-    private ImageView penguinViewJ;
-    private ImageView penguinViewJactive;
+    private Text welcomeText;
 
     public static void main(String[] args) {
         Database.dbInit();
@@ -90,23 +89,13 @@ public class FallingPenguinGame extends GameApplication {
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
-//        Image backgroundImage = new Image("file:"+fix_for_Mac()+"clouds.jpg");
-//        BackgroundImage background = new BackgroundImage(
-//                backgroundImage,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundPosition.CENTER,
-//                new BackgroundSize(
-//                        BackgroundSize.AUTO,
-//                        BackgroundSize.AUTO,
-//                        false,
-//                        false,
-//                        true,
-//                        true
-//                )
-//        );
-//        BackgroundFill backgroundFill = new BackgroundFill(Color.CORNFLOWERBLUE,null,null);
-//        getGameScene().getRoot().setBackground(new Background(backgroundFill));
+
+        welcomeText = new Text("Instructions:\nChange angle: A and D\nUse jetpack: Space key\nBegin: Right key\nAnd don't forget to have fun!");
+        welcomeText.setFill(Color.WHITE);
+        welcomeText.setTranslateX(350);
+        welcomeText.setTranslateY(100);
+        welcomeText.setFont(Font.font(25));
+        getGameScene().addUINode(welcomeText);
 
         //Spawn moving background
         for (int i = 0; i < 20; i++) {
@@ -147,6 +136,10 @@ public class FallingPenguinGame extends GameApplication {
         Inventory inventory = Inventory.getInstance();
 
         super.onUpdate(tpf);
+
+        if(penguin.getX() != 10){
+            welcomeText.setVisible(false);
+        }
 
         // Define the transition heights where the color will start to change
         double transitionHeight1 = -500;
@@ -221,13 +214,6 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setY(0);
         }
 
-//        //Restarts game when penguin reaches the bottom
-//        if (penguin.getY() >= 2970) {
-//            // Update the points based on the distance traveled
-//            inventory.addPoints((int) penguin.getX());
-//            //goToMenu();
-//            jetpackTimeElapsed = 0;
-//        }
         if (penguin.getX() >= 151000) {
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
         }
@@ -293,26 +279,6 @@ public class FallingPenguinGame extends GameApplication {
         System.out.println(spaceKeyPressed);
 
     }
-
-//        @Override
-//        protected void initPhysics () {
-//            //Collision handler for penguin and bottom
-//            FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, EXIT) {
-//                //Closes application once penguin hits bottom
-//                //This is temporary for us to build upon the surface which the penguin will eventually collide with
-//                @Override
-//                protected void onCollisionBegin(Entity penguin, Entity bottom) {
-//                    getGameController().gotoMainMenu();
-//                }
-//            });
-//            FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PENGUIN, GROUND) {
-//                @Override
-//                protected void onCollision(Entity a, Entity b) {
-//                    super.onCollision(a, b);
-//                System.out.println("I AM COLLIDING WITH THE CURVE HELLO!");
-//                }
-//            });
-//        }
 
     @Override
     protected void initInput() {

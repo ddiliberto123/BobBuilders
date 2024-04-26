@@ -36,7 +36,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
 
 
 public class CustomMainMenu extends FXGLMenu {
-    private static final Color SELECTED_COLOR = Color.BLACK;
+    private static final Color SELECTED_COLOR = Color.WHITE;
     private static final Color NOT_SELECTED_COLOR = Color.GRAY;
     private VBox vboxOptions;
     private VBox vboxMainMenu;
@@ -114,8 +114,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 menuUsernameText);
-        vboxMainMenu.setTranslateX(100);
-        vboxMainMenu.setTranslateY(450);
+        vboxMainMenu.setTranslateX(75);
+        vboxMainMenu.setTranslateY(500);
 
         //Creates a vbox for options
         vboxOptions = new VBox(10,
@@ -125,8 +125,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 optionsUsernameText);
-        vboxOptions.setTranslateX(100);
-        vboxOptions.setTranslateY(450);
+        vboxOptions.setTranslateX(75);
+        vboxOptions.setTranslateY(500);
 
         //Account
         customTextField usernameField = new customTextField("Username");
@@ -187,8 +187,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 accountUsernameText);
-        vboxAccount.setTranslateX(100);
-        vboxAccount.setTranslateY(450);
+        vboxAccount.setTranslateX(75);
+        vboxAccount.setTranslateY(500);
 
         vboxLoggedIn = new VBox(10,
                 btnLogout,
@@ -196,8 +196,8 @@ public class CustomMainMenu extends FXGLMenu {
                 new Text(""),
                 new LineSeparator(),
                 loggedInUsernameText);
-        vboxLoggedIn.setTranslateX(100);
-        vboxLoggedIn.setTranslateY(450);
+        vboxLoggedIn.setTranslateX(75);
+        vboxLoggedIn.setTranslateY(500);
 
         menuUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
         optionsUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
@@ -380,9 +380,9 @@ public class CustomMainMenu extends FXGLMenu {
             this.action = action;
 
             //Calls the UI factory apart of FXGL to create a text box
-            text = FXGL.getUIFactoryService().newText(name, Color.BLACK, 20.0);
+            text = FXGL.getUIFactoryService().newText(name, Color.WHITE, 20.0);
             //This is the rectangle next to the buttons that show its been selected (color of button also changes)
-            selector = new Rectangle(8, 20, Color.BLACK);
+            selector = new Rectangle(8, 20, Color.WHITE);
             selector.setTranslateX(-20);
             //Sets it visible if its focused
             selector.visibleProperty().bind(focusedProperty());
@@ -423,8 +423,8 @@ public class CustomMainMenu extends FXGLMenu {
 
         public LineSeparator() {
             var gradient = new LinearGradient(0, 0, 0.5, 0.5, true, CycleMethod.NO_CYCLE,
-                    new Stop(0, Color.BLACK),
-                    new Stop(0.5, Color.GRAY),
+                    new Stop(0, Color.GRAY),
+                    new Stop(0.5, Color.WHITE),
                     new Stop(2.0, Color.TRANSPARENT));
 
             line.setFill(gradient);
