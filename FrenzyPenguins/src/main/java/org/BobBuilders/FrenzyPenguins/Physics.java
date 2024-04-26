@@ -31,8 +31,7 @@ public class Physics {
         return Math.asin(penguin_y_velocity()/penguin_x_velocity());
     }
 
-    public static Vec2 Lift(double p_angle){
-
+    public static double angle_fix(double p_angle){
         p_angle = p_angle % 360;
         if (p_angle < 0) {
             p_angle += 360;
@@ -40,20 +39,35 @@ public class Physics {
         if(p_angle > 90 && p_angle <=270){
             p_angle = 180 - p_angle;
         }
-        double d_angle = p_angle + 180;
+        return p_angle;
+    }
+    public static Vec2 Lift(double p_angle){
+        p_angle = angle_fix(p_angle);
+        //calculating lift
+        double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1));
+        Vec2 lift_vector = new Vec2(Math.floor(lift*Math.sin((Math.toRadians(p_angle)))),Math.floor(lift*(Math.cos(Math.toRadians(p_angle)))));
+        return lift_vector;
+    }
+    public static Vec2 Drag(double p_angle){
+        double d_angle = angle_fix(p_angle);
+        d_angle = d_angle + 180;
         d_angle = d_angle%360;
         if (d_angle < 0) {
             d_angle += 360;
         }
-
-        //calculating lift
-        double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1));
-        Vec2 lift_vector = new Vec2(Math.floor(lift*Math.sin((Math.toRadians(p_angle)))),Math.floor(lift*(Math.cos(Math.toRadians(p_angle)))));
         double drag = (temp_drag_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1);
         Vec2 drag_vector = new Vec2(Math.floor(drag*(Math.cos(Math.toRadians(d_angle)))),Math.floor(drag*(Math.sin(Math.toRadians(d_angle)))));
-        Vec2 final_flight_vector = new Vec2(0.016*(lift_vector.x+drag_vector.x),0.016*(lift_vector.y+drag_vector.y));
+        return drag_vector;
+
+    }
+
+    public static Vec2 Flight_vectors(double angle){
+        Vec2 lift = Lift(angle);
+        Vec2 drag = Drag(angle);
+        Vec2 final_flight_vector = new Vec2(0.016*(lift.x+drag.x),0.016*(lift.y+drag.y));
         return final_flight_vector;
     }
+
 
     //It might not be worth it to model buoyancy, considering that we still do not understand the scale idk...
     public static Vec2 Buoyancy(double p_angle){
@@ -65,7 +79,7 @@ public class Physics {
 
     //Very painless way of implementing "buoyancy"
     public static Vec2 B_mockup(double p_angle){
-        double vx = penguin_x_velocity();
+        double vx = Math.round(penguin_x_velocity()/120);
         Vec2 fake_buoyancy = new Vec2();
         if(vx!=0){
             double force = Math.random()*15;

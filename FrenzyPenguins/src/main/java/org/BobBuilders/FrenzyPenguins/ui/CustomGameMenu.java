@@ -14,6 +14,7 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.*;
+
 import static org.BobBuilders.FrenzyPenguins.CustomEntityFactory.fix_for_Mac;
 
 
@@ -55,7 +56,7 @@ public class CustomGameMenu extends FXGLMenu {
 
 
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
-        back.setFill(Color.WHITESMOKE);
+        back.setFill(Color.LIGHTBLUE);
         StackPane stack = new StackPane();
         getContentRoot().setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, CornerRadii.EMPTY, null)));
         Text title = FXGL.getUIFactoryService().newText("Store", Color.BLACK, 70);
@@ -90,9 +91,9 @@ public class CustomGameMenu extends FXGLMenu {
 
 
         //Creates the images for view of equipment
-        Image jet = new Image("file:"+fix_for_Mac()+"jetpack.png");
-        Image glider = new Image("file:"+fix_for_Mac()+"glider.png");
-        Image sled = new Image("file:"+fix_for_Mac()+"sled.png");
+        Image jet = new Image("file:" + fix_for_Mac() + "jetpack.png");
+        Image glider = new Image("file:" + fix_for_Mac() + "glider.png");
+        Image sled = new Image("file:" + fix_for_Mac() + "sled.png");
 
         ImageView jetView = new ImageView(jet);
         ImageView jetViewEquipped = new ImageView(jet);
@@ -243,7 +244,6 @@ public class CustomGameMenu extends FXGLMenu {
             setAlignment(Pos.CENTER_LEFT);
             setFocusTraversable(true);
             getChildren().addAll(selector, text);
-
         }
     }
 
@@ -323,4 +323,3 @@ public class CustomGameMenu extends FXGLMenu {
         });
     }
 }
-
