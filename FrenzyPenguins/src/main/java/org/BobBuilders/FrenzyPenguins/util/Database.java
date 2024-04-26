@@ -10,6 +10,8 @@ public class Database {
 
     private static final String CONNECTION_URL = "jdbc:sqlite:FrenzyPenguins.db";
     public static final String USERNAME_REQUEST = "SELECT username FROM Users WHERE id = ?";
+
+    public static final String ALL_ID_REQUEST = "SELECT id FROM Users";
     public static final String USERNAME = "username";
     public static final String INVENTORY = "inventory";
 
@@ -43,7 +45,7 @@ public class Database {
                             "username TEXT NOT NULL UNIQUE, " +
                             "password TEXT, " +
                             "admin INTEGER NOT NULL, " +
-                            "PRIMARY KEY(id AUTOINCREMENT)" +
+                            "PRIMARY KEY(id AUTOINCREMENT) " +
                             ");"
             );
 
@@ -53,7 +55,7 @@ public class Database {
                             "user_id INTEGER NOT NULL UNIQUE, " +
                             "inventory BLOB, " +
                             "PRIMARY KEY(id AUTOINCREMENT), " +
-                            "FOREIGN KEY(user_id) REFERENCES Users(id)" +
+                            "FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE" +
                             ");"
             );
         } catch (SQLException ex) {
@@ -199,6 +201,22 @@ public class Database {
                 System.out.println("No user found!");
                 return false;
             }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static void delete(int userId) {
+        if (userId <= 0){
+            throw new RuntimeException("Invalid UserID");
+        }
+
+        String statement = "DELETE FROM Users WHERE id = ?";
+        try (Connection con = Database.connect()) {
+            PreparedStatement pstatement = con.prepareStatement(statement);
+            pstatement.setInt(1,userId);
+            pstatement.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             throw new RuntimeException(ex);

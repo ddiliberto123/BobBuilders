@@ -14,6 +14,7 @@ import java.sql.SQLException;
 @Data
 @Getter
 public class TableData {
+    private int userId;
     private String username;
     private int maxDistanceFlown;
     private int totalDistanceFlown;
@@ -22,6 +23,7 @@ public class TableData {
 
     public TableData(int userId){
         try (Connection con = Database.connect()){
+            this.userId = userId;
             PreparedStatement preparedStatement = con.prepareStatement(Database.USERNAME_REQUEST);
             preparedStatement.setInt(1,userId);
             ResultSet rs = preparedStatement.executeQuery();

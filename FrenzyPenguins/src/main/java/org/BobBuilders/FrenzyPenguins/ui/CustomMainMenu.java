@@ -5,11 +5,17 @@ import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -28,6 +34,7 @@ import org.BobBuilders.FrenzyPenguins.util.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 
 
 public class CustomMainMenu extends FXGLMenu {
@@ -38,12 +45,14 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxAccount;
     private VBox vboxLoggedIn;
     private VBox vboxAdminMenu = new VBox();
+
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
 
+        createAdminMenu();
 
         if (User.getInstance().getUserId() == 0) {
             usernameProperty.set("Not Logged in");
@@ -91,53 +100,13 @@ public class CustomMainMenu extends FXGLMenu {
             vboxLoggedIn.setVisible(false);
         });
 
-
         customMenuButton btnAdmin = new customMenuButton("Admin Menu", () -> {
             vboxLoggedIn.setVisible(false);
             vboxAdminMenu.setVisible(true);
             vboxAdminMenu.setAlignment(Pos.CENTER);
             vboxAdminMenu.setTranslateX(200);
             vboxAdminMenu.setTranslateY(100);
-            Text text = new Text("ADMIN");
-            TableView<TableData> table = new TableView<>();
 
-            TableColumn usernameColumn = new TableColumn<>("Username");
-            usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
-
-            TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
-            totalDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistanceFlown"));
-
-            TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
-            maxDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("maxDistanceFlown"));
-
-            TableColumn networthColumn = new TableColumn<>("Networth");
-            networthColumn.setCellValueFactory(new PropertyValueFactory<>("networth"));
-
-            TableColumn deleteColumn = new TableColumn<>("Delete");
-            deleteColumn.setCellValueFactory(new PropertyValueFactory<>("delete"));
-
-            table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);
-
-            try (Connection con = Database.connect()) {
-                String idStatement = "SELECT id FROM Users";
-                String usernameStatement = "SELECT username FROM Users WHERE id = ?";
-                String inventoryStatement = "SELECT inventory FROM Inventories WHERE user_id = ?";
-                ResultSet allUsers = con.createStatement().executeQuery(idStatement);
-                ArrayList<Integer> allUserIds = new ArrayList<>();
-                while (allUsers.next()){
-                    allUserIds.add(allUsers.getInt(1));
-                }
-
-                for (int id : allUserIds) {
-                    table.getItems().add(new TableData(id));
-                }
-
-
-            } catch (SQLException ex) {
-
-            }
-
-            vboxAdminMenu.getChildren().addAll(text, table);
         });
 
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
@@ -386,5 +355,151 @@ public class CustomMainMenu extends FXGLMenu {
             line.setFill(gradient);
             getChildren().add(line);
         }
+    }
+
+    private void createAdminMenu(){
+        vboxAdminMenu.setAlignment(Pos.CENTER);
+        vboxAdminMenu.setSpacing(10);
+
+        Text header = FXGL.getUIFactoryService().newText("Admin Menu");
+        HBox textfieldHbox = new HBox();
+        TextField searchField = new TextField();
+        searchField.setPromptText("Keywords...");
+        textfieldHbox.getChildren().addAll(FXGL.getUIFactoryService().newText("Search User", Color.BLACK,14), searchField);
+        textfieldHbox.setSpacing(10);
+        textfieldHbox.setAlignment(Pos.CENTER_LEFT);
+
+
+        TableView<TableData> table = new TableView<>();
+
+        TableColumn usernameColumn = new TableColumn<>("Username");
+        usernameColumn.setPrefWidth(200);
+
+        TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
+        totalDistanceFlownColumn.setPrefWidth(200);
+
+        TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
+        maxDistanceFlownColumn.setPrefWidth(200);
+
+        TableColumn networthColumn = new TableColumn<>("Networth");
+        networthColumn.setPrefWidth(150);
+
+        TableColumn deleteColumn = new TableColumn<>("Delete");
+        deleteColumn.setPrefWidth(50);
+        deleteColumn.setStyle("-fx-alignment: CENTER;");
+
+        table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);
+
+        ObservableList<TableData> tableList = FXCollections.observableArrayList();
+        try (Connection con = Database.connect()) {
+            ResultSet allUsers = con.createStatement().executeQuery(Database.ALL_ID_REQUEST);
+            while (allUsers.next()){
+                tableList.add(new TableData(allUsers.getInt("id")));
+            }
+
+            usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+            totalDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistanceFlown"));
+            maxDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("maxDistanceFlown"));
+            networthColumn.setCellValueFactory(new PropertyValueFactory<>("networth"));
+            deleteColumn.setCellValueFactory(new PropertyValueFactory<>("delete"));
+
+            table.setItems(tableList);
+            FilteredList<TableData> filteredList = new FilteredList<>(tableList, b -> true);
+
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                filteredList.setPredicate(TableData -> {
+                    //If no search was made
+                    if (newValue.isEmpty() || newValue.isBlank() || newValue == null){
+                        return true;
+                    }
+                    String searchKeyword = newValue.toLowerCase();
+
+                    if (TableData.getUsername().toLowerCase().indexOf(searchKeyword) > -1){
+                        return true; //Match found
+                    } else if (String.valueOf(TableData.getTotalDistanceFlown()).indexOf(searchKeyword) > -1){
+                        return true;
+                    } else if (String.valueOf(TableData.getMaxDistanceFlown()).indexOf(searchKeyword) > -1) {
+                        return true;
+                    } else if (String.valueOf(TableData.getNetworth()).indexOf(searchKeyword) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            });
+
+            SortedList<TableData> sortedList = new SortedList<>(filteredList);
+
+            sortedList.comparatorProperty().bind(table.comparatorProperty());
+
+            table.setItems(sortedList);
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+
+        HBox bottomButtons = new HBox();
+        customMenuButton back = new customMenuButton("Back", () -> {
+            vboxAdminMenu.setVisible(false);
+            vboxLoggedIn.setVisible(true);
+        });
+        customMenuButton delete = new customMenuButton("Delete", () -> {
+            boolean adminReference = false;
+            ArrayList<TableData> usersToDelete = new ArrayList<>();
+
+            for (TableData e : tableList) {
+                if (e.getDelete().isSelected()) {
+                    if (Database.getAdminStatus(e.getUserId())) {
+                        adminReference = true;
+                        break;
+                    }
+                    usersToDelete.add(e);
+                }
+            }
+            if (adminReference) {
+                Alert self = new Alert(
+                        Alert.AlertType.WARNING,
+                        "You can not delete an admin account.\nNice try :P",
+                        ButtonType.OK);
+                self.setTitle("Admin Account Detected");
+                self.setHeaderText("Can not delete admins!");
+                self.showAndWait();
+            } else {
+                Alert confirmation = new Alert(
+                        Alert.AlertType.WARNING,
+                        "",
+                        ButtonType.YES,ButtonType.CANCEL
+                );
+                confirmation.setTitle("Warning!");
+                confirmation.setHeaderText("Are you sure you want to delete ");
+                if (usersToDelete.size() > 1) {
+                    confirmation.setHeaderText(confirmation.getHeaderText() + "the users?");
+                    confirmation.setContentText(usersToDelete.size() + " users will be deleted, are you sure? ");
+                } else {
+                    confirmation.setHeaderText(confirmation.getHeaderText() + "the user?");
+                    confirmation.setContentText(usersToDelete.size() + " user will be deleted, are you sure? ");
+                }
+                Optional<ButtonType> result = confirmation.showAndWait();
+                if (!result.isPresent()){
+                    // alert exited
+                } else if (result.get() == ButtonType.YES){
+                    for (TableData e : usersToDelete) {
+                        Database.delete(e.getUserId());
+                        tableList.remove(e);
+                    }
+
+                } else if (result.get() == ButtonType.CANCEL) {
+                    // cancel button is pressed
+                }
+            }
+
+
+        });
+        bottomButtons.getChildren().addAll(back,delete);
+        bottomButtons.setSpacing(400);
+
+        vboxAdminMenu.getChildren().addAll(header, textfieldHbox, table, bottomButtons);
+
+
     }
 }
