@@ -54,6 +54,7 @@ public class FallingPenguinGame extends GameApplication {
     private double cloud2SpawnTimer = 0;
     private double cloud1SpawnInterval = 0.5;
     private double cloud2SpawnInterval = 0.5;
+    private double floorTimer;
     private boolean beginAnimation = false;
     private static boolean spaceKeyPressed = false;
     private Text welcomeText;
@@ -218,6 +219,18 @@ public class FallingPenguinGame extends GameApplication {
         }
 
 
+        if(penguin.getY() > (3000 - 50)){
+            floorTimer += tpf;
+            if(floorTimer >= 3){
+                inventory.addPoints((int)penguin.getX());
+                goToMenu();
+                floorTimer = 0;
+            }
+        }
+        if(penguin.getY() < (3000 - 50)){
+            floorTimer = 0;
+        }
+
         //Temporary until full floor is constructed
         if (!physics.isMoving() && beginAnimation) {
             inventory.addPoints((int) (penguin.getX()));
@@ -275,8 +288,12 @@ public class FallingPenguinGame extends GameApplication {
                 cloud2SpawnTimer = 0;
             }
         }
-        System.out.println(spaceKeyPressed);
 
+        //Stops jetpack animation once jetpack timer surpasses 5 seconds
+        if(jetpackTimeElapsed >= 5){
+            CustomEntityFactory.penguinJet.setVisible(true);
+            CustomEntityFactory.penguinJetActive.setVisible(false);
+        }
     }
 
     @Override
@@ -296,7 +313,7 @@ public class FallingPenguinGame extends GameApplication {
 
         getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                if (store.isEquipJetpack() && penguin.getX() >= 1000) {
+                if (store.isEquipJetpack() && penguin.getX() >= 1000 && jetpackTimeElapsed <= 5) {
                     spaceKeyPressed = true;  // Set the flag to true when space key is released
                     CustomEntityFactory.penguinJet.setVisible(false);
                     CustomEntityFactory.penguinJetActive.setVisible(true);
