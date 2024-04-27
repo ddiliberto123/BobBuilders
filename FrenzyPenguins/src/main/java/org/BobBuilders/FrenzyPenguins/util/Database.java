@@ -1,6 +1,20 @@
 package org.BobBuilders.FrenzyPenguins.util;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.collections.transformation.SortedList;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.BobBuilders.FrenzyPenguins.Inventory;
+import org.BobBuilders.FrenzyPenguins.data.TableData;
 import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.sqlite.SQLiteConfig;
 
@@ -8,20 +22,32 @@ import java.sql.*;
 
 public class Database {
 
-    private static final String CONNECTION_FILE = "jdbc:sqlite:FrenzyPenguins.db";
+    private static final String CONNECTION_URL = "jdbc:sqlite:FrenzyPenguins.db";
+    public static final String USERNAME_REQUEST = "SELECT username FROM Users WHERE id = ?";
 
+    public static final String ALL_ID_REQUEST = "SELECT id FROM Users";
+    public static final String USERNAME = "username";
+    public static final String INVENTORY = "inventory";
+
+    /**
+     * Connects to the database
+     * @return a connection with the database
+     */
     public static Connection connect() {
         Connection con = null;
         try {
             SQLiteConfig config = new SQLiteConfig();
             config.enforceForeignKeys(true);
-            con = DriverManager.getConnection(CONNECTION_FILE, config.toProperties());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            con = DriverManager.getConnection(CONNECTION_URL, config.toProperties());
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
         return con;
     }
 
+    /**
+     * Creates all default tables inside the database if they don't already exist
+     */
     public static void dbInit() {
         try (Connection con = Database.connect()) {
             Statement statement = con.createStatement();
@@ -32,7 +58,8 @@ public class Database {
                             "id INTEGER NOT NULL, " +
                             "username TEXT NOT NULL UNIQUE, " +
                             "password TEXT, " +
-                            "PRIMARY KEY(id AUTOINCREMENT)" +
+                            "admin INTEGER NOT NULL, " +
+                            "PRIMARY KEY(id AUTOINCREMENT) " +
                             ");"
             );
 
@@ -42,7 +69,7 @@ public class Database {
                             "user_id INTEGER NOT NULL UNIQUE, " +
                             "inventory BLOB, " +
                             "PRIMARY KEY(id AUTOINCREMENT), " +
-                            "FOREIGN KEY(user_id) REFERENCES Users(id)" +
+                            "FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE" +
                             ");"
             );
         } catch (SQLException ex) {
@@ -51,13 +78,20 @@ public class Database {
         }
     }
 
+    /**
+     * Creates and Inserts a user into the database
+     * @param username the username of the user
+     * @param password the password of the user
+     * @return true if user created <br> false if user not created
+     */
     public static boolean createUser(String username, String password) {
-        String statement = "INSERT INTO Users (username,password) VALUES (?,?)";
+        String statement = "INSERT INTO Users (username,password,admin) VALUES (?,?,?)";
 
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
             pstatement.setString(1, username);
             pstatement.setString(2, password);
+            pstatement.setInt(3, 0);
             try {
                 pstatement.executeUpdate();
                 return true;
@@ -71,19 +105,23 @@ public class Database {
         }
     }
 
+    /**
+     * Retrieves the user's userId
+     * @param username the username of the user
+     * @param password the password of the user
+     * @return id of the user <br> -1 if user non existant
+     */
     public static int loginUser(String username, String password) {
-        String statement = "SELECT id FROM Users WHERE username = ? AND password = ?";
 
+        String statement = "SELECT id FROM Users WHERE username = ? AND password = ?";
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
             pstatement.setString(1, username);
             pstatement.setString(2, password);
             ResultSet rs = pstatement.executeQuery();
             if (rs.getInt("id") != 0) {
-                System.out.println("ID" + rs.getInt("id"));
                 return rs.getInt("id");
             } else {
-                System.out.println("ID" + rs.getInt("id"));
                 return -1;
             }
         } catch (SQLException ex) {
@@ -92,9 +130,17 @@ public class Database {
         }
     }
 
+    /**
+     * Assigns and saves an inventory to a user
+     * @param userId userId of the user
+     * @param inventory inventory to be attached to the user
+     */
     public static void save(int userId, Inventory inventory) {
-        String statement = "SELECT id FROM Inventories WHERE user_id = ?";
+        if (userId <= 0){
+            throw new RuntimeException("Invalid UserID");
+        }
 
+        String statement = "SELECT id FROM Inventories WHERE user_id = ?";
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
             pstatement.setInt(1, userId);
@@ -119,7 +165,16 @@ public class Database {
         }
     }
 
-    public static Inventory load(int userId) {
+    /**
+     * Loads the inventory of a user
+     * @param userId userId of the user
+     * @return the inventory of the user
+     */
+    public static Inventory loadInventory(int userId) {
+        if (userId <= 0){
+            throw new RuntimeException("Invalid UserID");
+        }
+
         String statement = "SELECT inventory, id FROM Inventories WHERE user_id = ?";
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
@@ -137,4 +192,124 @@ public class Database {
         }
     }
 
+    /**
+     * Retrieves the admin status of a user
+     * @param userId userId of the user
+     * @return true if an admin <br> false if not an admin
+     */
+    public static boolean getAdminStatus(int userId) {
+        if (userId <= 0){
+            throw new RuntimeException("Invalid UserID");
+        }
+
+        String statement = "SELECT id, admin FROM Users WHERE id = ?";
+        try (Connection con = Database.connect()) {
+            PreparedStatement pstatement = con.prepareStatement(statement);
+            pstatement.setInt(1, userId);
+            ResultSet rs = pstatement.executeQuery();
+            if (rs.getInt("id") != 0) {
+                return rs.getInt("admin") != 0;
+            } else {
+                System.out.println("No user found!");
+                return false;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static void delete(int userId) {
+        if (userId <= 0){
+            throw new RuntimeException("Invalid UserID");
+        }
+
+        String statement = "DELETE FROM Users WHERE id = ?";
+        try (Connection con = Database.connect()) {
+            PreparedStatement pstatement = con.prepareStatement(statement);
+            pstatement.setInt(1,userId);
+            pstatement.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Fetches all users and userdata and puts their data into a table
+     * @param table where all the data is displayed
+     * @param searchField the search bar
+     * @return {@code ObervableList<TableData>} that contains all rows of the tableview
+     */
+    public static ObservableList<TableData> loadTable(TableView<TableData> table, TextField searchField) {
+        TableColumn usernameColumn = new TableColumn<>("Username");
+        usernameColumn.setPrefWidth(200);
+
+        TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
+        totalDistanceFlownColumn.setPrefWidth(200);
+
+        TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
+        maxDistanceFlownColumn.setPrefWidth(200);
+
+        TableColumn networthColumn = new TableColumn<>("Networth");
+        networthColumn.setPrefWidth(150);
+
+        TableColumn deleteColumn = new TableColumn<>("Delete");
+        deleteColumn.setPrefWidth(50);
+        deleteColumn.setStyle("-fx-alignment: CENTER;");
+
+        table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);
+        ObservableList<TableData> tableList = FXCollections.observableArrayList();
+        try (Connection con = Database.connect()) {
+            //Gets every user id
+            ResultSet allUsers = con.createStatement().executeQuery(Database.ALL_ID_REQUEST);
+            while (allUsers.next()) {
+                //Adds every user to the list which contains all the rows
+                tableList.add(new TableData(allUsers.getInt("id")));
+            }
+            usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+            totalDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistanceFlown"));
+            maxDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("maxDistanceFlown"));
+            networthColumn.setCellValueFactory(new PropertyValueFactory<>("networth"));
+            deleteColumn.setCellValueFactory(new PropertyValueFactory<>("delete"));
+
+            //Adds the list to the table
+            table.setItems(tableList);
+
+            //For the search bar
+            FilteredList<TableData> filteredList = new FilteredList<>(tableList, b -> true);
+
+            //Checks if something is searched
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                filteredList.setPredicate(TableData -> {
+                    //If no search was made
+                    if (newValue.isEmpty() || newValue.isBlank() || newValue == null) {
+                        return true;
+                    }
+                    String searchKeyword = newValue.toLowerCase();
+
+                    //-1 if non existant
+                    if (TableData.getUsername().toLowerCase().indexOf(searchKeyword) > -1) {
+                        return true; //Match found
+                    } else if (String.valueOf(TableData.getTotalDistanceFlown()).indexOf(searchKeyword) > -1) {
+                        return true;
+                    } else if (String.valueOf(TableData.getMaxDistanceFlown()).indexOf(searchKeyword) > -1) {
+                        return true;
+                    } else if (String.valueOf(TableData.getNetworth()).indexOf(searchKeyword) > -1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            });
+
+            SortedList<TableData> sortedList = new SortedList<>(filteredList);
+            sortedList.comparatorProperty().bind(table.comparatorProperty());
+            table.setItems(sortedList);
+            return tableList;
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
 }

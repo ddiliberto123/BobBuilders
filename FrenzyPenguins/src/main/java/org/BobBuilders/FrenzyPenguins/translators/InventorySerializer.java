@@ -7,6 +7,9 @@ import org.BobBuilders.FrenzyPenguins.Inventory;
 
 import java.io.IOException;
 
+/**
+ * Overrides the serializaton of the {@code Inventory} class
+ */
 public class InventorySerializer extends StdSerializer<Inventory> {
 
     protected InventorySerializer() {
@@ -25,6 +28,9 @@ public class InventorySerializer extends StdSerializer<Inventory> {
         gen.writeStringField("hasSlide", String.valueOf(inventory.isHasSlide()));
         gen.writeStringField("hasGlider", String.valueOf(inventory.isHasGlider()));
         gen.writeStringField("pointsProperty", String.valueOf(inventory.getPointsPropertyValue()));
+        gen.writeStringField("totalDistanceFlown", String.valueOf(inventory.getTotalDistanceFlown()));
+        gen.writeStringField("maxDistanceFlown", String.valueOf(inventory.getMaxDistanceFlown()));
+        gen.writeStringField("networth", String.valueOf(inventory.getNetworth()));
         gen.writeEndObject();
     }
 }

@@ -89,7 +89,6 @@ public class FallingPenguinGame extends GameApplication {
         gameSettings.setMainMenuEnabled(true);
         gameSettings.setTitle("Game");
         gameSettings.setVersion("1.0");
-
     }
 
     @Override
@@ -313,9 +312,7 @@ public class FallingPenguinGame extends GameApplication {
 
         //Restarts game when penguin reaches the bottom
         if (penguin.getY() >= 2970) {
-            // Update the points based on the distance traveled
-            inventory.addPoints((int) penguin.getX());
-            //goToMenu();
+            physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
             jetpackTimeElapsed = 0;
         }
         if(penguin.getX() >= 500 && penguin.getY() >= 2974){
@@ -324,13 +321,29 @@ public class FallingPenguinGame extends GameApplication {
 
 
         //Temporary until full floor is constructed
-        if (!physics.isMoving() && beginAnimation) {
-            inventory.addPoints((int) (penguin.getX()));
-            goToMenu();
-            beginAnimation = false;
-            jetpackTimeElapsed = 0;
-            //Applies Drag without having a glider equiped
-            physics.applyBodyForceToCenter(Drag(angle));
+        if (penguin.getX() > 1000) {
+            if (!physics.isMoving() && beginAnimation) {
+                double currencyToAdd = penguin.getX() * 0.05;
+
+                //Applies Drag without having a glider equiped
+                physics.applyBodyForceToCenter(Drag(angle));
+                beginAnimation = false;
+                jetpackTimeElapsed = 0;
+
+                //Inventory Stuff
+                inventory.addPoints((int) currencyToAdd);
+                inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
+                if (inventory.getMaxDistanceFlown() < (int) penguin.getX()){
+                    inventory.setMaxDistanceFlown((int) penguin.getX());
+                }
+                inventory.setNetworth(inventory.getNetworth() + (int) currencyToAdd);
+                if (User.getInstance().getUserId() != 0){
+                    Database.save(User.getInstance().getUserId(), inventory);
+                }
+
+                goToMenu();
+                
+            }
         }
 
         angle = penguin.getRotation();
