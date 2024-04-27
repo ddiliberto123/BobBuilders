@@ -113,7 +113,7 @@ public class CustomMainMenu extends FXGLMenu {
             vboxAdminMenu.getChildren().remove(this.table);
             //Requeries - needed if a user is created after the admin menu is initialized
             this.table = new TableView<>();
-            Database.loadTable(this.table,this.searchField);
+            this.tableList = Database.loadTable(this.table,this.searchField);
             //Inserts new table into the vbox
             vboxAdminMenu.getChildren().add(2,this.table);
         });
@@ -377,7 +377,8 @@ public class CustomMainMenu extends FXGLMenu {
         textfieldHbox.setAlignment(Pos.CENTER_LEFT);
 
         //Defining the Table
-        ObservableList<TableData> tableList = Database.loadTable(this.table,this.searchField);
+        this.tableList = Database.loadTable(this.table,this.searchField);
+        System.out.println(tableList);
 
         HBox bottomButtons = new HBox();
         customMenuButton back = new customMenuButton("Back", () -> {
