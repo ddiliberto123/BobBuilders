@@ -1,6 +1,20 @@
 package org.BobBuilders.FrenzyPenguins.util;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.collections.transformation.SortedList;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.BobBuilders.FrenzyPenguins.Inventory;
+import org.BobBuilders.FrenzyPenguins.data.TableData;
 import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.sqlite.SQLiteConfig;
 
@@ -106,10 +120,8 @@ public class Database {
             pstatement.setString(2, password);
             ResultSet rs = pstatement.executeQuery();
             if (rs.getInt("id") != 0) {
-                System.out.println("ID" + rs.getInt("id"));
                 return rs.getInt("id");
             } else {
-                System.out.println("ID" + rs.getInt("id"));
                 return -1;
             }
         } catch (SQLException ex) {
@@ -223,4 +235,81 @@ public class Database {
         }
     }
 
+    /**
+     * Fetches all users and userdata and puts their data into a table
+     * @param table where all the data is displayed
+     * @param searchField the search bar
+     * @return {@code ObervableList<TableData>} that contains all rows of the tableview
+     */
+    public static ObservableList<TableData> loadTable(TableView<TableData> table, TextField searchField) {
+        TableColumn usernameColumn = new TableColumn<>("Username");
+        usernameColumn.setPrefWidth(200);
+
+        TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
+        totalDistanceFlownColumn.setPrefWidth(200);
+
+        TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
+        maxDistanceFlownColumn.setPrefWidth(200);
+
+        TableColumn networthColumn = new TableColumn<>("Networth");
+        networthColumn.setPrefWidth(150);
+
+        TableColumn deleteColumn = new TableColumn<>("Delete");
+        deleteColumn.setPrefWidth(50);
+        deleteColumn.setStyle("-fx-alignment: CENTER;");
+
+        table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);
+        ObservableList<TableData> tableList = FXCollections.observableArrayList();
+        try (Connection con = Database.connect()) {
+            //Gets every user id
+            ResultSet allUsers = con.createStatement().executeQuery(Database.ALL_ID_REQUEST);
+            while (allUsers.next()) {
+                //Adds every user to the list which contains all the rows
+                tableList.add(new TableData(allUsers.getInt("id")));
+            }
+            usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+            totalDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistanceFlown"));
+            maxDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("maxDistanceFlown"));
+            networthColumn.setCellValueFactory(new PropertyValueFactory<>("networth"));
+            deleteColumn.setCellValueFactory(new PropertyValueFactory<>("delete"));
+
+            //Adds the list to the table
+            table.setItems(tableList);
+
+            //For the search bar
+            FilteredList<TableData> filteredList = new FilteredList<>(tableList, b -> true);
+
+            //Checks if something is searched
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                filteredList.setPredicate(TableData -> {
+                    //If no search was made
+                    if (newValue.isEmpty() || newValue.isBlank() || newValue == null) {
+                        return true;
+                    }
+                    String searchKeyword = newValue.toLowerCase();
+
+                    //-1 if non existant
+                    if (TableData.getUsername().toLowerCase().indexOf(searchKeyword) > -1) {
+                        return true; //Match found
+                    } else if (String.valueOf(TableData.getTotalDistanceFlown()).indexOf(searchKeyword) > -1) {
+                        return true;
+                    } else if (String.valueOf(TableData.getMaxDistanceFlown()).indexOf(searchKeyword) > -1) {
+                        return true;
+                    } else if (String.valueOf(TableData.getNetworth()).indexOf(searchKeyword) > -1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            });
+
+            SortedList<TableData> sortedList = new SortedList<>(filteredList);
+            sortedList.comparatorProperty().bind(table.comparatorProperty());
+            table.setItems(sortedList);
+            return tableList;
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+    }
 }

@@ -26,7 +26,6 @@ public class InventoryDeserializer extends StdDeserializer<Inventory> {
     @Override
     public Inventory deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         Inventory inventory = Inventory.createInstance();
-        System.out.println(inventory);
         ObjectCodec codec = p.getCodec();
         JsonNode node = codec.readTree(p);
 

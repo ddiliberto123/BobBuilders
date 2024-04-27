@@ -47,6 +47,9 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxAdminMenu = new VBox();
 
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
+    private TableView<TableData> table = new TableView<>();
+    ObservableList<TableData> tableList;
+    TextField searchField = new TextField();
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -70,7 +73,7 @@ public class CustomMainMenu extends FXGLMenu {
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
         customMenuButton btnAccount = new customMenuButton("Account", () -> {
             vboxMainMenu.setVisible(false);
-            if(Objects.equals(menuUsernameText.getText(), "Not Logged in")){
+            if (Objects.equals(menuUsernameText.getText(), "Not Logged in")) {
                 vboxAccount.setVisible(true);
             } else {
                 vboxLoggedIn.setVisible(true);
@@ -106,7 +109,13 @@ public class CustomMainMenu extends FXGLMenu {
             vboxAdminMenu.setAlignment(Pos.CENTER);
             vboxAdminMenu.setTranslateX(200);
             vboxAdminMenu.setTranslateY(100);
-
+            //Removes the old table from the vbox
+            vboxAdminMenu.getChildren().remove(this.table);
+            //Requeries - needed if a user is created after the admin menu is initialized
+            this.table = new TableView<>();
+            Database.loadTable(this.table,this.searchField);
+            //Inserts new table into the vbox
+            vboxAdminMenu.getChildren().add(2,this.table);
         });
 
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
@@ -115,7 +124,6 @@ public class CustomMainMenu extends FXGLMenu {
             vboxLoggedIn.getChildren().remove(btnAdmin);
             usernameProperty.set("Not Logged in");
         });
-
 
 
         //Creates a vbox for the main menu
@@ -167,8 +175,8 @@ public class CustomMainMenu extends FXGLMenu {
                 vboxLoggedIn.setVisible(true);
 
                 user.setAdmin(Database.getAdminStatus(userId));
-                if(user.isAdmin()){
-                    vboxLoggedIn.getChildren().add(0,btnAdmin);
+                if (user.isAdmin()) {
+                    vboxLoggedIn.getChildren().add(0, btnAdmin);
                 }
 
             }
@@ -284,7 +292,6 @@ public class CustomMainMenu extends FXGLMenu {
         public void showTaken() {
             takenSubtext.setVisible(true);
             textField.setStyle("-fx-text-box-border: red; -fx-focus-color: red;");
-            System.out.println("Hello");
         }
 
         public void hideTaken() {
@@ -357,86 +364,20 @@ public class CustomMainMenu extends FXGLMenu {
         }
     }
 
-    private void createAdminMenu(){
+    //Creates admin menu and functionality
+    private void createAdminMenu() {
         vboxAdminMenu.setAlignment(Pos.CENTER);
         vboxAdminMenu.setSpacing(10);
-
+        //Making the UI
         Text header = FXGL.getUIFactoryService().newText("Admin Menu");
         HBox textfieldHbox = new HBox();
-        TextField searchField = new TextField();
-        searchField.setPromptText("Keywords...");
-        textfieldHbox.getChildren().addAll(FXGL.getUIFactoryService().newText("Search User", Color.BLACK,14), searchField);
+        this.searchField.setPromptText("Keywords...");
+        textfieldHbox.getChildren().addAll(FXGL.getUIFactoryService().newText("Search User", Color.BLACK, 14), this.searchField);
         textfieldHbox.setSpacing(10);
         textfieldHbox.setAlignment(Pos.CENTER_LEFT);
 
-
-        TableView<TableData> table = new TableView<>();
-
-        TableColumn usernameColumn = new TableColumn<>("Username");
-        usernameColumn.setPrefWidth(200);
-
-        TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
-        totalDistanceFlownColumn.setPrefWidth(200);
-
-        TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
-        maxDistanceFlownColumn.setPrefWidth(200);
-
-        TableColumn networthColumn = new TableColumn<>("Networth");
-        networthColumn.setPrefWidth(150);
-
-        TableColumn deleteColumn = new TableColumn<>("Delete");
-        deleteColumn.setPrefWidth(50);
-        deleteColumn.setStyle("-fx-alignment: CENTER;");
-
-        table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);
-
-        ObservableList<TableData> tableList = FXCollections.observableArrayList();
-        try (Connection con = Database.connect()) {
-            ResultSet allUsers = con.createStatement().executeQuery(Database.ALL_ID_REQUEST);
-            while (allUsers.next()){
-                tableList.add(new TableData(allUsers.getInt("id")));
-            }
-
-            usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
-            totalDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("totalDistanceFlown"));
-            maxDistanceFlownColumn.setCellValueFactory(new PropertyValueFactory<>("maxDistanceFlown"));
-            networthColumn.setCellValueFactory(new PropertyValueFactory<>("networth"));
-            deleteColumn.setCellValueFactory(new PropertyValueFactory<>("delete"));
-
-            table.setItems(tableList);
-            FilteredList<TableData> filteredList = new FilteredList<>(tableList, b -> true);
-
-            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-                filteredList.setPredicate(TableData -> {
-                    //If no search was made
-                    if (newValue.isEmpty() || newValue.isBlank() || newValue == null){
-                        return true;
-                    }
-                    String searchKeyword = newValue.toLowerCase();
-
-                    if (TableData.getUsername().toLowerCase().indexOf(searchKeyword) > -1){
-                        return true; //Match found
-                    } else if (String.valueOf(TableData.getTotalDistanceFlown()).indexOf(searchKeyword) > -1){
-                        return true;
-                    } else if (String.valueOf(TableData.getMaxDistanceFlown()).indexOf(searchKeyword) > -1) {
-                        return true;
-                    } else if (String.valueOf(TableData.getNetworth()).indexOf(searchKeyword) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }
-                });
-            });
-
-            SortedList<TableData> sortedList = new SortedList<>(filteredList);
-
-            sortedList.comparatorProperty().bind(table.comparatorProperty());
-
-            table.setItems(sortedList);
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            throw new RuntimeException(ex);
-        }
+        //Defining the Table
+        ObservableList<TableData> tableList = Database.loadTable(this.table,this.searchField);
 
         HBox bottomButtons = new HBox();
         customMenuButton back = new customMenuButton("Back", () -> {
@@ -468,7 +409,7 @@ public class CustomMainMenu extends FXGLMenu {
                 Alert confirmation = new Alert(
                         Alert.AlertType.WARNING,
                         "",
-                        ButtonType.YES,ButtonType.CANCEL
+                        ButtonType.YES, ButtonType.CANCEL
                 );
                 confirmation.setTitle("Warning!");
                 confirmation.setHeaderText("Are you sure you want to delete ");
@@ -480,26 +421,21 @@ public class CustomMainMenu extends FXGLMenu {
                     confirmation.setContentText(usersToDelete.size() + " user will be deleted, are you sure? ");
                 }
                 Optional<ButtonType> result = confirmation.showAndWait();
-                if (!result.isPresent()){
+                if (!result.isPresent()) {
                     // alert exited
-                } else if (result.get() == ButtonType.YES){
+                } else if (result.get() == ButtonType.YES) {
                     for (TableData e : usersToDelete) {
                         Database.delete(e.getUserId());
                         tableList.remove(e);
                     }
-
                 } else if (result.get() == ButtonType.CANCEL) {
                     // cancel button is pressed
                 }
             }
-
-
         });
-        bottomButtons.getChildren().addAll(back,delete);
+
+        bottomButtons.getChildren().addAll(back, delete);
         bottomButtons.setSpacing(400);
-
-        vboxAdminMenu.getChildren().addAll(header, textfieldHbox, table, bottomButtons);
-
-
+        vboxAdminMenu.getChildren().addAll(header, textfieldHbox, this.table, bottomButtons);
     }
 }
