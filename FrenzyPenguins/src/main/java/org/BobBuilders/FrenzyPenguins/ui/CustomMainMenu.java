@@ -5,6 +5,7 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.input.view.KeyView;
 import com.almasb.fxgl.texture.Texture;
 import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
@@ -15,6 +16,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -28,10 +31,12 @@ import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
 import org.BobBuilders.FrenzyPenguins.EntityType;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
+import org.BobBuilders.FrenzyPenguins.data.Controls;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
 import java.util.Random;
 
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
 
 
@@ -81,7 +86,26 @@ public class CustomMainMenu extends FXGLMenu {
             vboxOptions.setVisible(true);
         });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
-        customMenuButton btnBrightness = new customMenuButton("Brightness", () -> {
+        customMenuButton btnControls = new customMenuButton("Controls", () -> {
+            VBox controls = new VBox();
+            HBox hBox = new HBox();
+            Text jetpack = FXGL.getUIFactoryService().newText("JetPack");
+            hBox.getChildren().addAll(jetpack, new KeyView(Controls.JETPACK));
+            hBox.getChildren().get(1).setOnMouseClicked(e -> {
+                System.out.println("HELLO");
+                hBox.getChildren().remove(1);
+                boolean keySelected = false;
+                while (!keySelected) {
+                    getGameScene().getInput().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+                        hBox.getChildren().add(new KeyView(keyEvent.getCode()));
+                    });
+                }
+            });
+            controls.getChildren().add(hBox);
+            controls.setTranslateX(250);
+            controls.setTranslateY(-180);
+            vboxOptions.getChildren().add(controls);
+
         });
         customMenuButton btnVolume = new customMenuButton("Volume", () -> {
         });
@@ -119,7 +143,7 @@ public class CustomMainMenu extends FXGLMenu {
 
         //Creates a vbox for options
         vboxOptions = new VBox(10,
-                btnBrightness,
+                btnControls,
                 btnVolume,
                 btnOptionsReturn,
                 new Text(""),
@@ -430,5 +454,16 @@ public class CustomMainMenu extends FXGLMenu {
             line.setFill(gradient);
             getChildren().add(line);
         }
+    }
+
+    private static class controlSelector extends StackPane {
+        private Runnable action;
+        private Text text;
+
+        public controlSelector(String control) {
+            Text text = FXGL.getUIFactoryService().newText(control);
+
+        }
+
     }
 }

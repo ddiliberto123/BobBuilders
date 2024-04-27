@@ -8,11 +8,8 @@ import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
-import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -28,12 +25,10 @@ import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 
 import java.util.Random;
 
-import static org.BobBuilders.FrenzyPenguins.CustomEntityFactory.fix_for_Mac;
 import static org.BobBuilders.FrenzyPenguins.Physics.*;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
-import static org.BobBuilders.FrenzyPenguins.EntityType.GROUND;
 
 public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
@@ -62,7 +57,7 @@ public class FallingPenguinGame extends GameApplication {
     private double cloud1SpawnInterval = 0.5;
     private double cloud2SpawnInterval = 0.5;
     private boolean beginAnimation = false;
-    private static boolean spaceKeyPressed = false;
+    private static boolean isJetpackKeyPressed = false;
     private Text welcomeText;
 
     public static void main(String[] args) {
@@ -380,7 +375,7 @@ public class FallingPenguinGame extends GameApplication {
                 cloud2SpawnTimer = 0;
             }
         }
-        System.out.println(spaceKeyPressed);
+        System.out.println(isJetpackKeyPressed);
 
     }
 
@@ -402,7 +397,7 @@ public class FallingPenguinGame extends GameApplication {
         getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
                 if (store.isEquipJetpack() && penguin.getX() >= 1000) {
-                    spaceKeyPressed = true;  // Set the flag to true when space key is released
+                    isJetpackKeyPressed = true;  // Set the flag to true when space key is released
                     CustomEntityFactory.penguinJet.setVisible(false);
                     CustomEntityFactory.penguinJetActive.setVisible(true);
                 }
@@ -412,7 +407,7 @@ public class FallingPenguinGame extends GameApplication {
         getInput().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
                 if (store.isEquipJetpack() && penguin.getX() >= 1000) {
-                    spaceKeyPressed = false;  // Set the flag to false when space key is released
+                    isJetpackKeyPressed = false;  // Set the flag to false when space key is released
                     CustomEntityFactory.penguinJet.setVisible(true);
                     CustomEntityFactory.penguinJetActive.setVisible(false);
                 }
@@ -568,8 +563,8 @@ public class FallingPenguinGame extends GameApplication {
         }
     }
 
-    public static boolean isSpaceKeyPressed() {
-        return spaceKeyPressed;
+    public static boolean isJetpackKeyPressed() {
+        return isJetpackKeyPressed;
     }
 }
 

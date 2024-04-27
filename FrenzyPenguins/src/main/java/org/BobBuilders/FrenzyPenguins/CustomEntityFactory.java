@@ -1,9 +1,5 @@
 package org.BobBuilders.FrenzyPenguins;
 
-import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.dsl.components.Effect;
-import com.almasb.fxgl.animation.Interpolators;
-import com.almasb.fxgl.dsl.components.view.ChildViewComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
@@ -14,40 +10,17 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.almasb.fxgl.ui.FXGLScrollPane;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.chart.PieChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
-import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
-import  org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.almasb.fxgl.dsl.FXGL.getGameScene;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
@@ -269,10 +242,10 @@ public class CustomEntityFactory implements EntityFactory {
 
         Image penguinView = penguinImage;
 
-        if (store.isEquipJetpack() && !FallingPenguinGame.isSpaceKeyPressed()) {
+        if (store.isEquipJetpack() && !FallingPenguinGame.isJetpackKeyPressed()) {
             penguinView = penguinJ;
         }
-        if (store.isEquipJetpack() && FallingPenguinGame.isSpaceKeyPressed()){
+        if (store.isEquipJetpack() && FallingPenguinGame.isJetpackKeyPressed()){
             penguinView = penguinJactive;
         }
         if (store.isEquipGlider()) {
