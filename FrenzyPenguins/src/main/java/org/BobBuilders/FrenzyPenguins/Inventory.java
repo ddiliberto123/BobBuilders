@@ -17,17 +17,35 @@ import org.BobBuilders.FrenzyPenguins.translators.InventorySerializer;
 /**
  * Data singleton used to store user inventory
  */
-@ToString
 @JsonSerialize(using = InventorySerializer.class)
 @JsonDeserialize(using = InventoryDeserializer.class)
 public class Inventory {
     private static Inventory instance = null;
     @Setter
     @Getter
+    private BooleanProperty equipJetpack;
+    private BooleanProperty equipGlider;
+    private BooleanProperty equipSlide;
+    @Setter
+    @Getter
+    private int jetPackLevel;
+    @Setter
+    @Getter
+    private int gliderLevel;
+    @Setter
+    @Getter
+    private int slideLevel;
+    @Setter
+    @Getter
     private int rampLevel;
-    private SimpleBooleanProperty hasJetpack;
-    private SimpleBooleanProperty hasSlide;
-    private SimpleBooleanProperty hasGlider;
+    @Getter
+    private IntegerProperty rampLevelProperty;
+    @Getter
+    private IntegerProperty jetPackLevelProperty;
+    @Getter
+    private IntegerProperty gliderLevelProperty;
+    @Getter
+    private IntegerProperty slideLevelProperty;
     @Getter
     private SimpleIntegerProperty pointsProperty;
     @Getter
@@ -42,12 +60,35 @@ public class Inventory {
 
 
     private Inventory() {
-        rampLevel = 1;
         pointsProperty = new SimpleIntegerProperty();
         pointsProperty.setValue(0);
-        hasJetpack = new SimpleBooleanProperty(false);
-        hasSlide = new SimpleBooleanProperty(false);
-        hasGlider = new SimpleBooleanProperty(false);
+        equipJetpack = new SimpleBooleanProperty(false);
+        equipGlider = new SimpleBooleanProperty(false);
+        equipSlide = new SimpleBooleanProperty(false);
+        jetPackLevel = 1;
+        gliderLevel = 1;
+        slideLevel = 1;
+        rampLevel = 1;
+        jetPackLevelProperty = new SimpleIntegerProperty(jetPackLevel);
+        gliderLevelProperty = new SimpleIntegerProperty(gliderLevel);
+        slideLevelProperty = new SimpleIntegerProperty(slideLevel);
+        rampLevelProperty = new SimpleIntegerProperty(rampLevel);
+    }
+
+    public void clone(Inventory otherInventory) {
+        this.pointsProperty.set(otherInventory.getPointsPropertyValue());
+        this.equipJetpack.set(otherInventory.equipJetpack.getValue());
+        this.equipGlider.set(otherInventory.equipGlider.getValue());
+        this.equipSlide.set(otherInventory.equipSlide.getValue());
+        setJetPackLevel(otherInventory.jetPackLevel);
+        setGliderLevel(otherInventory.gliderLevel);
+        setSlideLevel(otherInventory.slideLevel);
+        setRampLevel(otherInventory.rampLevel);
+
+//        this.jetPackLevelProperty = otherInventory.jetPackLevelProperty;
+//        this.gliderLevelProperty = otherInventory.gliderLevelProperty;
+//        this.slideLevelProperty = otherInventory.slideLevelProperty;
+//        this.rampLevelProperty = otherInventory.rampLevelProperty;
     }
 
     /**
@@ -63,49 +104,56 @@ public class Inventory {
         return new Inventory();
     }
 
-    public void setHasJetpack(boolean answer) {
-        hasJetpack.set(answer);
+    //Getters and setters to know whether or not equipment is owned
+    public boolean isEquipJetpack() {
+        return equipJetpack.get();
     }
 
-    public void setHasSlide(boolean answer) {
-        hasSlide.set(answer);
+    public void setEquipJetpack(boolean answer) {
+        equipJetpack.set(answer);
     }
 
-    public void setHasGlider(boolean answer) {
-        hasGlider.set(answer);
+    public boolean isEquipGlider() {
+        return equipGlider.get();
     }
 
-    public BooleanProperty hasJetpackProperty() {
-        if (hasJetpack == null) {
-            hasJetpack = new SimpleBooleanProperty();
-        }
-        return hasJetpack;
+    public void setEquipGlider(boolean answer) {
+        equipGlider.set(answer);
     }
 
-    public BooleanProperty hasSlideProperty() {
-        if (hasSlide == null) {
-            hasSlide = new SimpleBooleanProperty();
-        }
-        return hasSlide;
+    public boolean isEquipSlide() {
+        return equipSlide.get();
     }
 
-    public BooleanProperty hasGliderProperty() {
-        if (hasGlider == null) {
-            hasGlider = new SimpleBooleanProperty();
-        }
-        return hasGlider;
+    public BooleanProperty hasEquippedJetpack() {
+        return equipJetpack;
     }
 
-    public boolean isHasJetpack() {
-        return hasJetpack.get();
+    public BooleanProperty hasEquippedGlider() {
+        return equipGlider;
     }
 
-    public boolean isHasSlide() {
-        return hasSlide.get();
+    public BooleanProperty hasEquippedSlide() {
+        return equipSlide;
     }
 
-    public boolean isHasGlider() {
-        return hasGlider.get();
+    public void setEquipSlide(boolean answer) {
+        equipSlide.set(answer);
+    }
+
+    public void setJetPackLevelProperty(int jetPackLevelProperty) {
+        this.jetPackLevelProperty.set(jetPackLevelProperty);
+    }
+
+    public void setGliderLevelProperty(int gliderLevelProperty) {
+        this.gliderLevelProperty.set(gliderLevelProperty);
+    }
+
+    public void setSlideLevelProperty(int slideLevelProperty) {
+        this.slideLevelProperty.set(slideLevelProperty);
+    }
+    public void setRampLevelProperty(int rampLevelProperty) {
+        this.rampLevelProperty.set(rampLevelProperty);
     }
 
     /**
@@ -130,8 +178,8 @@ public class Inventory {
         this.pointsProperty.set(points);
     }
 
-    public String toString() {
-        return "";
-    }
+//    public String toString() {
+//        return "";
+//    }
 
 }

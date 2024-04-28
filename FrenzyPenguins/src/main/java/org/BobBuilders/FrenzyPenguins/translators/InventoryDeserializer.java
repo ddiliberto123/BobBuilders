@@ -33,17 +33,17 @@ public class InventoryDeserializer extends StdDeserializer<Inventory> {
         int rampLevel = rampLevelNode.asInt();
         inventory.setRampLevel(rampLevel);
 
-        JsonNode hasJetpackNode = node.get("hasJetpack");
-        boolean hasJetpack = hasJetpackNode.asBoolean();
-        inventory.setHasJetpack(hasJetpack);
+        JsonNode jetpackLevelNode = node.get("jetpackLevel");
+        int jetpackLevel = jetpackLevelNode.asInt();
+        inventory.setJetPackLevel(jetpackLevel);
 
-        JsonNode hasSlideNode = node.get("hasJetpack");
-        boolean hasSlide = hasSlideNode.asBoolean();
-        inventory.setHasJetpack(hasSlide);
+        JsonNode gliderLevelNode = node.get("gliderLevel");
+        int gliderlevel = gliderLevelNode.asInt();
+        inventory.setGliderLevel(gliderlevel);
 
-        JsonNode hasGliderNode = node.get("hasJetpack");
-        boolean hasGlider = hasGliderNode.asBoolean();
-        inventory.setHasJetpack(hasGlider);
+        JsonNode slideLevelNode = node.get("slideLevel");
+        int slideLevel = slideLevelNode.asInt();
+        inventory.setSlideLevel(slideLevel);
 
         JsonNode pointsPropertyNode = node.get("pointsProperty");
         int pointsPropertyValue = pointsPropertyNode.asInt();

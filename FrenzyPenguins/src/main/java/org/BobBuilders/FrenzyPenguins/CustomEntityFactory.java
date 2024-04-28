@@ -52,7 +52,8 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 import static org.BobBuilders.FrenzyPenguins.EntityType.*;
 
 public class CustomEntityFactory implements EntityFactory {
-    Store store = Store.getInstance();
+//    Store store = Store.getInstance();
+    Inventory inventory = Inventory.getInstance();
     Image penguinImage = new Image("file:"+fix_for_Mac()+"penguin.png");
     Image penguinJ = new Image("file:"+fix_for_Mac()+"penguin_and_jetpack.png");
     Image penguinJactive = new Image("file:"+fix_for_Mac()+"jetpack_active.gif");
@@ -264,35 +265,35 @@ public class CustomEntityFactory implements EntityFactory {
 
     @Spawns("penguin")
     public Entity newPenguin(SpawnData data) {
-        float slideFriction = 0.055f-store.getSlideLevel()/200f;
+        float slideFriction = 0.055f-this.inventory.getSlideLevel()/200f;
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
         physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.055f));
-        if (store.isEquipSlide()) {
+        if (this.inventory.isEquipSlide()) {
             physics.setFixtureDef(new FixtureDef().density(0.1f).friction(slideFriction));
         }
 
         Image penguinView = penguinImage;
 
-        if (store.isEquipJetpack() && !store.isEquipGlider() && !store.isEquipSlide()) {
+        if (this.inventory.isEquipJetpack() && !this.inventory.isEquipGlider() && !this.inventory.isEquipSlide()) {
             penguinView = penguinJ;
         }
-        if (store.isEquipGlider() && !store.isEquipJetpack() && !store.isEquipSlide()) {
+        if (this.inventory.isEquipGlider() && !this.inventory.isEquipJetpack() && !this.inventory.isEquipSlide()) {
             penguinView = penguinG;
         }
-        if (store.isEquipSlide() && !store.isEquipJetpack() && !store.isEquipGlider()) {
+        if (this.inventory.isEquipSlide() && !this.inventory.isEquipJetpack() && !this.inventory.isEquipGlider()) {
             penguinView = penguinS;
         }
-        if (store.isEquipJetpack() && store.isEquipGlider() && !store.isEquipSlide()) {
+        if (this.inventory.isEquipJetpack() && this.inventory.isEquipGlider() && !this.inventory.isEquipSlide()) {
             penguinView = penguinJG;
         }
-        if (store.isEquipJetpack() && !store.isEquipGlider() && store.isEquipSlide()) {
+        if (this.inventory.isEquipJetpack() && !this.inventory.isEquipGlider() && this.inventory.isEquipSlide()) {
             penguinView = penguinJS;
         }
-        if (store.isEquipJetpack() && store.isEquipGlider() && store.isEquipSlide()) {
+        if (this.inventory.isEquipJetpack() && this.inventory.isEquipGlider() && this.inventory.isEquipSlide()) {
             penguinView = penguinSGJ;
         }
-        if (!store.isEquipJetpack() && store.isEquipGlider() && store.isEquipSlide()) {
+        if (!this.inventory.isEquipJetpack() && this.inventory.isEquipGlider() && this.inventory.isEquipSlide()) {
             penguinView = penguinSG;
         }
 

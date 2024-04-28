@@ -55,7 +55,6 @@ public class FallingPenguinGame extends GameApplication {
     private double beginPoints = 0;
     private double angle;
     Inventory inventory = Inventory.getInstance();
-    Store store = Store.getInstance();
     private double jetpackTimeElapsed = 0.0;
     private double cloud1SpawnTimer = 0;
     private double cloud2SpawnTimer = 0;
@@ -180,7 +179,9 @@ public class FallingPenguinGame extends GameApplication {
 
     protected void onUpdate(double tpf) {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-        Inventory inventory = Inventory.getInstance();
+        this.inventory = Inventory.getInstance();
+        System.out.println(this.inventory);
+        System.out.println(inventory.getPointsPropertyValue());
 
         super.onUpdate(tpf);
 
@@ -228,7 +229,7 @@ public class FallingPenguinGame extends GameApplication {
                 physics.setVelocityX(40);
             }
             if (penguin.getX() == 250) {
-                Vec2 downtime = new Vec2(-10, -10*store.getRampLevel());
+                Vec2 downtime = new Vec2(-10, -10*this.inventory.getRampLevel());
                 physics.applyBodyForceToCenter(downtime);
             }
         }
@@ -366,7 +367,7 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Conditions for which lift force is applied
-        if (penguin.getX() > 250 && store.isEquipGlider() && penguin_y_velocity() > 0) {
+        if (penguin.getX() > 250 && this.inventory.isEquipGlider() && penguin_y_velocity() > 0) {
             physics.applyBodyForceToCenter(Lift(angle));
         }
         //Locks angle when player isn't pressing key
@@ -422,7 +423,7 @@ public class FallingPenguinGame extends GameApplication {
 
         getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                if (store.isEquipJetpack() && penguin.getX() >= 1000 && jetpackTimeElapsed <= 5) {
+                if (this.inventory.isEquipJetpack() && penguin.getX() >= 1000 && jetpackTimeElapsed <= 5) {
                     spaceKeyPressed = true;  // Set the flag to true when space key is released
                     CustomEntityFactory.penguinJet.setVisible(false);
                     CustomEntityFactory.penguinJetActive.setVisible(true);
@@ -432,7 +433,7 @@ public class FallingPenguinGame extends GameApplication {
 
         getInput().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                if (store.isEquipJetpack() && penguin.getX() >= 1000) {
+                if (this.inventory.isEquipJetpack() && penguin.getX() >= 1000) {
                     spaceKeyPressed = false;  // Set the flag to false when space key is released
                     CustomEntityFactory.penguinJet.setVisible(true);
                     CustomEntityFactory.penguinJetActive.setVisible(false);
@@ -455,14 +456,14 @@ public class FallingPenguinGame extends GameApplication {
         });
         onKey(KeyCode.SPACE, () -> {
             //Ensures that the jetpack only works when jetpack is equipped and after going off ramp
-            if (store.isEquipJetpack() && penguin.getX() >= 1000) {
+            if (this.inventory.isEquipJetpack() && penguin.getX() >= 1000) {
                 //Keeps track of the elapsed time when jetpack is used
                 jetpackTimeElapsed += tpf();
                 //If statement limits the amount of time the user can use the jetpack for
                 if (jetpackTimeElapsed < 5) {
                     PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                     //Jetpack is stronger depending on the level of the jetpack
-                    double speedMultiplier = (double)store.getJetPackLevel()/4;
+                    double speedMultiplier = (double)this.inventory.getJetPackLevel()/4;
                     double jetAngle = penguin.getRotation() % 360;
                     if (jetAngle < 0) {
                         jetAngle += 360;

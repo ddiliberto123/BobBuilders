@@ -23,6 +23,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import lombok.Data;
 import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
@@ -48,7 +49,7 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxLoggedIn;
     private VBox vboxAdminMenu = new VBox();
 
-    private GridPane loadSelectGrid = new GridPane();
+//    private GridPane loadSelectGrid = new GridPane();
 
     Inventory inventory = Inventory.getInstance();
 
@@ -85,8 +86,9 @@ public class CustomMainMenu extends FXGLMenu {
 
 
         //Creatign the Gridpane for login
-        loginGrid.add(vboxLoggedIn, 0, 0);
-        loginGrid.add(loadSelectGrid, 1, 0);
+//        loginGrid.add(vboxLoggedIn, 0, 0);
+//        loginGrid.add(loadSelectGrid, 1, 0);
+
 
 
         //Creates the buttons
@@ -195,14 +197,19 @@ public class CustomMainMenu extends FXGLMenu {
                 vboxAccount.setVisible(false);
                 vboxLoggedIn.setVisible(true);
                 if (this.inventory != Database.loadInventory(userId)) {
+                    System.out.println(this.inventory);
                     System.out.println("INVENTORY MISMATCH");
-                    loadSelectGrid.add(new Text("Inventory Mismatch"),0,0,2,1);
-                    loadSelectGrid.add(new Text("Inventory 1"),0,1);
-                    loadSelectGrid.add(new Text("Inventory 2"),1,1);
-                    loadSelectGrid.add(new Text(this.inventory.toString()),0,2);
-                    loadSelectGrid.add(new Text(Database.loadInventory(userId).toString()),0,2);
-                    loadSelectGrid.setMaxWidth(200);
-                    loadSelectGrid.setGridLinesVisible(true);
+                    this.inventory.clone(Database.loadInventory(userId));
+//                    this.inventory = Database.loadInventory(userId);
+                    System.out.println(this.inventory);
+                    System.out.println(this.inventory.getPointsPropertyValue());
+//                    loadSelectGrid.add(new Text("Inventory Mismatch"),0,0,2,1);
+//                    loadSelectGrid.add(new Text("Inventory 1"),0,1);
+//                    loadSelectGrid.add(new Text("Inventory 2"),1,1);
+//                    loadSelectGrid.add(new Text(this.inventory.toString()),0,2);
+//                    loadSelectGrid.add(new Text(Database.loadInventory(userId).toString()),0,2);
+//                    loadSelectGrid.setMaxWidth(200);
+//                    loadSelectGrid.setGridLinesVisible(true);
                 } else {
 
                 }
