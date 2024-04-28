@@ -51,6 +51,7 @@ public class FallingPenguinGame extends GameApplication {
     private Text distanceText;
     private Text speedText;
     private Text altituteText;
+    public Text climbing_rate;
     private Rectangle cluster = new Rectangle(310,20);
     private double beginPoints = 0;
     private double angle;
@@ -168,6 +169,12 @@ public class FallingPenguinGame extends GameApplication {
         altituteText.setStroke(Color.LIGHTSEAGREEN);
         altituteText.setStrokeWidth(1);
         getGameScene().addUINode(altituteText);
+        //Give Climb-rate
+        climbing_rate = getUIFactoryService().newText("", Color.GREEN, 16);
+        climbing_rate.setTranslateX(875);
+        climbing_rate.setTranslateY(225);
+        climbing_rate.setStrokeWidth(1);
+        getGameScene().addUINode(climbing_rate);
 
 
 
@@ -249,7 +256,7 @@ public class FallingPenguinGame extends GameApplication {
                 "Angle: (" + Math.round(get_penguin_angle()) + ")" +
                 "FPS: (" + 1 / tpf() + ")");
 
-        speedText.setVisible(false);altituteText.setVisible(false);cluster.setVisible(false);
+        speedText.setVisible(false);altituteText.setVisible(false);cluster.setVisible(false);climbing_rate.setVisible(false);
 
         //background_1st.setY(penguin.getY());
 
@@ -260,7 +267,7 @@ public class FallingPenguinGame extends GameApplication {
             speedometer.setY(penguinY-235);altimeter.setY(penguinY-297);
             speed_curve.setX(penguinX+425);altimeter_circle.setX(penguinX+250);
             speed_curve.setY(penguinY-380);altimeter_circle.setY(penguinY-375);
-            speedText.setVisible(true);altituteText.setVisible(true);cluster.setVisible(true);
+            speedText.setVisible(true);altituteText.setVisible(true);cluster.setVisible(true);climbing_rate.setVisible(true);
 
             // Get the width and height  of the game window
             double windowWidth = getAppWidth();
@@ -308,6 +315,19 @@ public class FallingPenguinGame extends GameApplication {
         //Altimeter
         altimeter.rotateBy(((altimeter_height()*360)/6000)+90);
         altituteText.setText("altitude:" + (-1*penguin.getY()+2974)/10+" m");
+        if(penguin_y_velocity() < 0){
+            climbing_rate.setText("C.Rate: " + "positive");
+            climbing_rate.setStroke(Color.GREEN);
+        }
+        else if(penguin_y_velocity()>0){
+            climbing_rate.setText("C.Rate: "+ "negative");
+            climbing_rate.setStroke(Color.RED);
+        }
+        else if (penguin_y_velocity() == 0) {
+            climbing_rate.setStroke(Color.GRAY);
+            climbing_rate.setText("C.Rate: " + "  n/a  ");
+        }
+
 
 
         //Restarts game when penguin reaches the bottom
