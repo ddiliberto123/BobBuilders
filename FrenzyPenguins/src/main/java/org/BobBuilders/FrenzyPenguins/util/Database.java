@@ -136,7 +136,7 @@ public class Database {
      * @param inventory inventory to be attached to the user
      */
     public static void save(int userId, Inventory inventory) {
-        if (userId <= 0){
+        if (userId <= 0 || inventory == null){
             throw new RuntimeException("Invalid UserID");
         }
 

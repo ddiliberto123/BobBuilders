@@ -58,28 +58,22 @@ public class CustomGameMenu extends FXGLMenu {
     private double snowHillsX = -300;
     private double snowHillsY = 265;
     private StackPane snowStack = new StackPane();
-
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
 
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
 
-        if (User.getInstance().getUserId() == 0) {
-            usernameProperty.set("Not Logged in");
-        } else {
-            usernameProperty.set("Logged in as " + User.getInstance().getUsername());
-        }
         this.inventory = Inventory.getInstance();
 
         Rectangle back = new Rectangle(getAppWidth(), getAppHeight());
         back.setFill(Color.CORNFLOWERBLUE);
         StackPane stack = new StackPane();
 
-        ImageView snowHills1 = new ImageView("file:"+fix_for_Mac()+"snow_hills.png");
+        ImageView snowHills1 = new ImageView("file:" + fix_for_Mac() + "snow_hills.png");
         snowHills1.setTranslateX(snowHillsX);
         snowHills1.setTranslateY(snowHillsY);
 
-        ImageView snowHills2 = new ImageView("file:"+fix_for_Mac()+"snow_hills.png");
+        ImageView snowHills2 = new ImageView("file:" + fix_for_Mac() + "snow_hills.png");
         snowHills2.setTranslateX(-snowHillsX);
         snowHills2.setTranslateY(snowHillsY);
 
@@ -88,12 +82,19 @@ public class CustomGameMenu extends FXGLMenu {
         title.setTranslateY(-(getAppHeight() / 2 - 100));
 
         //Placeholder to demonstrate where username and points possessed are displayed
-        Text userName = FXGL.getUIFactoryService().newText("Not logged in", Color.BLACK, 24);
+        Text userName = FXGL.getUIFactoryService().newText("Not logged in", Color.BLACK, 16);
         userName.setTranslateX(-(getAppWidth() / 2 - 150));
         userName.setTranslateY(-(getAppHeight() / 2 - 150));
 
-        userName.textProperty().bind(Bindings.convert(usernameProperty));
+        inventory.getPointsProperty().addListener(observable -> {
+            if (User.getInstance().getUserId() == 0) {
+                userName.setText("Not Logged in");
+            } else {
+                userName.setText("Logged in as " + User.getInstance().getUsername());
+            }
+        });
 
+//        userName.textProperty().bind(Bindings.convert(usernameProperty));
         Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPointsPropertyValue(), Color.BLACK, 24);
 
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
@@ -152,10 +153,10 @@ public class CustomGameMenu extends FXGLMenu {
         sledViewUnequipped.setFitHeight(150);
         sledViewUnequipped.setPreserveRatio(true);
 
-        this.upgradeJetpackBtn = new customEquipmentButton("Test",this.inventory.getJetPackLevelProperty());
-        this.upgradeGliderBtn = new customEquipmentButton("Test",this.inventory.getGliderLevelProperty());
-        this.upgradeSlideBtn = new customEquipmentButton("Test",this.inventory.getSlideLevelProperty());
-        this.upgradeRampBtn = new customEquipmentButton("Upgrade Ramp to level 1 \n10000$",this.inventory.getRampLevelProperty());
+        this.upgradeJetpackBtn = new customEquipmentButton("Test", this.inventory.getJetPackLevelProperty());
+        this.upgradeGliderBtn = new customEquipmentButton("Test", this.inventory.getGliderLevelProperty());
+        this.upgradeSlideBtn = new customEquipmentButton("Test", this.inventory.getSlideLevelProperty());
+        this.upgradeRampBtn = new customEquipmentButton("Upgrade Ramp to level 1 \n10000$", this.inventory.getRampLevelProperty());
 
         //Creating a container for each option of purchase
         purchaseJetpackVbox = new VBox(10, jetView, purchaseJetpackBtn);
@@ -203,22 +204,19 @@ public class CustomGameMenu extends FXGLMenu {
         container.setAlignment(Pos.CENTER);
 
         upgradeRampBtn.setTranslateX(450);
-        VBox upgradeRampVbox = new VBox(50,container, upgradeRampBtn);
+        VBox upgradeRampVbox = new VBox(50, container, upgradeRampBtn);
         upgradeRampVbox.setAlignment(Pos.CENTER);
         upgradeRampVbox.setPadding(new Insets(20));
 
-        snowStack.setTranslateX(-getAppWidth()/2);
-        snowStack.setTranslateY(-getAppHeight()/2);
+        snowStack.setTranslateX(-getAppWidth() / 2);
+        snowStack.setTranslateY(-getAppHeight() / 2);
 
-        stack.getChildren().addAll(back, snowStack, upgradeRampVbox, title, userName, availablePoints,snowHills1,snowHills2);
+        stack.getChildren().addAll(back, snowStack, upgradeRampVbox, title, userName, availablePoints, snowHills1, snowHills2);
         getContentRoot().getChildren().addAll(stack);
 
         //Ensures that the buttons keep track of points obtained and whether or not equipment is owned
 
         this.inventory.getPointsProperty().addListener((observable, oldValue, newValue) -> updateButtons());
-//        this.inventory.hasJetpackProperty().addListener((observable, oldValue, newValue) -> updateButtons());
-//        this.inventory.hasGliderProperty().addListener((observable, oldValue, newValue) -> updateButtons());
-//        this.inventory.hasSlideProperty().addListener((observable, oldValue, newValue) -> updateButtons());
         this.inventory.getJetPackLevelProperty().addListener((observable, oldValue, newValue) -> updateButtons());
         this.inventory.getGliderLevelProperty().addListener((observable, oldValue, newValue) -> updateButtons());
         this.inventory.getSlideLevelProperty().addListener((observable, oldValue, newValue) -> updateButtons());
@@ -235,18 +233,16 @@ public class CustomGameMenu extends FXGLMenu {
 
 
         equipJetpackVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedJetpack()),
-                Bindings.not(Bindings.equal(0,this.inventory.getJetPackLevelProperty()))));
+                Bindings.not(Bindings.equal(0, this.inventory.getJetPackLevelProperty()))));
         equipGliderVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedGlider()),
-                Bindings.not(Bindings.equal(0,this.inventory.getGliderLevelProperty()))));
+                Bindings.not(Bindings.equal(0, this.inventory.getGliderLevelProperty()))));
         equipSlideVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedSlide()),
-                Bindings.not(Bindings.equal(0,this.inventory.getSlideLevelProperty()))));
+                Bindings.not(Bindings.equal(0, this.inventory.getSlideLevelProperty()))));
         upgradeRampVbox.setVisible(true);
 
         unequipJetpackVbox.visibleProperty().bind(this.inventory.hasEquippedJetpack());
         unequipGliderVbox.visibleProperty().bind(this.inventory.hasEquippedGlider());
         unequipSlideVbox.visibleProperty().bind(this.inventory.hasEquippedSlide());
-
-
     }
 
     private static class customMenuButton extends StackPane {
@@ -342,14 +338,13 @@ public class CustomGameMenu extends FXGLMenu {
                     }
                 }
             });
-
             this.action = () -> {
                 if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > this.equipmentLevelProperty.getValue() * 10000) {
                     this.inventory.addPoints(this.equipmentLevelProperty.getValue() * -10000);
                     this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
                     //User exists
                     if (User.getInstance().getUserId() != 0) {
-                        Database.save(User.getInstance().getUserId(),this.inventory);
+                        Database.save(User.getInstance().getUserId(), this.inventory);
                     }
                 }
             };
@@ -380,7 +375,6 @@ public class CustomGameMenu extends FXGLMenu {
         }
     }
 
-
     protected void updateButtons() {
         this.purchaseJetpackBtn = new customMenuButton("Buy Jetpack - 10000$", () -> {
             if (this.inventory.getPointsPropertyValue() >= 10000) {
@@ -404,18 +398,12 @@ public class CustomGameMenu extends FXGLMenu {
         });
         this.equipJetpackBtn = new customMenuButton("Equip Jetpack", () -> {
             this.inventory.setEquipJetpack(true);
-//            this.inventory.setEquipSlide(false);
-//            this.inventory.setEquipGlider(false);
         });
         this.equipGliderBtn = new customMenuButton("Equip Glider", () -> {
             this.inventory.setEquipGlider(true);
-//            this.inventory.setEquipJetpack(false);
-//            this.inventory.setEquipSlide(false);
         });
         this.equipSlideBtn = new customMenuButton("Equip Slide", () -> {
             this.inventory.setEquipSlide(true);
-//            this.inventory.setEquipJetpack(false);
-//            this.inventory.setEquipGlider(false);
         });
         this.unequipJetpackBtn = new customMenuButton("Unequip Jetpack", () -> {
             this.inventory.setEquipJetpack(false);
@@ -428,30 +416,28 @@ public class CustomGameMenu extends FXGLMenu {
         });
     }
 
-
-
     @Override
     protected void onUpdate(double tpf) {
         super.onUpdate(tpf);
         timer += tpf;
-        if(timer >= 1){
+        if (timer >= 1) {
             ImageView snowflakeImage = new ImageView("file:snowflake.png");
-            snowflakeImage.setTranslateX(Math.random()*getAppWidth());
+            snowflakeImage.setTranslateX(Math.random() * getAppWidth());
             snowflakeImage.setTranslateY(-50);
             snowflakeImage.setFitWidth(30);
             snowflakeImage.setPreserveRatio(true);
 
             Random random = new Random();
             int randomRotate = random.nextInt(4);
-            if(randomRotate == 1){
+            if (randomRotate == 1) {
                 snowflakeImage.setRotate(30);
             }
-            if(randomRotate == 2){
-                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.7);
+            if (randomRotate == 2) {
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth() * 0.7);
                 snowflakeImage.setPreserveRatio(true);
             }
-            if(randomRotate == 3){
-                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.4);
+            if (randomRotate == 3) {
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth() * 0.4);
                 snowflakeImage.setPreserveRatio(true);
             }
 
@@ -472,10 +458,8 @@ public class CustomGameMenu extends FXGLMenu {
                     }
                 }
             };
-
             // Start the animation
             animationTimer.start();
-
             timer = 0;
         }
     }

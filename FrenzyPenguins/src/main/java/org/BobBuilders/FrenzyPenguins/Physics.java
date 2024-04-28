@@ -20,7 +20,6 @@ public class Physics {
         if(penguin_velocity > ((double)inventory.getGliderLevel()/10)*7){
             penguin_velocity = ((double)inventory.getGliderLevel()/10)*7;
         }
-//        System.out.println("1: " + penguin_x_velocity() + " 2: " + penguin_y_velocity() + " 3: " + penguin_velocity);
         return Math.floor(penguin_velocity);
     }
 
