@@ -41,6 +41,7 @@ public class Physics {
         //calculating lift
         double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1));
         Vec2 lift_vector = new Vec2(Math.floor(lift*Math.sin((Math.toRadians(p_angle)))),Math.floor(lift*(Math.cos(Math.toRadians(p_angle)))));
+        System.out.println("lift: "+lift);
         return lift_vector;
     }
     public static Vec2 Drag(double p_angle){
@@ -52,6 +53,7 @@ public class Physics {
         }
         double drag = (temp_drag_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1);
         Vec2 drag_vector = new Vec2(Math.floor(drag*(Math.cos(Math.toRadians(d_angle)))),Math.floor(drag*(Math.sin(Math.toRadians(d_angle)))));
+        System.out.println("drag:"+drag);
         return drag_vector;
 
     }
@@ -59,7 +61,7 @@ public class Physics {
     public static Vec2 Flight_vectors(double angle){
         Vec2 lift = Lift(angle);
         Vec2 drag = Drag(angle);
-        Vec2 final_flight_vector = new Vec2(0.016*(lift.x+drag.x),0.016*(lift.y+drag.y));
+        Vec2 final_flight_vector = new Vec2(0.012*(lift.x+drag.x),0.012*(lift.y+drag.y));
         return final_flight_vector;
     }
 
@@ -78,11 +80,10 @@ public class Physics {
         //System.out.println(vx);
         Vec2 fake_buoyancy = new Vec2();
         if(vx!=0){
-            //System.out.println("wtf");
             //double force = Math.random()*15;
-            double force  = penguin_x_velocity()*0.5; //yes this is janky but i think it will work
+            double force  = penguin_x_velocity()*0.2; //yes this is janky but i think it will work
             fake_buoyancy.set((float)(force*Math.sin(Math.toRadians(p_angle))),(float)(force*Math.cos(Math.toRadians(p_angle))));
-            if(fake_buoyancy.length() > 20){
+            if(force > 20){
                 fake_buoyancy.set((float)Math.sin(Math.toRadians(p_angle))*20,(float)Math.sin(Math.toRadians(p_angle))*20);
                 return fake_buoyancy;
             }

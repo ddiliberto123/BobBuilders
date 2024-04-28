@@ -331,7 +331,7 @@ public class FallingPenguinGame extends GameApplication {
                 jetpackTimeElapsed = 0;
 
                 //Inventory Stuff
-                inventory.addPoints((int) currencyToAdd);
+                inventory.addPoints((int) currencyToAdd+10000);
                 inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
                 if (inventory.getMaxDistanceFlown() < (int) penguin.getX()){
                     inventory.setMaxDistanceFlown((int) penguin.getX());
@@ -393,7 +393,7 @@ public class FallingPenguinGame extends GameApplication {
                 cloud2SpawnTimer = 0;
             }
         }
-        System.out.println(spaceKeyPressed);
+        //System.out.println(spaceKeyPressed);
 
     }
 
