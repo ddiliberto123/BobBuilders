@@ -3,10 +3,13 @@ package org.BobBuilders.FrenzyPenguins.ui;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.ui.FXGLButton;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
@@ -23,7 +26,6 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import lombok.Data;
 import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
@@ -45,11 +47,11 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxOptions;
     private VBox vboxMainMenu;
     private VBox vboxAccount;
-    private GridPane loginGrid = new GridPane();
+    private StackPane loginStackPane = new StackPane();
     private VBox vboxLoggedIn;
     private VBox vboxAdminMenu = new VBox();
 
-//    private GridPane loadSelectGrid = new GridPane();
+    private GridPane loadSelectGrid = new GridPane();
 
     Inventory inventory = Inventory.getInstance();
 
@@ -93,11 +95,6 @@ public class CustomMainMenu extends FXGLMenu {
         Text loggedInUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
 
 
-        //Creatign the Gridpane for login
-//        loginGrid.add(vboxLoggedIn, 0, 0);
-//        loginGrid.add(loadSelectGrid, 1, 0);
-
-
 
         //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
@@ -106,7 +103,7 @@ public class CustomMainMenu extends FXGLMenu {
             if (Objects.equals(menuUsernameText.getText(), "Not Logged in")) {
                 vboxAccount.setVisible(true);
             } else {
-                vboxLoggedIn.setVisible(true);
+                loginStackPane.setVisible(true);
             }
         });
 
@@ -130,11 +127,11 @@ public class CustomMainMenu extends FXGLMenu {
 
         customMenuButton btnLoggedInReturn = new customMenuButton("Return to Main Menu", () -> {
             vboxMainMenu.setVisible(true);
-            vboxLoggedIn.setVisible(false);
+            loginStackPane.setVisible(false);
         });
 
         customMenuButton btnAdmin = new customMenuButton("Admin Menu", () -> {
-            vboxLoggedIn.setVisible(false);
+            loginStackPane.setVisible(false);
             vboxAdminMenu.setVisible(true);
             vboxAdminMenu.setAlignment(Pos.CENTER);
             vboxAdminMenu.setTranslateX(50);
@@ -151,7 +148,7 @@ public class CustomMainMenu extends FXGLMenu {
 
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
             vboxAccount.setVisible(true);
-            vboxLoggedIn.setVisible(false);
+            loginStackPane.setVisible(false);
             vboxLoggedIn.getChildren().remove(btnAdmin);
             usernameProperty.set("Not Logged in");
         });
@@ -201,27 +198,32 @@ public class CustomMainMenu extends FXGLMenu {
                 this.inventory = Inventory.getInstance();
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
-                vboxLoggedIn.setVisible(true);
-                if (this.inventory != Database.loadInventory(userId)) {
-                    System.out.println(this.inventory);
-                    System.out.println(this.inventory.getJetpackLevel());
-                    System.out.println("INVENTORY MISMATCH");
-                    this.inventory.clone(Database.loadInventory(userId));
-//                    this.inventory = Database.loadInventory(userId);
-                    System.out.println(this.inventory);
-                    System.out.println(this.inventory.getPointsPropertyValue());
-                    System.out.println(this.inventory.getJetpackLevel());
-                    System.out.println(this.inventory.getGliderLevel());
-                    System.out.println(this.inventory.getSlideLevel());
-//                    loadSelectGrid.add(new Text("Inventory Mismatch"),0,0,2,1);
-//                    loadSelectGrid.add(new Text("Inventory 1"),0,1);
-//                    loadSelectGrid.add(new Text("Inventory 2"),1,1);
-//                    loadSelectGrid.add(new Text(this.inventory.toString()),0,2);
-//                    loadSelectGrid.add(new Text(Database.loadInventory(userId).toString()),0,2);
-//                    loadSelectGrid.setMaxWidth(200);
-//                    loadSelectGrid.setGridLinesVisible(true);
+                loginStackPane.setVisible(true);
+                if (!this.inventory.equals(Database.loadInventory(userId))) {
+                    vboxLoggedIn.setDisable(true);
+                    loginStackPane.getChildren().add(loadSelectGrid);
+                    loadSelectGrid.setTranslateY(0);
+                    Text header = FXGL.getUIFactoryService().newText("Inventory Mismatch",Color.BLACK,30);
+                    loadSelectGrid.add(header, 0, 0, 2,1);
+                    loadSelectGrid.setAlignment(Pos.CENTER);
+                    loadSelectGrid.setHalignment(header, HPos.CENTER);
+                    loadSelectGrid.setHgap(30);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText("Inventory 1", Color.BLACK,20),0,1);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText("Inventory 2", Color.BLACK,20),1,1);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText(this.inventory.toString(), Color.BLACK,20),0,2);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText(Database.loadInventory(userId).toString(), Color.BLACK,20),1,2);
+                    loadSelectGrid.add(new customMenuButton("Load inventory 1", () -> {
+                        Database.save(User.getInstance().getUserId(), this.inventory);
+                        loadSelectGrid.setVisible(false);
+                        vboxLoggedIn.setDisable(false);
+                    }),0,3);
+                    loadSelectGrid.add(new customMenuButton("Load Inventory 2", () -> {
+                        this.inventory.clone(Objects.requireNonNull(Database.loadInventory(User.getInstance().getUserId())));
+                        loadSelectGrid.setVisible(false);
+                        vboxLoggedIn.setDisable(false);
+                    }), 1,3);
                 } else {
-
+                    this.inventory.clone(Objects.requireNonNull(Database.loadInventory(User.getInstance().getUserId())));
                 }
 
                 user.setAdmin(Database.getAdminStatus(userId));
@@ -247,7 +249,7 @@ public class CustomMainMenu extends FXGLMenu {
                 Database.save(user.getUserId(), Inventory.getInstance());
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
-                vboxLoggedIn.setVisible(true);
+                loginStackPane.setVisible(true);
             } else {
                 usernameField.hideIncorrect();
                 passwordField.hideIncorrect();
@@ -282,13 +284,16 @@ public class CustomMainMenu extends FXGLMenu {
         accountUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
+
         snowStack.setTranslateX(-getAppWidth()/2);
         snowStack.setTranslateY(-getAppHeight()/2);
+        //Creating the Gridpane for login
+        loginStackPane.getChildren().add(vboxLoggedIn);
 
-        StackPane stackMenu = new StackPane(mainMenuImage, snowStack, vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn, vboxAdminMenu);
+        StackPane stackMenu = new StackPane(mainMenuImage, snowStack, vboxMainMenu, vboxOptions, vboxAccount, loginStackPane, vboxAdminMenu);
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
-        vboxLoggedIn.setVisible(false);
+        loginStackPane.setVisible(false);
         vboxAdminMenu.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
     }
@@ -534,7 +539,7 @@ public class CustomMainMenu extends FXGLMenu {
         HBox bottomButtons = new HBox();
         customMenuButton back = new customMenuButton("Back", () -> {
             vboxAdminMenu.setVisible(false);
-            vboxLoggedIn.setVisible(true);
+            loginStackPane.setVisible(true);
         });
         customMenuButton delete = new customMenuButton("Delete", () -> {
             boolean adminReference = false;
