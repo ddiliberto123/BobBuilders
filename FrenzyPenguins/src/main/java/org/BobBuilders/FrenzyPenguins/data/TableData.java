@@ -14,7 +14,7 @@ import java.sql.SQLException;
 @Data
 @Getter
 public class TableData {
-    public static int TABLEWIDTH = 800;
+    public static double TABLEWIDTH = 800;
     private int userId;
     private String username;
     private int maxDistanceFlown;

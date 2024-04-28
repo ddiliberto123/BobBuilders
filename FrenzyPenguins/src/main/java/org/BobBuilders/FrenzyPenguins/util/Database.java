@@ -243,19 +243,24 @@ public class Database {
      */
     public static ObservableList<TableData> loadTable(TableView<TableData> table, TextField searchField) {
         TableColumn usernameColumn = new TableColumn<>("Username");
-        usernameColumn.setMaxWidth(TableData.TABLEWIDTH/4);
+        usernameColumn.setPrefWidth(TableData.TABLEWIDTH/4);
+        usernameColumn.setResizable(false);
 
         TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
-        totalDistanceFlownColumn.setMaxWidth(TableData.TABLEWIDTH/4);
+        totalDistanceFlownColumn.setPrefWidth(TableData.TABLEWIDTH/4);
+        totalDistanceFlownColumn.setResizable(false);
 
         TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
-        maxDistanceFlownColumn.setMaxWidth(TableData.TABLEWIDTH/4);
+        maxDistanceFlownColumn.setPrefWidth(TableData.TABLEWIDTH/4);
+        maxDistanceFlownColumn.setResizable(false);
 
         TableColumn networthColumn = new TableColumn<>("Networth");
-        networthColumn.setMaxWidth(TableData.TABLEWIDTH/4 - 50);
+        networthColumn.setPrefWidth(TableData.TABLEWIDTH/4 - 50);
+        networthColumn.setResizable(false);
 
         TableColumn deleteColumn = new TableColumn<>("Delete");
-        deleteColumn.setMaxWidth(50);
+        deleteColumn.setPrefWidth(48);
+        deleteColumn.setResizable(false);
         deleteColumn.setStyle("-fx-alignment: CENTER;");
 
         table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);

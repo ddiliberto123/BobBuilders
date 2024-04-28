@@ -1,26 +1,19 @@
 package org.BobBuilders.FrenzyPenguins.ui;
 
-import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.texture.Texture;
 import javafx.animation.AnimationTimer;
-import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
@@ -30,20 +23,16 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
-import org.BobBuilders.FrenzyPenguins.EntityType;
-import lombok.Data;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
 import org.BobBuilders.FrenzyPenguins.data.TableData;
-import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
 import java.util.Random;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
-import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,8 +44,13 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxOptions;
     private VBox vboxMainMenu;
     private VBox vboxAccount;
+    private GridPane loginGrid = new GridPane();
     private VBox vboxLoggedIn;
     private VBox vboxAdminMenu = new VBox();
+
+    private GridPane loadSelectGrid = new GridPane();
+
+    Inventory inventory = Inventory.getInstance();
 
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
     private double timer = 0;
@@ -69,6 +63,7 @@ public class CustomMainMenu extends FXGLMenu {
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
+
 
         getGameWorld().addEntityFactory(new CustomEntityFactory());
 
@@ -87,6 +82,11 @@ public class CustomMainMenu extends FXGLMenu {
         Text accountUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
         Text optionsUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
         Text loggedInUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
+
+
+        //Creatign the Gridpane for login
+        loginGrid.add(vboxLoggedIn, 0, 0);
+        loginGrid.add(loadSelectGrid, 1, 0);
 
 
         //Creates the buttons
@@ -188,12 +188,24 @@ public class CustomMainMenu extends FXGLMenu {
                 User user = User.getInstance();
                 user.setUsername(username);
                 user.setUserId(userId);
-
-                Inventory inventory = Inventory.getInstance();
-                inventory = Database.loadInventory(user.getUserId());
+                this.inventory = Inventory.getInstance();
+//                this.inventory = Database.loadInventory(user.getUserId());
+                System.out.println(inventory);
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 vboxLoggedIn.setVisible(true);
+                if (this.inventory != Database.loadInventory(userId)) {
+                    System.out.println("INVENTORY MISMATCH");
+                    loadSelectGrid.add(new Text("Inventory Mismatch"),0,0,2,1);
+                    loadSelectGrid.add(new Text("Inventory 1"),0,1);
+                    loadSelectGrid.add(new Text("Inventory 2"),1,1);
+                    loadSelectGrid.add(new Text(this.inventory.toString()),0,2);
+                    loadSelectGrid.add(new Text(Database.loadInventory(userId).toString()),0,2);
+                    loadSelectGrid.setMaxWidth(200);
+                    loadSelectGrid.setGridLinesVisible(true);
+                } else {
+
+                }
 
                 user.setAdmin(Database.getAdminStatus(userId));
                 if (user.isAdmin()) {
@@ -486,7 +498,8 @@ public class CustomMainMenu extends FXGLMenu {
         vboxAdminMenu.setAlignment(Pos.CENTER);
         vboxAdminMenu.setSpacing(10);
         //Making the UI
-        Text header = FXGL.getUIFactoryService().newText("Admin Menu");
+        Text header = FXGL.getUIFactoryService().newText("Admin Menu", Color.BLACK,20);
+        header.setStyle("-fx-underline: true;");
         HBox textfieldHbox = new HBox();
         this.searchField.setPromptText("Keywords...");
         textfieldHbox.getChildren().addAll(FXGL.getUIFactoryService().newText("Search User", Color.BLACK, 14), this.searchField);

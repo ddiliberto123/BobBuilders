@@ -7,6 +7,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -127,6 +128,10 @@ public class Inventory {
 
     public void setPointsPropertyValue(int points) {
         this.pointsProperty.set(points);
+    }
+
+    public String toString() {
+        return "";
     }
 
 }

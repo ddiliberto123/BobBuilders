@@ -329,16 +329,16 @@ public class FallingPenguinGame extends GameApplication {
                 physics.applyBodyForceToCenter(Drag(angle));
                 beginAnimation = false;
                 jetpackTimeElapsed = 0;
-
+                this.inventory = Inventory.getInstance();
                 //Inventory Stuff
-                inventory.addPoints((int) currencyToAdd);
-                inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
-                if (inventory.getMaxDistanceFlown() < (int) penguin.getX()){
-                    inventory.setMaxDistanceFlown((int) penguin.getX());
+                this.inventory.addPoints((int) currencyToAdd);
+                this.inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
+                if (this.inventory.getMaxDistanceFlown() < (int) penguin.getX()){
+                    this.inventory.setMaxDistanceFlown((int) penguin.getX());
                 }
-                inventory.setNetworth(inventory.getNetworth() + (int) currencyToAdd);
+                this.inventory.setNetworth(this.inventory.getNetworth() + (int) currencyToAdd);
                 if (User.getInstance().getUserId() != 0){
-                    Database.save(User.getInstance().getUserId(), inventory);
+                    Database.save(User.getInstance().getUserId(), this.inventory);
                 }
 
                 goToMenu();
