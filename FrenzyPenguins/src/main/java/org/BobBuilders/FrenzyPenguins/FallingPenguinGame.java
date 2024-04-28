@@ -61,6 +61,7 @@ public class FallingPenguinGame extends GameApplication {
     private double cloud2SpawnTimer = 0;
     private double cloud1SpawnInterval = 0.5;
     private double cloud2SpawnInterval = 0.5;
+    private double floorTimer;
     private boolean beginAnimation = false;
     private static boolean spaceKeyPressed = false;
     private Text welcomeText;
@@ -130,16 +131,7 @@ public class FallingPenguinGame extends GameApplication {
 
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
-
-
-        //Circle trail to help keep track of penguin position and movement
-        for(int i =0; i < 100; i++){
-            Entity circle = FXGL.entityBuilder()
-                    .at(300,300*i)
-                    .type(EXIT)
-                    .viewWithBBox(new Circle(20,20,20,Color.GREEN))
-                    .buildAndAttach();
-        }
+        
 
         //Displays the horizontal distance traveled by penguin
         distanceText = getUIFactoryService().newText("", Color.PURPLE, 16);
@@ -236,7 +228,7 @@ public class FallingPenguinGame extends GameApplication {
                 physics.setVelocityX(40);
             }
             if (penguin.getX() == 250) {
-                Vec2 downtime = new Vec2(-10, -50);
+                Vec2 downtime = new Vec2(-10, -10*store.getRampLevel());
                 physics.applyBodyForceToCenter(downtime);
             }
         }
@@ -320,6 +312,18 @@ public class FallingPenguinGame extends GameApplication {
         }
 
 
+        if(penguin.getY() > (3000 - 50)){
+            floorTimer += tpf;
+            if(floorTimer >= 3){
+                inventory.addPoints((int)penguin.getX());
+                goToMenu();
+                floorTimer = 0;
+            }
+        }
+        if(penguin.getY() < (3000 - 50)){
+            floorTimer = 0;
+        }
+
         //Temporary until full floor is constructed
         if (penguin.getX() > 1000) {
             if (!physics.isMoving() && beginAnimation) {
@@ -361,9 +365,9 @@ public class FallingPenguinGame extends GameApplication {
             angle = -angle;
         }
 
-        //Conditions for which lift+drag force is applied
-        if (penguin.getX() > 250 && store.isEquipGlider()) {
-            physics.applyBodyForceToCenter(Flight_vectors(angle));
+        //Conditions for which lift force is applied
+        if (penguin.getX() > 250 && store.isEquipGlider() && penguin_y_velocity() > 0) {
+            physics.applyBodyForceToCenter(Lift(angle));
         }
         //Locks angle when player isn't pressing key
         if (penguin.getX() > 1000 && (physics.getBody().getAngularVelocity() >= 1 || physics.getBody().getAngularVelocity() <= -1)) {
@@ -393,8 +397,12 @@ public class FallingPenguinGame extends GameApplication {
                 cloud2SpawnTimer = 0;
             }
         }
-        System.out.println(spaceKeyPressed);
 
+        //Stops jetpack animation once jetpack timer surpasses 5 seconds
+        if(jetpackTimeElapsed >= 5){
+            CustomEntityFactory.penguinJet.setVisible(true);
+            CustomEntityFactory.penguinJetActive.setVisible(false);
+        }
     }
 
     @Override
@@ -414,7 +422,7 @@ public class FallingPenguinGame extends GameApplication {
 
         getInput().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                if (store.isEquipJetpack() && penguin.getX() >= 1000) {
+                if (store.isEquipJetpack() && penguin.getX() >= 1000 && jetpackTimeElapsed <= 5) {
                     spaceKeyPressed = true;  // Set the flag to true when space key is released
                     CustomEntityFactory.penguinJet.setVisible(false);
                     CustomEntityFactory.penguinJetActive.setVisible(true);
@@ -446,13 +454,15 @@ public class FallingPenguinGame extends GameApplication {
             }
         });
         onKey(KeyCode.SPACE, () -> {
+            //Ensures that the jetpack only works when jetpack is equipped and after going off ramp
             if (store.isEquipJetpack() && penguin.getX() >= 1000) {
+                //Keeps track of the elapsed time when jetpack is used
                 jetpackTimeElapsed += tpf();
                 //If statement limits the amount of time the user can use the jetpack for
                 if (jetpackTimeElapsed < 5) {
                     PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
-                    double speedMultiplier = 2;
-
+                    //Jetpack is stronger depending on the level of the jetpack
+                    double speedMultiplier = (double)store.getJetPackLevel()/4;
                     double jetAngle = penguin.getRotation() % 360;
                     if (jetAngle < 0) {
                         jetAngle += 360;
@@ -490,7 +500,8 @@ public class FallingPenguinGame extends GameApplication {
         //Creates the initial ramp
         EntitySpawner.spawnRectangle(-500, 100, 700, 2000);
         EntitySpawner.spawnCircle(200 - 50, 100, 50);
-        EntitySpawner.spawnRectangle(200 - buffer, 150 - buffer, 50 + buffer, 1950 + buffer);
+        EntitySpawner.spawnRectangle(200 - buffer, 150, 50 + buffer, 1950 + buffer);
+        EntitySpawner.spawnRectangle(190, 150 - 1, 60, 1950);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
         EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
         EntitySpawner.spawnRectangle(250, 1600 - buffer, 2 * rampRadius, 400 + buffer);

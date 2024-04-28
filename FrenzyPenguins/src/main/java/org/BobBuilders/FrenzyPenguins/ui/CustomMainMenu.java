@@ -332,6 +332,7 @@ public class CustomMainMenu extends FXGLMenu {
                 case 3:penguinView = new ImageView("file:jetpack_active.gif");break;
             }
             penguinView.setTranslateX(0);
+            penguinView.setTranslateZ(10);
             penguinView.setTranslateY(getAppHeight());
             penguinView.setRotate(-30);
             penguinView.setFitHeight(125);

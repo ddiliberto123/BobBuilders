@@ -58,6 +58,10 @@ public class CustomEntityFactory implements EntityFactory {
     Image penguinJactive = new Image("file:"+fix_for_Mac()+"jetpack_active.gif");
     Image penguinG = new Image("file:"+fix_for_Mac()+"penguin_and_glider.png");
     Image penguinS = new Image("file:"+fix_for_Mac()+"penguin_and_sled.png");
+    Image penguinSGJ = new Image("file:"+fix_for_Mac()+"fully_equipped.png");
+    Image penguinJG = new Image("file:"+fix_for_Mac()+"jetpack_and_umbrella.png");
+    Image penguinJS = new Image("file:"+fix_for_Mac()+"jetpack_sled.png");
+    Image penguinSG = new Image("file:"+fix_for_Mac()+"sled_and_glider.png");
     public static ImageView penguin;
     public static ImageView penguinJet;
     public static ImageView penguinJetActive;
@@ -260,26 +264,36 @@ public class CustomEntityFactory implements EntityFactory {
 
     @Spawns("penguin")
     public Entity newPenguin(SpawnData data) {
+        float slideFriction = 0.055f-store.getSlideLevel()/200f;
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.02f));
+        physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.055f));
         if (store.isEquipSlide()) {
-            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.001f));
+            physics.setFixtureDef(new FixtureDef().density(0.1f).friction(slideFriction));
         }
 
         Image penguinView = penguinImage;
 
-        if (store.isEquipJetpack() && !FallingPenguinGame.isSpaceKeyPressed()) {
+        if (store.isEquipJetpack() && !store.isEquipGlider() && !store.isEquipSlide()) {
             penguinView = penguinJ;
         }
-        if (store.isEquipJetpack() && FallingPenguinGame.isSpaceKeyPressed()){
-            penguinView = penguinJactive;
-        }
-        if (store.isEquipGlider()) {
+        if (store.isEquipGlider() && !store.isEquipJetpack() && !store.isEquipSlide()) {
             penguinView = penguinG;
         }
-        if (store.isEquipSlide()) {
+        if (store.isEquipSlide() && !store.isEquipJetpack() && !store.isEquipGlider()) {
             penguinView = penguinS;
+        }
+        if (store.isEquipJetpack() && store.isEquipGlider() && !store.isEquipSlide()) {
+            penguinView = penguinJG;
+        }
+        if (store.isEquipJetpack() && !store.isEquipGlider() && store.isEquipSlide()) {
+            penguinView = penguinJS;
+        }
+        if (store.isEquipJetpack() && store.isEquipGlider() && store.isEquipSlide()) {
+            penguinView = penguinSGJ;
+        }
+        if (!store.isEquipJetpack() && store.isEquipGlider() && store.isEquipSlide()) {
+            penguinView = penguinSG;
         }
 
         penguin = new ImageView(penguinView);
