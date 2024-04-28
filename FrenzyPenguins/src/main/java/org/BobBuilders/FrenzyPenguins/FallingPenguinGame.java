@@ -260,7 +260,7 @@ public class FallingPenguinGame extends GameApplication {
 
         //background_1st.setY(penguin.getY());
 
-        if (penguin.getX() >= 200) {
+        if (penguin.getX() >= 0) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
             speedometer.setX(penguinX+425);altimeter.setX(penguinX+260);
