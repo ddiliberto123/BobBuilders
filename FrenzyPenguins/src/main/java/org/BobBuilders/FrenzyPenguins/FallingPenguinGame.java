@@ -131,16 +131,7 @@ public class FallingPenguinGame extends GameApplication {
 
         PhysicsComponent floor = new PhysicsComponent();
         floor.setBodyType(BodyType.STATIC);
-
-
-        //Circle trail to help keep track of penguin position and movement
-        for(int i =0; i < 100; i++){
-            Entity circle = FXGL.entityBuilder()
-                    .at(300,300*i)
-                    .type(EXIT)
-                    .viewWithBBox(new Circle(20,20,20,Color.GREEN))
-                    .buildAndAttach();
-        }
+        
 
         //Displays the horizontal distance traveled by penguin
         distanceText = getUIFactoryService().newText("", Color.PURPLE, 16);

@@ -107,7 +107,7 @@ public class CustomGameMenu extends FXGLMenu {
         slideLevel.textProperty().bind(Bindings.convert(store.getSlideLevelProperty()));
 
         //Creates the buttons
-        CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Restart", this::fireNewGame);
+        CustomGameMenu.customMenuButton btnResume = new CustomGameMenu.customMenuButton("Play", this::fireNewGame);
         CustomGameMenu.customMenuButton btnOptions = new CustomGameMenu.customMenuButton("Main Menu", this::fireExitToMainMenu);
         CustomGameMenu.customMenuButton btnMainMenu = new CustomGameMenu.customMenuButton("Quit", this::fireExitToMainMenu);
         updateButtons();
