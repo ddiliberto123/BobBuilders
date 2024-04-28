@@ -127,12 +127,13 @@ public class CustomMainMenu extends FXGLMenu {
             vboxLoggedIn.setVisible(false);
             vboxAdminMenu.setVisible(true);
             vboxAdminMenu.setAlignment(Pos.CENTER);
-            vboxAdminMenu.setTranslateX(200);
-            vboxAdminMenu.setTranslateY(100);
+            vboxAdminMenu.setTranslateX(50);
             //Removes the old table from the vbox
             vboxAdminMenu.getChildren().remove(this.table);
             //Requeries - needed if a user is created after the admin menu is initialized
             this.table = new TableView<>();
+            this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            this.table.setMaxWidth(TableData.TABLEWIDTH);
             this.tableList = Database.loadTable(this.table,this.searchField);
             //Inserts new table into the vbox
             vboxAdminMenu.getChildren().add(2,this.table);
@@ -552,7 +553,10 @@ public class CustomMainMenu extends FXGLMenu {
         });
 
         bottomButtons.getChildren().addAll(back, delete);
+        //Needed to allign the table again
         bottomButtons.setSpacing(400);
+        textfieldHbox.setTranslateX(200);
+        bottomButtons.setTranslateX(200);
         vboxAdminMenu.getChildren().addAll(header, textfieldHbox, this.table, bottomButtons);
     }
 }

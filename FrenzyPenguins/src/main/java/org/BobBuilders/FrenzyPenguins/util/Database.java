@@ -243,19 +243,19 @@ public class Database {
      */
     public static ObservableList<TableData> loadTable(TableView<TableData> table, TextField searchField) {
         TableColumn usernameColumn = new TableColumn<>("Username");
-        usernameColumn.setPrefWidth(200);
+        usernameColumn.setMaxWidth(TableData.TABLEWIDTH/4);
 
         TableColumn totalDistanceFlownColumn = new TableColumn<>("Total Distance Flown");
-        totalDistanceFlownColumn.setPrefWidth(200);
+        totalDistanceFlownColumn.setMaxWidth(TableData.TABLEWIDTH/4);
 
         TableColumn maxDistanceFlownColumn = new TableColumn<>("Max Distance Flown");
-        maxDistanceFlownColumn.setPrefWidth(200);
+        maxDistanceFlownColumn.setMaxWidth(TableData.TABLEWIDTH/4);
 
         TableColumn networthColumn = new TableColumn<>("Networth");
-        networthColumn.setPrefWidth(150);
+        networthColumn.setMaxWidth(TableData.TABLEWIDTH/4 - 50);
 
         TableColumn deleteColumn = new TableColumn<>("Delete");
-        deleteColumn.setPrefWidth(50);
+        deleteColumn.setMaxWidth(50);
         deleteColumn.setStyle("-fx-alignment: CENTER;");
 
         table.getColumns().addAll(usernameColumn, totalDistanceFlownColumn, maxDistanceFlownColumn, networthColumn, deleteColumn);
