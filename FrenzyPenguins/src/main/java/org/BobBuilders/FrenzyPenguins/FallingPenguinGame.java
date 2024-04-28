@@ -164,7 +164,7 @@ public class FallingPenguinGame extends GameApplication {
         altituteText.setStrokeWidth(1);
         getGameScene().addUINode(altituteText);
         //Give Climb-rate
-        climbing_rate = getUIFactoryService().newText("", Color.GREEN, 16);
+        climbing_rate = getUIFactoryService().newText("", Color.BLACK, 16);
         climbing_rate.setTranslateX(875);
         climbing_rate.setTranslateY(225);
         climbing_rate.setStrokeWidth(1);
@@ -276,27 +276,6 @@ public class FallingPenguinGame extends GameApplication {
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
 
-
-
-            //At this configuration, the penguin is at the middle of the image
-            //background_1st.setX(penguin.getX()-getAppWidth()/2);
-
-            //If statement checks if the penguin is halfway done through the length of the image
-//            System.out.println(penguin.getX()%getAppWidth()/2);
-//            if(penguin.getX()%(getAppWidth()/2) < 10) {
-//
-//                //bring the sencond IDENTICAL background half a image width from the penguin
-//                background_2nd.setX(penguin.getX()+getAppWidth()/2);
-//                //background2_2nd.setX(50+penguin.getX()+getAppWidth()/2);
-//                //GOOD UNTIL HERE
-//                if(penguin.getX()%getAppWidth() < 15) {
-//                    background_3rd.setX(penguin.getX());
-//                    //background2_1st.setX(penguin.getX());
-//                    background_2nd.setX(penguin.getX() - getAppWidth());
-//                    background_1st.setX(penguin.getX() + getAppWidth());
-//                    //background2_2nd.setX(penguin.getX() - getAppWidth());
-//                }
-//            }
 
         } else {
             getGameScene().getViewport().setX(0);

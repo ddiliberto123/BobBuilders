@@ -403,6 +403,7 @@ public class CustomEntityFactory implements EntityFactory {
         arc.setType(ArcType.ROUND);
         arc.setStroke(Color.GRAY);
         arc.setStrokeWidth(5);
+        arc.setOpacity(0.85);
 
         StackPane sp = new StackPane(arc);
         Rectangle indicator1 = new Rectangle(30,5);
@@ -422,26 +423,6 @@ public class CustomEntityFactory implements EntityFactory {
         sp.getChildren().get(3).setTranslateY(-58);
         sp.getChildren().get(3).setTranslateX(69);
         sp.getChildren().get(3).setRotate(90);
-
-//        Group g = new Group();
-//        for(int i=0; i<90; i+=15){
-//            System.out.println("hello");
-//            Rectangle r = new Rectangle(20,5);
-//            r.setFill(Color.HOTPINK);
-//            g.getChildren().add(r);
-//            System.out.println(g.getChildren().size());
-//        }
-//        int j=-20;
-//        int z=0;
-//        for (int i = 0; i < 90; i+=15) {
-//            sp.getChildren().add(g.getChildren().get(z));
-//            System.out.println(sp.getChildren().size());
-//            sp.getChildren().get(z).setRotate(i);
-//            sp.getChildren().get(z).setTranslateX(j);
-//            j+=20;
-//            z+=1;
-//        }
-
 
         Entity entity = entityBuilder()
                 .from(data)
