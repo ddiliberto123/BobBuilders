@@ -480,7 +480,7 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity altimeter_circle(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         Circle altimeter = new Circle(75);
-        altimeter.setOpacity(0.90);
+        altimeter.setOpacity(0.85);
         altimeter.setFill(Color.BLACK);
         altimeter.setStroke(Color.GRAY);
         altimeter.setStrokeWidth(5);
@@ -489,6 +489,16 @@ public class CustomEntityFactory implements EntityFactory {
         indicator1.setFill(Color.WHITESMOKE);indicator2.setFill(Color.WHITESMOKE);indicator3.setFill(Color.WHITESMOKE);indicator4.setFill(Color.WHITESMOKE);
         indicator1.setOpacity(0.85);indicator2.setOpacity(0.85);indicator3.setOpacity(0.85);indicator4.setOpacity(0.85);
         sp.getChildren().addAll(indicator1,indicator2,indicator3,indicator4);
+        Text t1 = new Text("0/6K");Text t2 = new Text("1.5K");Text t3 = new Text("3K");Text t4 = new Text("4.5K");
+        t1.setStroke(Color.MEDIUMAQUAMARINE);t1.setOpacity(0.5);
+        t2.setStroke(Color.MEDIUMAQUAMARINE);t2.setOpacity(0.5);
+        t3.setStroke(Color.MEDIUMAQUAMARINE);t3.setOpacity(0.5);
+        t4.setStroke(Color.MEDIUMAQUAMARINE);t4.setOpacity(0.5);
+        sp.getChildren().addAll(t1,t2,t3,t4);
+        sp.getChildren().get(5).setTranslateY(-31);sp.getChildren().get(6).setTranslateX(30);
+        sp.getChildren().get(7).setTranslateY(31);sp.getChildren().get(8).setTranslateX(-30);
+
+
 
         //sets the horizontal indicators in place
         sp.getChildren().get(1).setTranslateX(-58);sp.getChildren().get(2).setTranslateX(58);
