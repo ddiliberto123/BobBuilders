@@ -65,6 +65,8 @@ public class FallingPenguinGame extends GameApplication {
     private boolean beginAnimation = false;
     private static boolean spaceKeyPressed = false;
     private Text welcomeText;
+    private StackPane cloudStack = new StackPane();
+
 
     public static void main(String[] args) {
         Database.dbInit();
@@ -120,6 +122,7 @@ public class FallingPenguinGame extends GameApplication {
         spawnCloud1();
         spawnCloud2();
         spawnCloud1();
+
 
         //Speedometer
         speed_curve = FXGL.spawn("speed_curve",-200,-300);
@@ -187,6 +190,7 @@ public class FallingPenguinGame extends GameApplication {
         if (penguin.getX() != 10) {
             welcomeText.setVisible(false);
         }
+
 
         // Define the transition heights where the color will start to change
         double transitionHeight1 = -500;
@@ -382,7 +386,14 @@ public class FallingPenguinGame extends GameApplication {
             cloud1SpawnTimer += tpf;
             if (cloud1SpawnTimer >= cloud1SpawnInterval) {
                 //Spawns cloud 1 once time interval is complete
-                spawnCloud1();
+                if (penguin.getY() < 2900 - getAppHeight()) {
+                    Random random1 = new Random();
+                    //Generates a random number within the app height
+                    double randomY = random1.nextDouble() * getAppHeight();
+                    //Spawns a cloud slightly out of frame within the penguin's y coordinates
+                    Entity cloud = FXGL.spawn("cloud1", penguin.getX() + getAppWidth() / 2, penguin.getY() + randomY - 300);
+
+                }
                 cloud1SpawnInterval = random.nextDouble();
                 System.out.println(cloud1SpawnInterval);
                 //Resets time interval between 0 and 0.99 seconds

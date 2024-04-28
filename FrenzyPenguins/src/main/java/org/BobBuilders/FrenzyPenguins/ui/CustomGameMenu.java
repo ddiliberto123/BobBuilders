@@ -55,6 +55,7 @@ public class CustomGameMenu extends FXGLMenu {
     private double timer;
     private double snowHillsX = -300;
     private double snowHillsY = 265;
+    private StackPane snowStack = new StackPane();
 
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
 
@@ -201,7 +202,10 @@ public class CustomGameMenu extends FXGLMenu {
         endContainer.setAlignment(Pos.CENTER);
         endContainer.setPadding(new Insets(20));
 
-        stack.getChildren().addAll(back, endContainer, title, userName, availablePoints,snowHills1,snowHills2);
+        snowStack.setTranslateX(-getAppWidth()/2);
+        snowStack.setTranslateY(-getAppHeight()/2);
+
+        stack.getChildren().addAll(back, snowStack, endContainer, title, userName, availablePoints,snowHills1,snowHills2);
         getContentRoot().getChildren().addAll(stack);
 
         //Ensures that the buttons keep track of points obtained and whether or not equipment is owned
@@ -385,7 +389,7 @@ public class CustomGameMenu extends FXGLMenu {
                 snowflakeImage.setPreserveRatio(true);
             }
 
-            getRoot().getChildren().add(snowflakeImage);
+            snowStack.getChildren().add(snowflakeImage);
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {

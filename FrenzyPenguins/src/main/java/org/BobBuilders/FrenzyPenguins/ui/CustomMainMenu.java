@@ -65,6 +65,7 @@ public class CustomMainMenu extends FXGLMenu {
     private TableView<TableData> table = new TableView<>();
     ObservableList<TableData> tableList;
     TextField searchField = new TextField();
+    StackPane snowStack = new StackPane();
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -76,6 +77,13 @@ public class CustomMainMenu extends FXGLMenu {
         mainMenuImage.setFitWidth(getAppWidth());
         mainMenuImage.setFitHeight(getAppHeight());
         createAdminMenu();
+
+        ImageView snowflakeImage = new ImageView("file:snowflake.png");
+        snowflakeImage.setTranslateX(Math.random()*getAppWidth());
+        snowflakeImage.setTranslateY(-50);
+        snowflakeImage.setFitWidth(30);
+        snowflakeImage.setPreserveRatio(true);
+        snowStack.getChildren().add(snowflakeImage);
 
         if (User.getInstance().getUserId() == 0) {
             usernameProperty.set("Not Logged in");
@@ -253,8 +261,10 @@ public class CustomMainMenu extends FXGLMenu {
         accountUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
+        snowStack.setTranslateX(-getAppWidth()/2);
+        snowStack.setTranslateY(-getAppHeight()/2);
 
-        StackPane stackMenu = new StackPane(mainMenuImage, vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn, vboxAdminMenu);
+        StackPane stackMenu = new StackPane(mainMenuImage, snowStack, vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn, vboxAdminMenu);
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         vboxLoggedIn.setVisible(false);
@@ -285,7 +295,7 @@ public class CustomMainMenu extends FXGLMenu {
                 snowflakeImage.setPreserveRatio(true);
             }
 
-            getRoot().getChildren().add(snowflakeImage);
+            snowStack.getChildren().add(snowflakeImage);
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
@@ -319,13 +329,14 @@ public class CustomMainMenu extends FXGLMenu {
                 case 2:penguinView = new ImageView("file:penguin_and_sled.png");break;
                 case 3:penguinView = new ImageView("file:jetpack_active.gif");break;
             }
-            penguinView.setTranslateX(0);
-            penguinView.setTranslateZ(10);
-            penguinView.setTranslateY(getAppHeight());
+
+            //Offset by 30 for penguin to spawn out of screen
+            penguinView.setTranslateX(-30);
+            penguinView.setTranslateY(getAppHeight() + 30);
             penguinView.setRotate(-30);
             penguinView.setFitHeight(125);
             penguinView.setPreserveRatio(true);
-            getRoot().getChildren().add(penguinView);
+            snowStack.getChildren().add(penguinView);
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
