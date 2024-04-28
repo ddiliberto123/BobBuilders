@@ -11,10 +11,6 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.almasb.fxgl.ui.FXGLButton;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -38,13 +34,24 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppHeight;
 import static org.BobBuilders.FrenzyPenguins.EntityType.EXIT;
 import static org.BobBuilders.FrenzyPenguins.EntityType.GROUND;
-import static org.BobBuilders.FrenzyPenguins.Physics.Lift;
-import static org.BobBuilders.FrenzyPenguins.Physics.penguin_velocity;
-
 
 public class FallingPenguinGame extends GameApplication {
     private static Entity penguin;
+    private static Entity speedometer;
+    private static Entity speed_curve;
+    private static Entity altimeter;
+    private static Entity altimeter_circle;
+    private static Entity background_1st;
+    private static Entity background_2nd;
+    private static Entity background_3rd;
+    private static Entity background2_1st;
+    private static Entity background2_2nd;
+
+    private Entity bottom;
     private Text distanceText;
+    private Text speedText;
+    private Text altituteText;
+    private Rectangle cluster = new Rectangle(310,20);
     private double beginPoints = 0;
     private double angle;
     Inventory inventory = Inventory.getInstance();
@@ -83,7 +90,6 @@ public class FallingPenguinGame extends GameApplication {
         gameSettings.setMainMenuEnabled(true);
         gameSettings.setTitle("Game");
         gameSettings.setVersion("1.0");
-
     }
 
     @Override
@@ -98,25 +104,75 @@ public class FallingPenguinGame extends GameApplication {
         getGameScene().addUINode(welcomeText);
 
         //Spawn moving background
+        for (int i = 0; i < 10; i++) {
+            background_1st = FXGL.spawn(EntitySpawner.BACKGROUND, -9200, 2500);
+            background_2nd = FXGL.spawn(EntitySpawner.BACKGROUND, -9200, 2500);
+            background_3rd = FXGL.spawn(EntitySpawner.BACKGROUND, -9200, 2500);
+        }
         for (int i = 0; i < 20; i++) {
             FXGL.spawn(EntitySpawner.BACKGROUND, i * getAppWidth(), 2300);
         }
 
         //Spawning the penguin entity
-        penguin = FXGL.spawn("penguin", 10, 0, 0);
+        penguin = FXGL.spawn("penguin", 10, 0);
 
         //Random clouds placed at the beginning of the game
         spawnCloud1();
         spawnCloud2();
         spawnCloud1();
 
+        //Speedometer
+        speed_curve = FXGL.spawn("speed_curve",-200,-300);
+        speedometer = FXGL.spawn("speedometer", -200,-200);
+        altimeter_circle = FXGL.spawn("altimeter_circle", -200,-300);
+        altimeter = FXGL.spawn("altimeter",-200,-900);
+
         createEntireRamp(0, 150);
+
+        PhysicsComponent floor = new PhysicsComponent();
+        floor.setBodyType(BodyType.STATIC);
+
+
+        //Circle trail to help keep track of penguin position and movement
+        for(int i =0; i < 100; i++){
+            Entity circle = FXGL.entityBuilder()
+                    .at(300,300*i)
+                    .type(EXIT)
+                    .viewWithBBox(new Circle(20,20,20,Color.GREEN))
+                    .buildAndAttach();
+        }
 
         //Displays the horizontal distance traveled by penguin
         distanceText = getUIFactoryService().newText("", Color.PURPLE, 16);
         distanceText.setTranslateX(20);
         distanceText.setTranslateY(20);
         getGameScene().addUINode(distanceText);
+
+        //Adds rectangle for looks
+        cluster.setFill(Color.LIGHTGRAY);
+        cluster.setStroke(Color.GRAY);
+        cluster.setStrokeWidth(3);
+        cluster.setTranslateX(865);cluster.setTranslateY(185);
+        getGameScene().addUINode(cluster);
+
+        //Gives us speed accurately
+        speedText = getUIFactoryService().newText("", Color.GREEN, 16);
+        speedText.setTranslateX(1055);
+        speedText.setTranslateY(200);
+        speedText.setStroke(Color.LIGHTSEAGREEN);
+        speedText.setStrokeWidth(1);
+        getGameScene().addUINode(speedText);
+        //Gives us altitude accurately
+        altituteText = getUIFactoryService().newText("", Color.GREEN, 16);
+        altituteText.setTranslateX(875);
+        altituteText.setTranslateY(200);
+        altituteText.setStroke(Color.LIGHTSEAGREEN);
+        altituteText.setStrokeWidth(1);
+        getGameScene().addUINode(altituteText);
+
+
+
+
 
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
@@ -194,9 +250,18 @@ public class FallingPenguinGame extends GameApplication {
                 "Angle: (" + Math.round(get_penguin_angle()) + ")" +
                 "FPS: (" + 1 / tpf() + ")");
 
+        speedText.setVisible(false);altituteText.setVisible(false);cluster.setVisible(false);
+
+        //background_1st.setY(penguin.getY());
+
         if (penguin.getX() >= 200) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
+            speedometer.setX(penguinX+425);altimeter.setX(penguinX+260);
+            speedometer.setY(penguinY-235);altimeter.setY(penguinY-297);
+            speed_curve.setX(penguinX+425);altimeter_circle.setX(penguinX+250);
+            speed_curve.setY(penguinY-380);altimeter_circle.setY(penguinY-375);
+            speedText.setVisible(true);altituteText.setVisible(true);cluster.setVisible(true);
 
             // Get the width and height  of the game window
             double windowWidth = getAppWidth();
@@ -209,12 +274,49 @@ public class FallingPenguinGame extends GameApplication {
             // Set the X and Y position of the viewport to keep the penguin centered
             getGameScene().getViewport().setX(cameraX);
             getGameScene().getViewport().setY(cameraY);
+
+
+
+            //At this configuration, the penguin is at the middle of the image
+            //background_1st.setX(penguin.getX()-getAppWidth()/2);
+
+            //If statement checks if the penguin is halfway done through the length of the image
+//            System.out.println(penguin.getX()%getAppWidth()/2);
+//            if(penguin.getX()%(getAppWidth()/2) < 10) {
+//
+//                //bring the sencond IDENTICAL background half a image width from the penguin
+//                background_2nd.setX(penguin.getX()+getAppWidth()/2);
+//                //background2_2nd.setX(50+penguin.getX()+getAppWidth()/2);
+//                //GOOD UNTIL HERE
+//                if(penguin.getX()%getAppWidth() < 15) {
+//                    background_3rd.setX(penguin.getX());
+//                    //background2_1st.setX(penguin.getX());
+//                    background_2nd.setX(penguin.getX() - getAppWidth());
+//                    background_1st.setX(penguin.getX() + getAppWidth());
+//                    //background2_2nd.setX(penguin.getX() - getAppWidth());
+//                }
+//            }
+
         } else {
             getGameScene().getViewport().setX(0);
             getGameScene().getViewport().setY(0);
         }
 
-        if (penguin.getX() >= 151000) {
+
+        //Speedometer
+        speedometer.rotateBy(((Math.sqrt((Math.pow(penguin_x_velocity(),2))+Math.pow(penguin_y_velocity(),2)))*90)/120);
+        speedText.setText("speed:" + Math.round(penguin_velocity())+" km/h");
+        //Altimeter
+        altimeter.rotateBy(((altimeter_height()*360)/6000)+90);
+        altituteText.setText("altitude:" + (-1*penguin.getY()+2974)/10+" m");
+
+
+        //Restarts game when penguin reaches the bottom
+        if (penguin.getY() >= 2970) {
+            physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
+            jetpackTimeElapsed = 0;
+        }
+        if(penguin.getX() >= 500 && penguin.getY() >= 2974){
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
         }
 
@@ -232,13 +334,29 @@ public class FallingPenguinGame extends GameApplication {
         }
 
         //Temporary until full floor is constructed
-        if (!physics.isMoving() && beginAnimation) {
-            inventory.addPoints((int) (penguin.getX()));
-            goToMenu();
-            beginAnimation = false;
-            jetpackTimeElapsed = 0;
-            //Applies Drag without having a glider equiped
-            physics.applyBodyForceToCenter(Drag(angle));
+        if (penguin.getX() > 1000) {
+            if (!physics.isMoving() && beginAnimation) {
+                double currencyToAdd = penguin.getX() * 0.05;
+
+                //Applies Drag without having a glider equiped
+                physics.applyBodyForceToCenter(Drag(angle));
+                beginAnimation = false;
+                jetpackTimeElapsed = 0;
+
+                //Inventory Stuff
+                inventory.addPoints((int) currencyToAdd);
+                inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
+                if (inventory.getMaxDistanceFlown() < (int) penguin.getX()){
+                    inventory.setMaxDistanceFlown((int) penguin.getX());
+                }
+                inventory.setNetworth(inventory.getNetworth() + (int) currencyToAdd);
+                if (User.getInstance().getUserId() != 0){
+                    Database.save(User.getInstance().getUserId(), inventory);
+                }
+
+                goToMenu();
+                
+            }
         }
 
         angle = penguin.getRotation();
@@ -423,8 +541,10 @@ public class FallingPenguinGame extends GameApplication {
         double vy = physics.getVelocityY();
         return Math.round(getPhysicsWorld().toMeters(vy));
     }
-
-    public static double wing_area() {
+    public static double penguin_velocity(){
+        return (Math.sqrt(Math.pow(penguin_x_velocity(),2)+Math.pow(penguin_y_velocity(),2)));
+    }
+    public static double wing_area(){
         //This is temporary, the wing_area should be taken from the area of the gliders
         //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
         return (penguin.getWidth() * penguin.getHeight()) / 10;
@@ -444,6 +564,9 @@ public class FallingPenguinGame extends GameApplication {
         return p_area;
     }
 
+    public static double altimeter_height(){
+        return (-1*penguin.getY()+2974);
+    }
     //Method to spawn cloud 1
     private void spawnCloud1() {
         //Ensures that clouds do not spawn once the penguin approaches bottom

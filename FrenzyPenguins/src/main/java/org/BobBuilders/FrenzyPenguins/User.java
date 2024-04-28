@@ -13,11 +13,13 @@ public class User {
 
     private int userId;
     private String username;
+    private boolean admin;
 
 
     private User(){
         this.userId = 0;
         this.username = "";
+        this.admin = false;
     }
 
     public static User getInstance() {

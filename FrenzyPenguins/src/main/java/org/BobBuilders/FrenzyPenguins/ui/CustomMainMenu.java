@@ -10,11 +10,18 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -26,13 +33,20 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
 import org.BobBuilders.FrenzyPenguins.EntityType;
+import lombok.Data;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
+import org.BobBuilders.FrenzyPenguins.data.TableData;
+import org.BobBuilders.FrenzyPenguins.translators.InventoryMapper;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
 import java.util.Random;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Optional;
 
 
 public class CustomMainMenu extends FXGLMenu {
@@ -42,10 +56,15 @@ public class CustomMainMenu extends FXGLMenu {
     private VBox vboxMainMenu;
     private VBox vboxAccount;
     private VBox vboxLoggedIn;
+    private VBox vboxAdminMenu = new VBox();
+
     private SimpleStringProperty usernameProperty = new SimpleStringProperty();
     private double timer = 0;
     private double penguinTimer = 0;
     private ImageView penguinView;
+    private TableView<TableData> table = new TableView<>();
+    ObservableList<TableData> tableList;
+    TextField searchField = new TextField();
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -56,6 +75,7 @@ public class CustomMainMenu extends FXGLMenu {
         ImageView mainMenuImage = new ImageView("file:pixel_mountain.png");
         mainMenuImage.setFitWidth(getAppWidth());
         mainMenuImage.setFitHeight(getAppHeight());
+        createAdminMenu();
 
         if (User.getInstance().getUserId() == 0) {
             usernameProperty.set("Not Logged in");
@@ -73,7 +93,11 @@ public class CustomMainMenu extends FXGLMenu {
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
         customMenuButton btnAccount = new customMenuButton("Account", () -> {
             vboxMainMenu.setVisible(false);
-            vboxAccount.setVisible(true);
+            if (Objects.equals(menuUsernameText.getText(), "Not Logged in")) {
+                vboxAccount.setVisible(true);
+            } else {
+                vboxLoggedIn.setVisible(true);
+            }
         });
 
         customMenuButton btnOptions = new customMenuButton("Options", () -> {
@@ -99,11 +123,29 @@ public class CustomMainMenu extends FXGLMenu {
             vboxLoggedIn.setVisible(false);
         });
 
+        customMenuButton btnAdmin = new customMenuButton("Admin Menu", () -> {
+            vboxLoggedIn.setVisible(false);
+            vboxAdminMenu.setVisible(true);
+            vboxAdminMenu.setAlignment(Pos.CENTER);
+            vboxAdminMenu.setTranslateX(50);
+            //Removes the old table from the vbox
+            vboxAdminMenu.getChildren().remove(this.table);
+            //Requeries - needed if a user is created after the admin menu is initialized
+            this.table = new TableView<>();
+            this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            this.table.setMaxWidth(TableData.TABLEWIDTH);
+            this.tableList = Database.loadTable(this.table,this.searchField);
+            //Inserts new table into the vbox
+            vboxAdminMenu.getChildren().add(2,this.table);
+        });
+
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
             vboxAccount.setVisible(true);
             vboxLoggedIn.setVisible(false);
+            vboxLoggedIn.getChildren().remove(btnAdmin);
             usernameProperty.set("Not Logged in");
         });
+
 
         //Creates a vbox for the main menu
         vboxMainMenu = new VBox(10,
@@ -147,10 +189,17 @@ public class CustomMainMenu extends FXGLMenu {
                 user.setUsername(username);
                 user.setUserId(userId);
 
-                Database.load(user.getUserId());
+                Inventory inventory = Inventory.getInstance();
+                inventory = Database.loadInventory(user.getUserId());
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 vboxLoggedIn.setVisible(true);
+
+                user.setAdmin(Database.getAdminStatus(userId));
+                if (user.isAdmin()) {
+                    vboxLoggedIn.getChildren().add(0, btnAdmin);
+                }
+
             }
         });
 
@@ -205,10 +254,11 @@ public class CustomMainMenu extends FXGLMenu {
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
 
-        StackPane stackMenu = new StackPane(mainMenuImage, vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn);
+        StackPane stackMenu = new StackPane(mainMenuImage, vboxMainMenu, vboxOptions, vboxAccount, vboxLoggedIn, vboxAdminMenu);
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         vboxLoggedIn.setVisible(false);
+        vboxAdminMenu.setVisible(false);
         getContentRoot().getChildren().addAll(stackMenu);
     }
 
@@ -359,7 +409,6 @@ public class CustomMainMenu extends FXGLMenu {
         public void showTaken() {
             takenSubtext.setVisible(true);
             textField.setStyle("-fx-text-box-border: red; -fx-focus-color: red;");
-            System.out.println("Hello");
         }
 
         public void hideTaken() {
@@ -430,5 +479,84 @@ public class CustomMainMenu extends FXGLMenu {
             line.setFill(gradient);
             getChildren().add(line);
         }
+    }
+
+    //Creates admin menu and functionality
+    private void createAdminMenu() {
+        vboxAdminMenu.setAlignment(Pos.CENTER);
+        vboxAdminMenu.setSpacing(10);
+        //Making the UI
+        Text header = FXGL.getUIFactoryService().newText("Admin Menu");
+        HBox textfieldHbox = new HBox();
+        this.searchField.setPromptText("Keywords...");
+        textfieldHbox.getChildren().addAll(FXGL.getUIFactoryService().newText("Search User", Color.BLACK, 14), this.searchField);
+        textfieldHbox.setSpacing(10);
+        textfieldHbox.setAlignment(Pos.CENTER_LEFT);
+
+        //Defining the Table
+        this.tableList = Database.loadTable(this.table,this.searchField);
+        System.out.println(tableList);
+
+        HBox bottomButtons = new HBox();
+        customMenuButton back = new customMenuButton("Back", () -> {
+            vboxAdminMenu.setVisible(false);
+            vboxLoggedIn.setVisible(true);
+        });
+        customMenuButton delete = new customMenuButton("Delete", () -> {
+            boolean adminReference = false;
+            ArrayList<TableData> usersToDelete = new ArrayList<>();
+
+            for (TableData e : tableList) {
+                if (e.getDelete().isSelected()) {
+                    if (Database.getAdminStatus(e.getUserId())) {
+                        adminReference = true;
+                        break;
+                    }
+                    usersToDelete.add(e);
+                }
+            }
+            if (adminReference) {
+                Alert self = new Alert(
+                        Alert.AlertType.WARNING,
+                        "You can not delete an admin account.\nNice try :P",
+                        ButtonType.OK);
+                self.setTitle("Admin Account Detected");
+                self.setHeaderText("Can not delete admins!");
+                self.showAndWait();
+            } else {
+                Alert confirmation = new Alert(
+                        Alert.AlertType.WARNING,
+                        "",
+                        ButtonType.YES, ButtonType.CANCEL
+                );
+                confirmation.setTitle("Warning!");
+                confirmation.setHeaderText("Are you sure you want to delete ");
+                if (usersToDelete.size() > 1) {
+                    confirmation.setHeaderText(confirmation.getHeaderText() + "the users?");
+                    confirmation.setContentText(usersToDelete.size() + " users will be deleted, are you sure? ");
+                } else {
+                    confirmation.setHeaderText(confirmation.getHeaderText() + "the user?");
+                    confirmation.setContentText(usersToDelete.size() + " user will be deleted, are you sure? ");
+                }
+                Optional<ButtonType> result = confirmation.showAndWait();
+                if (!result.isPresent()) {
+                    // alert exited
+                } else if (result.get() == ButtonType.YES) {
+                    for (TableData e : usersToDelete) {
+                        Database.delete(e.getUserId());
+                        tableList.remove(e);
+                    }
+                } else if (result.get() == ButtonType.CANCEL) {
+                    // cancel button is pressed
+                }
+            }
+        });
+
+        bottomButtons.getChildren().addAll(back, delete);
+        //Needed to allign the table again
+        bottomButtons.setSpacing(400);
+        textfieldHbox.setTranslateX(200);
+        bottomButtons.setTranslateX(200);
+        vboxAdminMenu.getChildren().addAll(header, textfieldHbox, this.table, bottomButtons);
     }
 }

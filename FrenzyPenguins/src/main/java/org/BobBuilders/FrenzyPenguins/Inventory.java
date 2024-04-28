@@ -27,9 +27,18 @@ public class Inventory {
     private SimpleBooleanProperty hasJetpack;
     private SimpleBooleanProperty hasSlide;
     private SimpleBooleanProperty hasGlider;
-
     @Getter
     private SimpleIntegerProperty pointsProperty;
+    @Getter
+    @Setter
+    private int totalDistanceFlown = 0;
+    @Getter
+    @Setter
+    private int maxDistanceFlown = 0;
+    @Getter
+    @Setter
+    private int networth = 0;
+
 
     private Inventory() {
         rampLevel = 1;
@@ -47,6 +56,10 @@ public class Inventory {
      */
     public static Inventory getInstance() {
         return instance = (instance == null) ? new Inventory() : instance;
+    }
+
+    public static Inventory createInstance() {
+        return new Inventory();
     }
 
     public void setHasJetpack(boolean answer) {

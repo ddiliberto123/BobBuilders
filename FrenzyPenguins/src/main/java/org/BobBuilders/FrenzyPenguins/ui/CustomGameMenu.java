@@ -5,6 +5,7 @@ import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -55,9 +56,16 @@ public class CustomGameMenu extends FXGLMenu {
     private double snowHillsX = -300;
     private double snowHillsY = 265;
 
+    private SimpleStringProperty usernameProperty = new SimpleStringProperty();
+
     public CustomGameMenu() {
         super(MenuType.GAME_MENU);
 
+        if (User.getInstance().getUserId() == 0) {
+            usernameProperty.set("Not Logged in");
+        } else {
+            usernameProperty.set("Logged in as " + User.getInstance().getUsername());
+        }
         inventory = Inventory.getInstance();
         store = Store.getInstance();
 
@@ -78,11 +86,14 @@ public class CustomGameMenu extends FXGLMenu {
         title.setTranslateY(-(getAppHeight() / 2 - 100));
 
         //Placeholder to demonstrate where username and points possessed are displayed
-        Text userName = FXGL.getUIFactoryService().newText("Username: sample123", Color.WHITE, 30);
-        userName.setTranslateX(-(getAppWidth() / 2 - 200));
+        Text userName = FXGL.getUIFactoryService().newText("Not logged in", Color.BLACK, 24);
+        userName.setTranslateX(-(getAppWidth() / 2 - 150));
         userName.setTranslateY(-(getAppHeight() / 2 - 150));
 
-        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPointsPropertyValue(), Color.WHITE, 30);
+        userName.textProperty().bind(Bindings.convert(usernameProperty));
+
+        Text availablePoints = FXGL.getUIFactoryService().newText("Points available: " + inventory.getPointsPropertyValue(), Color.BLACK, 24);
+
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 

@@ -10,7 +10,6 @@ public class Physics {
     static final double air_density = 1.293; // Kg/m^3
     static final double water_density = 1000; //Kg/m^3
     static final double gravity = -9.8;
-    static final double temp_wing_area = 1;
     public static final double temp_lift_c = 1.5;
     public static final double temp_drag_c = 0.1;
     static Store store = Store.getInstance();
@@ -24,7 +23,6 @@ public class Physics {
         }
 //        System.out.println("1: " + penguin_x_velocity() + " 2: " + penguin_y_velocity() + " 3: " + penguin_velocity);
         return Math.floor(penguin_velocity);
-
     }
 
     public static double penguin_velocity_angle(){
@@ -79,18 +77,26 @@ public class Physics {
 
     //Very painless way of implementing "buoyancy"
     public static Vec2 B_mockup(double p_angle){
-        double vx = Math.round(penguin_x_velocity()/120);
+        double vx = Math.round(penguin_x_velocity());
+        //System.out.println(vx);
         Vec2 fake_buoyancy = new Vec2();
         if(vx!=0){
-            double force = Math.random()*15;
-            fake_buoyancy.set(0,(float)force);
-            return fake_buoyancy;
+            //System.out.println("wtf");
+            //double force = Math.random()*15;
+            double force  = penguin_x_velocity()*0.5; //yes this is janky but i think it will work
+            fake_buoyancy.set((float)(force*Math.sin(Math.toRadians(p_angle))),(float)(force*Math.cos(Math.toRadians(p_angle))));
+            if(fake_buoyancy.length() > 20){
+                fake_buoyancy.set((float)Math.sin(Math.toRadians(p_angle))*20,(float)Math.sin(Math.toRadians(p_angle))*20);
+                return fake_buoyancy;
+            }
+            else {
+                return fake_buoyancy;
+            }
         }
         else{
             fake_buoyancy.set(0,0);
             return fake_buoyancy;
         }
     }
-
 }
 
