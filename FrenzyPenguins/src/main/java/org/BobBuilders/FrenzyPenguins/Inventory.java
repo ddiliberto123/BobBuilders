@@ -17,6 +17,7 @@ import org.BobBuilders.FrenzyPenguins.translators.InventorySerializer;
 /**
  * Data singleton used to store user inventory
  */
+@EqualsAndHashCode
 @JsonSerialize(using = InventorySerializer.class)
 @JsonDeserialize(using = InventoryDeserializer.class)
 public class Inventory {
@@ -211,8 +212,12 @@ public class Inventory {
         this.pointsProperty.set(points);
     }
 
-//    public String toString() {
-//        return "";
-//    }
-
+    public String toString() {
+        return String.format("Ramp Level: %d\n Jetpack Level: %d\n Glider Level: %d\n Slide Level: %d\n Points: %d",
+                this.rampLevelProperty.getValue(),
+                this.jetPackLevelProperty.getValue(),
+                this.gliderLevelProperty.getValue(),
+                this.slideLevelProperty.getValue(),
+                this.pointsProperty.getValue());
+    }
 }
