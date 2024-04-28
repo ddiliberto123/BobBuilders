@@ -235,7 +235,7 @@ public class CustomEntityFactory implements EntityFactory {
     public static Entity newCloud1(SpawnData data){
         PhysicsComponent cloudPhysics = new PhysicsComponent();
         cloudPhysics.setBodyType(BodyType.KINEMATIC);
-        Image cloud1 = new Image("file:cloud_1.png");
+        Image cloud1 = new Image("file:"+fix_for_Mac()+"cloud_1.png");
         ImageView view1 = new ImageView(cloud1);
         return entityBuilder()
                 .from(data)
@@ -248,7 +248,7 @@ public class CustomEntityFactory implements EntityFactory {
     public static Entity newCloud2(SpawnData data){
         PhysicsComponent cloudPhysics = new PhysicsComponent();
         cloudPhysics.setBodyType(BodyType.KINEMATIC);
-        Image cloud1 = new Image("file:cloud_2.png");
+        Image cloud1 = new Image("file:"+fix_for_Mac()+"cloud_2.png");
         ImageView view1 = new ImageView(cloud1);
         return entityBuilder()
                 .from(data)
@@ -319,7 +319,7 @@ public class CustomEntityFactory implements EntityFactory {
     public Entity newSnowflake(SpawnData data){
         PhysicsComponent snowflakePhysics = new PhysicsComponent();
         snowflakePhysics.setBodyType(BodyType.KINEMATIC);
-        ImageView snowflakeView = new ImageView("file:snowflake.png");
+        ImageView snowflakeView = new ImageView("file:"+fix_for_Mac()+"snowflake.png");
         snowflakeView.setFitWidth(30);
         snowflakeView.setPreserveRatio(true);
         return entityBuilder()
