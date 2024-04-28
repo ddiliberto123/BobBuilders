@@ -39,7 +39,14 @@ public class Physics {
     public static Vec2 Lift(double p_angle){
         p_angle = angle_fix(p_angle);
         //calculating lift
-        double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*1));
+
+        //Modifies lift_coefficient based on angle
+        double lift_c;
+        lift_c = p_angle/360;
+
+        double lift = ((temp_lift_c*air_density*((Math.pow(penguin_velocity(),2))/2)*lift_c));
+
+        System.out.println(p_angle);
         Vec2 lift_vector = new Vec2(Math.floor(lift*Math.sin((Math.toRadians(p_angle)))),Math.floor(lift*(Math.cos(Math.toRadians(p_angle)))));
         System.out.println("lift: "+lift);
         return lift_vector;
@@ -61,7 +68,7 @@ public class Physics {
     public static Vec2 Flight_vectors(double angle){
         Vec2 lift = Lift(angle);
         Vec2 drag = Drag(angle);
-        Vec2 final_flight_vector = new Vec2(0.012*(lift.x+drag.x),0.012*(lift.y+drag.y));
+        Vec2 final_flight_vector = new Vec2(0.016*(lift.x+0.5*drag.x),0.016*(lift.y+0.5*drag.y));
         return final_flight_vector;
     }
 
