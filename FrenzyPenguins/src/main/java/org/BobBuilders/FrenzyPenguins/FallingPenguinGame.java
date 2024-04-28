@@ -351,10 +351,10 @@ public class FallingPenguinGame extends GameApplication {
         //Temporary until full floor is constructed
         if (penguin.getX() > 1000) {
             if (!physics.isMoving() && beginAnimation) {
-                double currencyToAdd = penguin.getX() * 0.05;
+                double currencyToAdd = penguin.getX();
 
                 //Applies Drag without having a glider equiped
-                physics.applyBodyForceToCenter(Drag(angle));
+//                physics.applyBodyForceToCenter(Drag(angle));
                 beginAnimation = false;
                 jetpackTimeElapsed = 0;
 
