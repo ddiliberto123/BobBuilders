@@ -265,7 +265,7 @@ public class CustomEntityFactory implements EntityFactory {
 
     @Spawns("penguin")
     public Entity newPenguin(SpawnData data) {
-        float slideFriction = 0.055f-this.inventory.getSlideLevel()/200f;
+        float slideFriction = 0.055f-this.inventory.getSlideLevelProperty().getValue()/200f;
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
         physics.setFixtureDef(new FixtureDef().density(0.1f).friction(0.055f));

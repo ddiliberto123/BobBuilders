@@ -24,7 +24,7 @@ public class InventorySerializer extends StdSerializer<Inventory> {
     public void serialize(Inventory inventory, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("rampLevel", String.valueOf(inventory.getRampLevel()));
-        gen.writeStringField("jetpackLevel", String.valueOf(inventory.getJetPackLevel()));
+        gen.writeStringField("jetpackLevel", String.valueOf(inventory.getJetpackLevel()));
         gen.writeStringField("gliderLevel", String.valueOf(inventory.getGliderLevel()));
         gen.writeStringField("slideLevel", String.valueOf(inventory.getSlideLevel()));
         gen.writeStringField("pointsProperty", String.valueOf(inventory.getPointsPropertyValue()));

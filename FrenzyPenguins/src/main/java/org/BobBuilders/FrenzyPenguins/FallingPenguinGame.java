@@ -180,8 +180,6 @@ public class FallingPenguinGame extends GameApplication {
     protected void onUpdate(double tpf) {
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         this.inventory = Inventory.getInstance();
-        System.out.println(this.inventory);
-        System.out.println(inventory.getPointsPropertyValue());
 
         super.onUpdate(tpf);
 
@@ -463,7 +461,7 @@ public class FallingPenguinGame extends GameApplication {
                 if (jetpackTimeElapsed < 5) {
                     PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
                     //Jetpack is stronger depending on the level of the jetpack
-                    double speedMultiplier = (double)this.inventory.getJetPackLevel()/4;
+                    double speedMultiplier = (double)this.inventory.getJetpackLevel()/4;
                     double jetAngle = penguin.getRotation() % 360;
                     if (jetAngle < 0) {
                         jetAngle += 360;

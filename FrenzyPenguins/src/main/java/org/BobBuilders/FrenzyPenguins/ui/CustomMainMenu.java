@@ -191,18 +191,20 @@ public class CustomMainMenu extends FXGLMenu {
                 user.setUsername(username);
                 user.setUserId(userId);
                 this.inventory = Inventory.getInstance();
-//                this.inventory = Database.loadInventory(user.getUserId());
-                System.out.println(inventory);
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 vboxLoggedIn.setVisible(true);
                 if (this.inventory != Database.loadInventory(userId)) {
                     System.out.println(this.inventory);
+                    System.out.println(this.inventory.getJetpackLevel());
                     System.out.println("INVENTORY MISMATCH");
                     this.inventory.clone(Database.loadInventory(userId));
 //                    this.inventory = Database.loadInventory(userId);
                     System.out.println(this.inventory);
                     System.out.println(this.inventory.getPointsPropertyValue());
+                    System.out.println(this.inventory.getJetpackLevel());
+                    System.out.println(this.inventory.getGliderLevel());
+                    System.out.println(this.inventory.getSlideLevel());
 //                    loadSelectGrid.add(new Text("Inventory Mismatch"),0,0,2,1);
 //                    loadSelectGrid.add(new Text("Inventory 1"),0,1);
 //                    loadSelectGrid.add(new Text("Inventory 2"),1,1);

@@ -26,18 +26,18 @@ public class Inventory {
     private BooleanProperty equipJetpack;
     private BooleanProperty equipGlider;
     private BooleanProperty equipSlide;
-    @Setter
-    @Getter
-    private int jetPackLevel;
-    @Setter
-    @Getter
-    private int gliderLevel;
-    @Setter
-    @Getter
-    private int slideLevel;
-    @Setter
-    @Getter
-    private int rampLevel;
+//    @Setter
+//    @Getter
+//    private int jetPackLevel;
+//    @Setter
+//    @Getter
+//    private int gliderLevel;
+//    @Setter
+//    @Getter
+//    private int slideLevel;
+//    @Setter
+//    @Getter
+//    private int rampLevel;
     @Getter
     private IntegerProperty rampLevelProperty;
     @Getter
@@ -65,14 +65,14 @@ public class Inventory {
         equipJetpack = new SimpleBooleanProperty(false);
         equipGlider = new SimpleBooleanProperty(false);
         equipSlide = new SimpleBooleanProperty(false);
-        jetPackLevel = 1;
-        gliderLevel = 1;
-        slideLevel = 1;
-        rampLevel = 1;
-        jetPackLevelProperty = new SimpleIntegerProperty(jetPackLevel);
-        gliderLevelProperty = new SimpleIntegerProperty(gliderLevel);
-        slideLevelProperty = new SimpleIntegerProperty(slideLevel);
-        rampLevelProperty = new SimpleIntegerProperty(rampLevel);
+//        jetPackLevel = 0;
+//        gliderLevel = 0;
+//        slideLevel = 0;
+//        rampLevel = 0;
+        jetPackLevelProperty = new SimpleIntegerProperty(0);
+        gliderLevelProperty = new SimpleIntegerProperty(0);
+        slideLevelProperty = new SimpleIntegerProperty(0);
+        rampLevelProperty = new SimpleIntegerProperty(0);
     }
 
     public void clone(Inventory otherInventory) {
@@ -80,10 +80,14 @@ public class Inventory {
         this.equipJetpack.set(otherInventory.equipJetpack.getValue());
         this.equipGlider.set(otherInventory.equipGlider.getValue());
         this.equipSlide.set(otherInventory.equipSlide.getValue());
-        setJetPackLevel(otherInventory.jetPackLevel);
-        setGliderLevel(otherInventory.gliderLevel);
-        setSlideLevel(otherInventory.slideLevel);
-        setRampLevel(otherInventory.rampLevel);
+        jetPackLevelProperty.set(otherInventory.getJetPackLevelProperty().getValue());
+        gliderLevelProperty.set(otherInventory.getGliderLevelProperty().getValue());
+        slideLevelProperty.set(otherInventory.getSlideLevelProperty().getValue());
+        rampLevelProperty.set(otherInventory.getRampLevelProperty().getValue());
+//        setJetPackLevel(otherInventory.jetPackLevel);
+//        setGliderLevel(otherInventory.gliderLevel);
+//        setSlideLevel(otherInventory.slideLevel);
+//        setRampLevel(otherInventory.rampLevel);
 
 //        this.jetPackLevelProperty = otherInventory.jetPackLevelProperty;
 //        this.gliderLevelProperty = otherInventory.gliderLevelProperty;
@@ -148,13 +152,42 @@ public class Inventory {
     public void setGliderLevelProperty(int gliderLevelProperty) {
         this.gliderLevelProperty.set(gliderLevelProperty);
     }
-
     public void setSlideLevelProperty(int slideLevelProperty) {
         this.slideLevelProperty.set(slideLevelProperty);
     }
     public void setRampLevelProperty(int rampLevelProperty) {
         this.rampLevelProperty.set(rampLevelProperty);
     }
+
+    public int getJetpackLevel() {
+        return getJetPackLevelProperty().getValue();
+    }
+    public int getGliderLevel() {
+        return getGliderLevelProperty().getValue();
+    }
+    public int getSlideLevel() {
+        return getSlideLevelProperty().getValue();
+    }
+
+    public int getRampLevel() {
+        return getRampLevelProperty().getValue();
+    }
+
+    public void setJetpackLevel(int jetpackLevel) {
+        getJetPackLevelProperty().set(jetpackLevel);
+    }
+    public void setGliderLevel(int gliderLevel) {
+        getGliderLevelProperty().set(gliderLevel);
+    }
+
+    public void setSlideLevel(int slideLevel) {
+        getSlideLevelProperty().set(slideLevel);
+    }
+
+    public void setRampLevel(int rampLevel) {
+        getRampLevelProperty().set(rampLevel);
+    }
+
 
     /**
      * Adds points to the running total

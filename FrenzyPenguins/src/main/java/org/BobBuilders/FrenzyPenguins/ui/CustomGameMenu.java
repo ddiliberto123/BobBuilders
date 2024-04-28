@@ -5,7 +5,9 @@ import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -16,6 +18,7 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.BobBuilders.FrenzyPenguins.*;
+import org.BobBuilders.FrenzyPenguins.util.Database;
 
 import java.util.Random;
 
@@ -34,10 +37,10 @@ public class CustomGameMenu extends FXGLMenu {
     private CustomGameMenu.customMenuButton unequipJetpackBtn;
     private CustomGameMenu.customMenuButton unequipGliderBtn;
     private CustomGameMenu.customMenuButton unequipSlideBtn;
-    private CustomGameMenu.customMenuButton upgradeJetpackBtn;
-    private CustomGameMenu.customMenuButton upgradeGliderBtn;
-    private CustomGameMenu.customMenuButton upgradeSlideBtn;
-    private CustomGameMenu.customMenuButton upgradeRampBtn;
+    private customEquipmentButton upgradeJetpackBtn;
+    private customEquipmentButton upgradeGliderBtn;
+    private customEquipmentButton upgradeSlideBtn;
+    private customEquipmentButton upgradeRampBtn;
     private VBox purchaseJetpackVbox;
     private VBox purchaseGliderVbox;
     private VBox purchaseSlideVbox;
@@ -95,7 +98,7 @@ public class CustomGameMenu extends FXGLMenu {
         availablePoints.setTranslateX(getAppWidth() / 2 - 200);
         availablePoints.setTranslateY(-(getAppHeight() / 2 - 150));
 
-        jetPackLevel = FXGL.getUIFactoryService().newText("" + this.inventory.getJetPackLevel(), Color.BLACK, 30);
+        jetPackLevel = FXGL.getUIFactoryService().newText("" + this.inventory.getJetpackLevel(), Color.BLACK, 30);
         gliderLevel = FXGL.getUIFactoryService().newText("" + this.inventory.getGliderLevel(), Color.BLACK, 30);
         slideLevel = FXGL.getUIFactoryService().newText("" + this.inventory.getSlideLevel(), Color.BLACK, 30);
 
@@ -148,6 +151,10 @@ public class CustomGameMenu extends FXGLMenu {
         sledViewUnequipped.setFitHeight(150);
         sledViewUnequipped.setPreserveRatio(true);
 
+        this.upgradeJetpackBtn = new customEquipmentButton("Test",this.inventory.getJetPackLevelProperty());
+        this.upgradeGliderBtn = new customEquipmentButton("Test",this.inventory.getGliderLevelProperty());
+        this.upgradeSlideBtn = new customEquipmentButton("Test",this.inventory.getSlideLevelProperty());
+        this.upgradeRampBtn = new customEquipmentButton("Test",this.inventory.getRampLevelProperty());
 
         //Creating a container for each option of purchase
         purchaseJetpackVbox = new VBox(10, jetView, purchaseJetpackBtn);
@@ -215,27 +222,26 @@ public class CustomGameMenu extends FXGLMenu {
 
         //Makes buttons visible or invisible depending on whether or not equipment is owned and equipped
         //Checks if they're owned or not
+        StringProperty test = new SimpleStringProperty();
+        test.bind(Bindings.convert(this.inventory.getJetPackLevelProperty()));
+
         purchaseJetpackVbox.visibleProperty().bind(Bindings.equal(0, this.inventory.getJetPackLevelProperty()));
         purchaseGliderVbox.visibleProperty().bind(Bindings.equal(0, this.inventory.getGliderLevelProperty()));
         purchaseSlideVbox.visibleProperty().bind(Bindings.equal(0, this.inventory.getSlideLevelProperty()));
 
-        equipJetpackVbox.visibleProperty().bind(Bindings.not(this.inventory.hasEquippedJetpack()));
-        equipGliderVbox.visibleProperty().bind(Bindings.not(this.inventory.hasEquippedGlider()));
-        equipSlideVbox.visibleProperty().bind(Bindings.not(this.inventory.hasEquippedSlide()));
+        equipJetpackVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedJetpack()),
+                Bindings.not(Bindings.equal(0,this.inventory.getJetPackLevelProperty()))));
+        equipGliderVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedGlider()),
+                Bindings.not(Bindings.equal(0,this.inventory.getGliderLevelProperty()))));
+        equipSlideVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedSlide()),
+                Bindings.not(Bindings.equal(0,this.inventory.getSlideLevelProperty()))));
+
 
         unequipJetpackVbox.visibleProperty().bind(this.inventory.hasEquippedJetpack());
         unequipGliderVbox.visibleProperty().bind(this.inventory.hasEquippedGlider());
         unequipSlideVbox.visibleProperty().bind(this.inventory.hasEquippedSlide());
 
-//        purchaseJetpackVbox.visibleProperty().bind(Bindings.not(this.inventory.hasJetpackProperty()));
-//        equipJetpackVbox.visibleProperty().bind(Bindings.and(this.inventory.hasJetpackProperty(), Bindings.not(this.inventory.hasEquippedJetpack())));
-//        unequipJetpackVbox.visibleProperty().bind(Bindings.and(this.inventory.hasJetpackProperty(), this.inventory.hasEquippedJetpack()));
-//        purchaseGliderVbox.visibleProperty().bind(Bindings.not(this.inventory.hasGliderProperty()));
-//        equipGliderVbox.visibleProperty().bind(Bindings.and(this.inventory.hasGliderProperty(), Bindings.not(this.inventory.hasEquippedGlider())));
-//        unequipGliderVbox.visibleProperty().bind(Bindings.and(this.inventory.hasGliderProperty(), this.inventory.hasEquippedGlider()));
-//        purchaseSlideVbox.visibleProperty().bind(Bindings.not(this.inventory.hasSlideProperty()));
-//        equipSlideVbox.visibleProperty().bind(Bindings.and(this.inventory.hasSlideProperty(), Bindings.not(this.inventory.hasEquippedSlide())));
-//        unequipSlideVbox.visibleProperty().bind(Bindings.and(this.inventory.hasSlideProperty(), this.inventory.hasEquippedSlide()));
+
     }
 
     private static class customMenuButton extends StackPane {
@@ -286,92 +292,126 @@ public class CustomGameMenu extends FXGLMenu {
         }
     }
 
+    private static class customEquipmentButton extends StackPane {
+        Inventory inventory = Inventory.getInstance();
+        private String name;
+        private Runnable action;
+        private Text text;
+        private StringProperty stringProperty;
+        private Rectangle selector;
+        private IntegerProperty equipmentLevelProperty;
+
+        public customEquipmentButton(String name, IntegerProperty equipmentLevelProperty) {
+            this.name = name;
+            this.equipmentLevelProperty = equipmentLevelProperty;
+            //Calls the UI factory apart of FXGL to create a text box
+            text = FXGL.getUIFactoryService().newText(name, Color.WHITE, 20.0);
+            //This is the rectangle next to the buttons that show its been selected (color of button also changes)
+            selector = new Rectangle(8, 20, Color.WHITE);
+            selector.setTranslateX(-20);
+            //Sets it visible if its focused
+            selector.visibleProperty().bind(focusedProperty());
+            text.setStrokeWidth(.5);
+            //Changes the colour if its focused
+            text.fillProperty().bind(Bindings.when(focusedProperty())
+                    .then(SELECTED_COLOR).otherwise(NOT_SELECTED_COLOR));
+            text.strokeProperty().bind(
+                    Bindings.when(focusedProperty()).then(SELECTED_COLOR).otherwise(NOT_SELECTED_COLOR)
+            );
+
+            //Equipment Functionality
+            this.equipmentLevelProperty.addListener((observable, oldValue, newValue) -> {
+                if (newValue.intValue() >= 10) {
+                    text.setText("Maxed Out");
+                } else {
+                    text.setText("Upgrade to level " + (newValue.intValue() + 1) +
+                            "\n" + (newValue.intValue() + 1) * 10000 + "$");
+                }
+            });
+
+            this.action = () -> {
+                if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > this.equipmentLevelProperty.getValue() * 10000) {
+                    this.inventory.addPoints(this.equipmentLevelProperty.getValue() * -10000);
+                    this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
+                    Database.save(User.getInstance().getUserId(),this.inventory);
+                }
+            };
+
+            hoverProperty().addListener((observableValue, aBoolean, isHovered) -> {
+                if (isHovered) {
+                    setFocused(true);
+                } else {
+                    setFocused(false);
+                }
+            });
+            //Checks if the button is focused before allowed it to be pressed
+            setOnMouseClicked(e -> {
+                if (isFocused()) {
+                    action.run();
+                }
+            });
+            setOnKeyPressed(e -> {
+                //Checks if the button is focused before allowing enter to work (incase mouse is broken)
+                if (isFocused() && e.getCode() == KeyCode.ENTER) {
+                    action.run();
+                }
+            });
+
+            setAlignment(Pos.CENTER_LEFT);
+            setFocusTraversable(true);
+            getChildren().addAll(selector, text);
+        }
+    }
+
+
     protected void updateButtons() {
-        System.out.println("update buttons");
-        System.out.println(this.inventory.getPointsProperty().getValue());
-        System.out.println(this.inventory.getSlideLevel());
-        this.purchaseJetpackBtn = new CustomGameMenu.customMenuButton("Buy Jetpack - 10000$", () -> {
+        this.purchaseJetpackBtn = new customMenuButton("Buy Jetpack - 10000$", () -> {
             if (this.inventory.getPointsPropertyValue() >= 10000) {
-                this.inventory.setJetPackLevel(1);
+                this.inventory.setJetpackLevel(1);
                 this.inventory.addPoints(-10000);
                 updateButtons();
             }
         });
-        this.purchaseGliderBtn = new CustomGameMenu.customMenuButton(" Buy Glider - 2000$", () -> {
+        this.purchaseGliderBtn = new customMenuButton(" Buy Glider - 2000$", () -> {
             if (this.inventory.getPointsPropertyValue() >= 2000) {
                 this.inventory.setGliderLevel(1);
                 this.inventory.addPoints(-2000);
             }
         });
-        this.purchaseSlideBtn = new CustomGameMenu.customMenuButton("Buy Snowboard - 3000$", () -> {
+        this.purchaseSlideBtn = new customMenuButton("Buy Snowboard - 3000$", () -> {
             if (this.inventory.getPointsPropertyValue() >= 3000) {
                 this.inventory.setSlideLevel(1);
                 this.inventory.addPoints(-3000);
                 updateButtons();
             }
         });
-        this.equipJetpackBtn = new CustomGameMenu.customMenuButton("Equip Jetpack", () -> {
+        this.equipJetpackBtn = new customMenuButton("Equip Jetpack", () -> {
             this.inventory.setEquipJetpack(true);
 //            this.inventory.setEquipSlide(false);
 //            this.inventory.setEquipGlider(false);
         });
-        this.equipGliderBtn = new CustomGameMenu.customMenuButton("Equip Glider", () -> {
+        this.equipGliderBtn = new customMenuButton("Equip Glider", () -> {
             this.inventory.setEquipGlider(true);
 //            this.inventory.setEquipJetpack(false);
 //            this.inventory.setEquipSlide(false);
         });
-        this.equipSlideBtn = new CustomGameMenu.customMenuButton("Equip Slide", () -> {
+        this.equipSlideBtn = new customMenuButton("Equip Slide", () -> {
             this.inventory.setEquipSlide(true);
 //            this.inventory.setEquipJetpack(false);
 //            this.inventory.setEquipGlider(false);
         });
-        this.unequipJetpackBtn = new CustomGameMenu.customMenuButton("Unequip Jetpack", () -> {
+        this.unequipJetpackBtn = new customMenuButton("Unequip Jetpack", () -> {
             this.inventory.setEquipJetpack(false);
         });
-        this.unequipGliderBtn = new CustomGameMenu.customMenuButton("Unequip Glider", () -> {
+        this.unequipGliderBtn = new customMenuButton("Unequip Glider", () -> {
             this.inventory.setEquipGlider(false);
         });
-        this.unequipSlideBtn = new CustomGameMenu.customMenuButton("Unequip Slide", () -> {
+        this.unequipSlideBtn = new customMenuButton("Unequip Slide", () -> {
             this.inventory.setEquipSlide(false);
         });
-        this.upgradeJetpackBtn = new CustomGameMenu.customMenuButton("Upgrade Jetpack (" + (10000*(this.inventory.getJetPackLevel() + 1)) + "$)\nLevel " + this.inventory.getJetPackLevel(), ()->{
-            //If statement ensures you can only upgrade jetpack up a certain amount
-            if(this.inventory.getJetPackLevel() < 10 && inventory.getPointsPropertyValue() >= 10000*(this.inventory.getJetPackLevel()+1)) {
-                //Increases the jetpack level by 1 once pressed
-                this.inventory.setJetPackLevel(this.inventory.getJetPackLevel() + 1);
-                this.inventory.setJetPackLevelProperty(this.inventory.getJetPackLevel());
-                inventory.addPoints(-(10000*this.inventory.getJetPackLevel()));
-            }
-        });
-        this.upgradeGliderBtn = new CustomGameMenu.customMenuButton("Upgrade Glider (" + (10000*(this.inventory.getGliderLevel()+1)) + "$)\nLevel "+ this.inventory.getGliderLevel(), ()->{
-            //If statement ensures you can only upgrade glider up a certain amount
-            if(this.inventory.getGliderLevel() < 10 && inventory.getPointsPropertyValue() >= 10000*(this.inventory.getGliderLevel() + 1)) {
-                //Increases the glider level by 1 once pressed
-                this.inventory.setGliderLevel(this.inventory.getGliderLevel() + 1);
-                this.inventory.setGliderLevelProperty(this.inventory.getGliderLevel());
-                inventory.addPoints(-(10000*this.inventory.getGliderLevel()));
-            }
-        });
-        this.upgradeSlideBtn = new CustomGameMenu.customMenuButton("Upgrade Sled (" + 10000*(this.inventory.getSlideLevel() + 1) + "$)\nLevel " + this.inventory.getSlideLevel(), ()->{
-            //If statement ensures you can only upgrade sled up a certain amount
-            if(this.inventory.getSlideLevel() < 10 && inventory.getPointsPropertyValue() >= 10000*(this.inventory.getSlideLevel() + 1)) {
-                System.out.println("NBUIAWENIU");
-                //Increases the sled level by 1 once pressed
-                this.inventory.setSlideLevel(this.inventory.getSlideLevel() + 1);
-                this.inventory.setSlideLevelProperty(this.inventory.getSlideLevel());
-                inventory.addPoints(-(10000*this.inventory.getSlideLevel()));
-            }
-        });
-        this.upgradeRampBtn = new CustomGameMenu.customMenuButton("Upgrade Ramp (" + 10000*(this.inventory.getRampLevel()) + "$)\nLevel" + this.inventory.getRampLevel(), () ->{
-            //If statement ensures you can only upgrade sled up a certain amount
-            if(this.inventory.getRampLevel() < 10 && inventory.getPointsPropertyValue() >= 10000*(this.inventory.getRampLevel())){
-                //Increases ramp level by 1 once pressed
-                this.inventory.setRampLevel(this.inventory.getRampLevel() + 1);
-                this.inventory.setRampLevelProperty(this.inventory.getSlideLevel());
-                inventory.addPoints(-(10000*this.inventory.getSlideLevel()));
-            }
-        });
     }
+
+
 
     @Override
     protected void onUpdate(double tpf) {

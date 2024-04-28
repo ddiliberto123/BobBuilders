@@ -35,7 +35,7 @@ public class InventoryDeserializer extends StdDeserializer<Inventory> {
 
         JsonNode jetpackLevelNode = node.get("jetpackLevel");
         int jetpackLevel = jetpackLevelNode.asInt();
-        inventory.setJetPackLevel(jetpackLevel);
+        inventory.setJetpackLevel(jetpackLevel);
 
         JsonNode gliderLevelNode = node.get("gliderLevel");
         int gliderlevel = gliderLevelNode.asInt();
