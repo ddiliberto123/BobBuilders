@@ -155,7 +155,7 @@ public class CustomGameMenu extends FXGLMenu {
         this.upgradeJetpackBtn = new customEquipmentButton("Test",this.inventory.getJetPackLevelProperty());
         this.upgradeGliderBtn = new customEquipmentButton("Test",this.inventory.getGliderLevelProperty());
         this.upgradeSlideBtn = new customEquipmentButton("Test",this.inventory.getSlideLevelProperty());
-        this.upgradeRampBtn = new customEquipmentButton("Test",this.inventory.getRampLevelProperty());
+        this.upgradeRampBtn = new customEquipmentButton("Upgrade Ramp to level 1 \n10000$",this.inventory.getRampLevelProperty());
 
         //Creating a container for each option of purchase
         purchaseJetpackVbox = new VBox(10, jetView, purchaseJetpackBtn);
@@ -203,14 +203,14 @@ public class CustomGameMenu extends FXGLMenu {
         container.setAlignment(Pos.CENTER);
 
         upgradeRampBtn.setTranslateX(450);
-        VBox endContainer = new VBox(50,container, upgradeRampBtn);
-        endContainer.setAlignment(Pos.CENTER);
-        endContainer.setPadding(new Insets(20));
+        VBox upgradeRampVbox = new VBox(50,container, upgradeRampBtn);
+        upgradeRampVbox.setAlignment(Pos.CENTER);
+        upgradeRampVbox.setPadding(new Insets(20));
 
         snowStack.setTranslateX(-getAppWidth()/2);
         snowStack.setTranslateY(-getAppHeight()/2);
 
-        stack.getChildren().addAll(back, snowStack, endContainer, title, userName, availablePoints,snowHills1,snowHills2);
+        stack.getChildren().addAll(back, snowStack, upgradeRampVbox, title, userName, availablePoints,snowHills1,snowHills2);
         getContentRoot().getChildren().addAll(stack);
 
         //Ensures that the buttons keep track of points obtained and whether or not equipment is owned
@@ -233,13 +233,14 @@ public class CustomGameMenu extends FXGLMenu {
         purchaseGliderVbox.visibleProperty().bind(Bindings.equal(0, this.inventory.getGliderLevelProperty()));
         purchaseSlideVbox.visibleProperty().bind(Bindings.equal(0, this.inventory.getSlideLevelProperty()));
 
+
         equipJetpackVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedJetpack()),
                 Bindings.not(Bindings.equal(0,this.inventory.getJetPackLevelProperty()))));
         equipGliderVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedGlider()),
                 Bindings.not(Bindings.equal(0,this.inventory.getGliderLevelProperty()))));
         equipSlideVbox.visibleProperty().bind(Bindings.and(Bindings.not(this.inventory.hasEquippedSlide()),
                 Bindings.not(Bindings.equal(0,this.inventory.getSlideLevelProperty()))));
-
+        upgradeRampVbox.setVisible(true);
 
         unequipJetpackVbox.visibleProperty().bind(this.inventory.hasEquippedJetpack());
         unequipGliderVbox.visibleProperty().bind(this.inventory.hasEquippedGlider());
@@ -326,10 +327,19 @@ public class CustomGameMenu extends FXGLMenu {
             //Equipment Functionality
             this.equipmentLevelProperty.addListener((observable, oldValue, newValue) -> {
                 if (newValue.intValue() >= 10) {
-                    text.setText("Maxed Out");
+                    if (equipmentLevelProperty.equals(this.inventory.getRampLevelProperty())) {
+                        text.setText("Ramp Maxed out");
+                    } else {
+                        text.setText("Maxed Out");
+                    }
                 } else {
-                    text.setText("Upgrade to level " + (newValue.intValue() + 1) +
-                            "\n" + (newValue.intValue() + 1) * 10000 + "$");
+                    if (equipmentLevelProperty.equals(this.inventory.getRampLevelProperty())) {
+                        text.setText("Upgrade Ramp to level " + (newValue.intValue() + 1) +
+                                "\n" + (newValue.intValue() + 1) * 10000 + "$");
+                    } else {
+                        text.setText("Upgrade to level " + (newValue.intValue() + 1) +
+                                "\n" + (newValue.intValue() + 1) * 10000 + "$");
+                    }
                 }
             });
 
@@ -337,7 +347,10 @@ public class CustomGameMenu extends FXGLMenu {
                 if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > this.equipmentLevelProperty.getValue() * 10000) {
                     this.inventory.addPoints(this.equipmentLevelProperty.getValue() * -10000);
                     this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
-                    Database.save(User.getInstance().getUserId(),this.inventory);
+                    //User exists
+                    if (User.getInstance().getUserId() != 0) {
+                        Database.save(User.getInstance().getUserId(),this.inventory);
+                    }
                 }
             };
 
