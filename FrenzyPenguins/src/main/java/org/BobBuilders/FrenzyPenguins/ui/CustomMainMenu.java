@@ -16,10 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -63,6 +60,7 @@ public class CustomMainMenu extends FXGLMenu {
     ObservableList<TableData> tableList;
     TextField searchField = new TextField();
     StackPane snowStack = new StackPane();
+    private ImageView mainMenuImage;
 
     //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
@@ -71,7 +69,7 @@ public class CustomMainMenu extends FXGLMenu {
 
         getGameWorld().addEntityFactory(new CustomEntityFactory());
 
-        ImageView mainMenuImage = new ImageView("file:pixel_mountain.png");
+        mainMenuImage = new ImageView("file:pixel_mountain.png");
         mainMenuImage.setFitWidth(getAppWidth());
         mainMenuImage.setFitHeight(getAppHeight());
         createAdminMenu();
@@ -291,6 +289,7 @@ public class CustomMainMenu extends FXGLMenu {
         loginStackPane.getChildren().add(vboxLoggedIn);
 
         StackPane stackMenu = new StackPane(mainMenuImage, snowStack, vboxMainMenu, vboxOptions, vboxAccount, loginStackPane, vboxAdminMenu);
+        stackMenu.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE,null,null)));
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         loginStackPane.setVisible(false);
@@ -299,6 +298,15 @@ public class CustomMainMenu extends FXGLMenu {
     }
 
     protected void onUpdate(double tpf) {
+        if(vboxAccount.isVisible()){
+            mainMenuImage.setVisible(false);
+        }
+        else if(loginStackPane.isVisible()){
+            mainMenuImage.setVisible(false);
+        }
+        else{
+            mainMenuImage.setVisible(true);
+        }
         timer += tpf;
         if(timer >= 1){
             ImageView snowflakeImage = new ImageView("file:snowflake.png");
