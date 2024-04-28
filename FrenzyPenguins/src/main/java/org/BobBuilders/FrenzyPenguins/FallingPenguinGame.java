@@ -51,6 +51,7 @@ public class FallingPenguinGame extends GameApplication {
     private Text distanceText;
     private Text speedText;
     private Text altituteText;
+    public Text climbing_rate;
     private Rectangle cluster = new Rectangle(310,20);
     private double beginPoints = 0;
     private double angle;
@@ -163,6 +164,12 @@ public class FallingPenguinGame extends GameApplication {
         altituteText.setStroke(Color.LIGHTSEAGREEN);
         altituteText.setStrokeWidth(1);
         getGameScene().addUINode(altituteText);
+        //Give Climb-rate
+        climbing_rate = getUIFactoryService().newText("", Color.GREEN, 16);
+        climbing_rate.setTranslateX(875);
+        climbing_rate.setTranslateY(225);
+        climbing_rate.setStrokeWidth(1);
+        getGameScene().addUINode(climbing_rate);
 
 
 
@@ -245,18 +252,18 @@ public class FallingPenguinGame extends GameApplication {
                 "Angle: (" + Math.round(get_penguin_angle()) + ")" +
                 "FPS: (" + 1 / tpf() + ")");
 
-        speedText.setVisible(false);altituteText.setVisible(false);cluster.setVisible(false);
+        speedText.setVisible(false);altituteText.setVisible(false);cluster.setVisible(false);climbing_rate.setVisible(false);
 
         //background_1st.setY(penguin.getY());
 
-        if (penguin.getX() >= 200) {
+        if (penguin.getX() >= 0) {
             double penguinX = penguin.getX();
             double penguinY = penguin.getY();
             speedometer.setX(penguinX+425);altimeter.setX(penguinX+260);
             speedometer.setY(penguinY-235);altimeter.setY(penguinY-297);
             speed_curve.setX(penguinX+425);altimeter_circle.setX(penguinX+250);
             speed_curve.setY(penguinY-380);altimeter_circle.setY(penguinY-375);
-            speedText.setVisible(true);altituteText.setVisible(true);cluster.setVisible(true);
+            speedText.setVisible(true);altituteText.setVisible(true);cluster.setVisible(true);climbing_rate.setVisible(true);
 
             // Get the width and height  of the game window
             double windowWidth = getAppWidth();
@@ -304,6 +311,19 @@ public class FallingPenguinGame extends GameApplication {
         //Altimeter
         altimeter.rotateBy(((altimeter_height()*360)/6000)+90);
         altituteText.setText("altitude:" + (-1*penguin.getY()+2974)/10+" m");
+        if(penguin_y_velocity() < 0){
+            climbing_rate.setText("C.Rate: " + "positive");
+            climbing_rate.setStroke(Color.GREEN);
+        }
+        else if(penguin_y_velocity()>0){
+            climbing_rate.setText("C.Rate: "+ "negative");
+            climbing_rate.setStroke(Color.RED);
+        }
+        else if (penguin_y_velocity() == 0) {
+            climbing_rate.setStroke(Color.GRAY);
+            climbing_rate.setText("C.Rate: " + "  n/a  ");
+        }
+
 
 
         //Restarts game when penguin reaches the bottom
@@ -339,7 +359,7 @@ public class FallingPenguinGame extends GameApplication {
                 jetpackTimeElapsed = 0;
 
                 //Inventory Stuff
-                inventory.addPoints((int) currencyToAdd);
+                inventory.addPoints((int) currencyToAdd+10000);
                 inventory.setTotalDistanceFlown(inventory.getTotalDistanceFlown() + (int) penguin.getX());
                 if (inventory.getMaxDistanceFlown() < (int) penguin.getX()){
                     inventory.setMaxDistanceFlown((int) penguin.getX());
@@ -408,7 +428,7 @@ public class FallingPenguinGame extends GameApplication {
                 cloud2SpawnTimer = 0;
             }
         }
-
+        
         //Stops jetpack animation once jetpack timer surpasses 5 seconds
         if(jetpackTimeElapsed >= 5){
             CustomEntityFactory.penguinJet.setVisible(true);
