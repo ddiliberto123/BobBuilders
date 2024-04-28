@@ -14,6 +14,7 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
+import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.FXGLScrollPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,7 +67,6 @@ public class CustomEntityFactory implements EntityFactory {
     public static ImageView penguin;
     public static ImageView penguinJet;
     public static ImageView penguinJetActive;
-
 
     public ImageView getPenguin() {
         return penguin;
@@ -486,7 +486,6 @@ public class CustomEntityFactory implements EntityFactory {
         //sets the vertical indicators in place
         sp.getChildren().get(3).setRotate(90);sp.getChildren().get(4).setRotate(90);
         sp.getChildren().get(3).setTranslateY(58);sp.getChildren().get(4).setTranslateY(-58);
-
 
         Entity entity = entityBuilder()
                 .from(data)

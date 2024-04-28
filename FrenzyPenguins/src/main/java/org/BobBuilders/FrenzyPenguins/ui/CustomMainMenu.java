@@ -52,7 +52,7 @@ public class CustomMainMenu extends FXGLMenu {
 
     Inventory inventory = Inventory.getInstance();
 
-    private SimpleStringProperty usernameProperty = new SimpleStringProperty();
+    public static SimpleStringProperty usernameProperty = new SimpleStringProperty();
     private double timer = 0;
     private double penguinTimer = 0;
     private ImageView penguinView;
@@ -62,7 +62,6 @@ public class CustomMainMenu extends FXGLMenu {
     StackPane snowStack = new StackPane();
     private ImageView mainMenuImage;
 
-    //    private ObjectProperty<customMenuButton> selectedButton;
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
 
@@ -149,6 +148,8 @@ public class CustomMainMenu extends FXGLMenu {
             loginStackPane.setVisible(false);
             vboxLoggedIn.getChildren().remove(btnAdmin);
             usernameProperty.set("Not Logged in");
+            User.getInstance().setUserId(0);
+            this.inventory.clone(Inventory.createInstance());
         });
 
 
@@ -197,9 +198,14 @@ public class CustomMainMenu extends FXGLMenu {
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 loginStackPane.setVisible(true);
-                if (!this.inventory.equals(Database.loadInventory(userId))) {
+                System.out.println(this.inventory);
+                System.out.println(Inventory.createInstance());
+                System.out.println(!this.inventory.equals(Inventory.createInstance()));
+                System.out.println(!this.inventory.equals(Database.loadInventory(userId)));
+                if (!this.inventory.equals(Objects.requireNonNull(Database.loadInventory(userId))) && !this.inventory.equals(Inventory.createInstance())) {
                     vboxLoggedIn.setDisable(true);
-                    loginStackPane.getChildren().add(loadSelectGrid);
+                    loginStackPane.setVisible(true);
+                    loadSelectGrid.setVisible(true);
                     loadSelectGrid.setTranslateY(0);
                     Text header = FXGL.getUIFactoryService().newText("Inventory Mismatch",Color.BLACK,30);
                     loadSelectGrid.add(header, 0, 0, 2,1);
@@ -212,16 +218,19 @@ public class CustomMainMenu extends FXGLMenu {
                     loadSelectGrid.add(FXGL.getUIFactoryService().newText(Database.loadInventory(userId).toString(), Color.BLACK,20),1,2);
                     loadSelectGrid.add(new customMenuButton("Load inventory 1", () -> {
                         Database.save(User.getInstance().getUserId(), this.inventory);
+                        loadSelectGrid.getChildren().removeAll(loadSelectGrid.getChildren());
                         loadSelectGrid.setVisible(false);
                         vboxLoggedIn.setDisable(false);
                     }),0,3);
                     loadSelectGrid.add(new customMenuButton("Load Inventory 2", () -> {
                         this.inventory.clone(Objects.requireNonNull(Database.loadInventory(User.getInstance().getUserId())));
+                        loadSelectGrid.getChildren().removeAll(loadSelectGrid.getChildren());
                         loadSelectGrid.setVisible(false);
                         vboxLoggedIn.setDisable(false);
                     }), 1,3);
                 } else {
                     this.inventory.clone(Objects.requireNonNull(Database.loadInventory(User.getInstance().getUserId())));
+                    vboxLoggedIn.setDisable(false);
                 }
 
                 user.setAdmin(Database.getAdminStatus(userId));
@@ -286,7 +295,9 @@ public class CustomMainMenu extends FXGLMenu {
         snowStack.setTranslateX(-getAppWidth()/2);
         snowStack.setTranslateY(-getAppHeight()/2);
         //Creating the Gridpane for login
-        loginStackPane.getChildren().add(vboxLoggedIn);
+        loginStackPane.getChildren().addAll(vboxLoggedIn, loadSelectGrid);
+        loadSelectGrid.setVisible(false);
+
 
         StackPane stackMenu = new StackPane(mainMenuImage, snowStack, vboxMainMenu, vboxOptions, vboxAccount, loginStackPane, vboxAdminMenu);
         stackMenu.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE,null,null)));
