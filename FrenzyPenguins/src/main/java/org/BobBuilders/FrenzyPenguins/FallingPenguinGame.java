@@ -23,6 +23,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
@@ -47,16 +48,11 @@ public class FallingPenguinGame extends GameApplication {
     private static Entity background_1st;
     private static Entity background_2nd;
     private static Entity background_3rd;
-    private static Entity background2_1st;
-    private static Entity background2_2nd;
-
-    private Entity bottom;
     private Text distanceText;
     private Text speedText;
     private Text altituteText;
     public Text climbing_rate;
     private Rectangle cluster = new Rectangle(310,20);
-    private double beginPoints = 0;
     private double angle;
     Inventory inventory = Inventory.getInstance();
     private double jetpackTimeElapsed = 0.0;
@@ -68,7 +64,6 @@ public class FallingPenguinGame extends GameApplication {
     private boolean beginAnimation = false;
     private static boolean spaceKeyPressed = false;
     private Text welcomeText;
-    private StackPane cloudStack = new StackPane();
 
 
     public static void main(String[] args) {
@@ -95,8 +90,8 @@ public class FallingPenguinGame extends GameApplication {
         gameSettings.setMainMenuEnabled(true);
         gameSettings.setTitle("Game");
         gameSettings.setVersion("1.0");
+        gameSettings.setAppIcon("file:icon.png");
     }
-
     @Override
     protected void initGame() {
         FXGL.getGameWorld().addEntityFactory(new CustomEntityFactory());
@@ -479,7 +474,7 @@ public class FallingPenguinGame extends GameApplication {
     }
 
     @Override
-    protected void initUI() {
+    protected void initUI(){
     }
 
     private void addRectangle(double x, double y, double rotation) {
@@ -521,12 +516,14 @@ public class FallingPenguinGame extends GameApplication {
     }
 
     public static double penguin_x_velocity() {
+        //Returns the x velocity of the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vx = physics.getVelocityX();
         return Math.round(getPhysicsWorld().toMeters(vx));
     }
 
     public static double penguin_y_velocity() {
+        //Returns the y velocity of the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         double vy = physics.getVelocityY();
         return Math.round(getPhysicsWorld().toMeters(vy));
@@ -545,12 +542,6 @@ public class FallingPenguinGame extends GameApplication {
             angle = angle % 360;
         }
         return Math.round(angle);
-    }
-
-    //Get the area of the penguin
-    public static double get_penguin_area() {
-        double p_area = getPhysicsWorld().toMeters(penguin.getWidth() * penguin.getHeight());
-        return p_area;
     }
 
     public static double altimeter_height(){
@@ -600,10 +591,6 @@ public class FallingPenguinGame extends GameApplication {
             timeline.setCycleCount(1);
             timeline.play();
         }
-    }
-
-    public static boolean isSpaceKeyPressed() {
-        return spaceKeyPressed;
     }
 }
 

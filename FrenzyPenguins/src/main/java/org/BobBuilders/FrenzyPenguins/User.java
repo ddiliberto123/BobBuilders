@@ -27,7 +27,4 @@ public class User {
     }
 
     //TODO: Connect user to their inventory and instantiate the inventory class
-    private void accessInventory() {
-
-    }
 }

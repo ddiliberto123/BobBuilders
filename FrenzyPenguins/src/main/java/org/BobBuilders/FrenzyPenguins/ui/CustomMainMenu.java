@@ -72,11 +72,13 @@ public class CustomMainMenu extends FXGLMenu {
 
         getGameWorld().addEntityFactory(new CustomEntityFactory());
 
+        //Background image
         mainMenuImage = new ImageView("file:pixel_mountain.png");
         mainMenuImage.setFitWidth(getAppWidth());
         mainMenuImage.setFitHeight(getAppHeight());
         createAdminMenu();
 
+        //Initial image placed to ensure it isn't null
         ImageView snowflakeImage = new ImageView("file:snowflake.png");
         snowflakeImage.setTranslateX(Math.random()*getAppWidth());
         snowflakeImage.setTranslateY(-50);
@@ -309,6 +311,7 @@ public class CustomMainMenu extends FXGLMenu {
             mainMenuImage.setVisible(true);
         }
         timer += tpf;
+        //Generates a new snowflake every second
         if(timer >= 1){
             ImageView snowflakeImage = new ImageView("file:snowflake.png");
             snowflakeImage.setTranslateX(Math.random()*getAppWidth());
@@ -316,6 +319,7 @@ public class CustomMainMenu extends FXGLMenu {
             snowflakeImage.setFitWidth(30);
             snowflakeImage.setPreserveRatio(true);
 
+            //Different types of snowflakes established for variety
             Random random = new Random();
             int randomRotate = random.nextInt(4);
             if(randomRotate == 1){
@@ -341,17 +345,11 @@ public class CustomMainMenu extends FXGLMenu {
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    // Calculate the new Y position
+                    // Calculate the new Y position of snowflake
                     double newY = snowflakeImage.getTranslateY() + 10 * tpf;
 
-                    // Set the new Y position
+                    // Set the new Y position of snowflake
                     snowflakeImage.setTranslateY(newY);
-
-                    // Remove the animation when the snowflake is out of the screen
-                    if (newY >= getAppHeight()) {
-                        getRoot().getChildren().remove(snowflakeImage);
-                        this.stop(); // Stop the animation
-                    }
                 }
             };
 
@@ -361,6 +359,7 @@ public class CustomMainMenu extends FXGLMenu {
             timer = 0;
         }
 
+        //Generates a penguin to go through the screen
         penguinTimer += tpf;
         if(penguinTimer >= 2 && penguinView == null){
             Random random = new Random();

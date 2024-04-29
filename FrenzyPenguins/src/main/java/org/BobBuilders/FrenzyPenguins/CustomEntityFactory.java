@@ -282,6 +282,7 @@ public class CustomEntityFactory implements EntityFactory {
 
         Image penguinView = penguinImage;
 
+        //Depending on what equipment the user chooses to equip or not, the penguin's appearance will change
         if (this.inventory.isEquipJetpack() && !this.inventory.isEquipGlider() && !this.inventory.isEquipSlide()) {
             penguinView = penguinJ;
         }
@@ -304,6 +305,8 @@ public class CustomEntityFactory implements EntityFactory {
             penguinView = penguinSG;
         }
 
+        //PenguinJet and penguinJetActive are there for when the jetpack is activated.
+        // If active, penguinJetActive becomes visible, and if not it becomes invisible
         penguin = new ImageView(penguinView);
         penguinJet = new ImageView(penguinJ);
         penguinJetActive = new ImageView(penguinJactive);
