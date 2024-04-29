@@ -342,8 +342,8 @@ public class CustomGameMenu extends FXGLMenu {
                 }
             });
             this.action = () -> {
-                if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > this.equipmentLevelProperty.getValue() * 10000) {
-                    this.inventory.addPoints(this.equipmentLevelProperty.getValue() * -10000);
+                if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > (this.equipmentLevelProperty.getValue() + 1) * 10000) {
+                    this.inventory.addPoints((this.equipmentLevelProperty.getValue() + 1) * -10000);
                     this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
                     //User exists
                     if (User.getInstance().getUserId() != 0) {
