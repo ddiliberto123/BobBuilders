@@ -25,6 +25,9 @@ public class InventoryDeserializer extends StdDeserializer<Inventory> {
 
     @Override
     public Inventory deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        if (p == null | ctxt == null) {
+            throw new RuntimeException("Parser is broken");
+        }
         Inventory inventory = Inventory.createInstance();
         ObjectCodec codec = p.getCodec();
         JsonNode node = codec.readTree(p);

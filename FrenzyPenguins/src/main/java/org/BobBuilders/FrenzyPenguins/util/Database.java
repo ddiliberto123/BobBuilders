@@ -21,13 +21,9 @@ import org.sqlite.SQLiteConfig;
 import java.sql.*;
 
 public class Database {
-
     private static final String CONNECTION_URL = "jdbc:sqlite:FrenzyPenguins.db";
     public static final String USERNAME_REQUEST = "SELECT username FROM Users WHERE id = ?";
-
     public static final String ALL_ID_REQUEST = "SELECT id FROM Users";
-    public static final String USERNAME = "username";
-    public static final String INVENTORY = "inventory";
 
     /**
      * Connects to the database
@@ -85,6 +81,11 @@ public class Database {
      * @return true if user created <br> false if user not created
      */
     public static boolean createUser(String username, String password) {
+        if (username == null || username.isEmpty()) {
+            return false;
+        } else if (password == null || password.isEmpty()) {
+            return false;
+        }
         String statement = "INSERT INTO Users (username,password,admin) VALUES (?,?,?)";
 
         try (Connection con = Database.connect()) {
@@ -112,7 +113,11 @@ public class Database {
      * @return id of the user <br> -1 if user non existant
      */
     public static int loginUser(String username, String password) {
-
+        if (username == null || username.isEmpty()) {
+            return -1;
+        } else if (password == null || password.isEmpty()) {
+            return -1;
+        }
         String statement = "SELECT id FROM Users WHERE username = ? AND password = ?";
         try (Connection con = Database.connect()) {
             PreparedStatement pstatement = con.prepareStatement(statement);
@@ -242,6 +247,10 @@ public class Database {
      * @return {@code ObervableList<TableData>} that contains all rows of the tableview
      */
     public static ObservableList<TableData> loadTable(TableView<TableData> table, TextField searchField) {
+        if (table == null || searchField == null){
+            throw new RuntimeException("Table or Textfield not found!");
+        }
+
         TableColumn usernameColumn = new TableColumn<>("Username");
         usernameColumn.setPrefWidth(TableData.TABLEWIDTH/4);
         usernameColumn.setResizable(false);

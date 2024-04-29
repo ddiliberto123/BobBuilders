@@ -38,6 +38,9 @@ public class EntitySpawner {
      */
 
     public static void spawnRectangle(double startX, double startY, double width, double height) {
+        if (width == 0 || height == 0) {
+            throw new RuntimeException("Width or height too small");
+        }
         FXGL.spawn(RECTANGLE, new SpawnData(startX, startY)
                 .put(Constant.WIDTH, width)
                 .put(Constant.HEIGHT, height));
@@ -52,6 +55,11 @@ public class EntitySpawner {
      * @param toAngle   {@code double} angle where the curve ends
      */
     public static void spawnCurve(double startX, double startY, double radius, double fromAngle, double toAngle) {
+        if (fromAngle == toAngle) {
+            throw new RuntimeException("Angle too small");
+        } else if (radius == 0) {
+            throw new RuntimeException("Radius too small");
+        }
         FXGL.spawn(CURVE, new SpawnData(startX, startY)
                 .put(Constant.FROM_ANGLE, fromAngle)
                 .put(Constant.TO_ANGLE, toAngle)
@@ -66,6 +74,9 @@ public class EntitySpawner {
      * @param radius {@code double} radius
      */
     public static void spawnCircle(double startX, double startY, double radius) {
+        if (radius == 0) {
+            throw new RuntimeException("Radius too small");
+        }
         FXGL.spawn(CIRCLE, new SpawnData(startX, startY)
                 .put(Constant.RADIUS, radius));
     }
