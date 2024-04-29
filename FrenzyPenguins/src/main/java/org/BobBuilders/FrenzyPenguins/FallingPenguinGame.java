@@ -511,8 +511,7 @@ public class FallingPenguinGame extends GameApplication {
         EntitySpawner.spawnCircle(200 - 50, 100, 50);
         EntitySpawner.spawnRectangle(200 - buffer, 150, 50 + buffer, 1950 + buffer);
         EntitySpawner.spawnRectangle(190, 150 - 1, 60, 2500);
-        EntitySpawner.spawnCurve(250, 1000, rampRadius, 90, 180);
-        EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 90);
+        EntitySpawner.spawnCurve(250, 1000, rampRadius, 50, 180);
         EntitySpawner.spawnRectangle(250, 1600 - buffer, 2 * rampRadius, 400 + buffer);
 
         //Creates floor for penguin to run into
