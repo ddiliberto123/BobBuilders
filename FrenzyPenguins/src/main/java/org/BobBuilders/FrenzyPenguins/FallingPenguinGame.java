@@ -108,8 +108,6 @@ public class FallingPenguinGame extends GameApplication {
         welcomeText.setFont(Font.font(25));
         getGameScene().addUINode(welcomeText);
 
-        inventory.addPoints(2000000);
-
         //Spawn moving background
         for (int i = 0; i < 10; i++) {
             background_1st = FXGL.spawn(EntitySpawner.BACKGROUND, -9200, 2500);
