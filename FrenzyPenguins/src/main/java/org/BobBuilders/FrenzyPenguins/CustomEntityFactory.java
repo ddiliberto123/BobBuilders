@@ -200,16 +200,23 @@ public class CustomEntityFactory implements EntityFactory {
             computedDegree++;
         }
         //Depending on the quadrant, changes the control point (used to fill in the missing area)
-        switch ((int) (fromDegree / 90)) {
-            case 0 -> {
-                //Quad 3 - 0 at N
-                points.add(new Point2D(2 * radius, 2 * radius));
-            }
-            case 1 -> {
-                //Quad 2 - 0 at N
-                points.add(new Point2D(0, 2 * radius));
+        if (Math.abs(fromDegree - endDegree) > 90)  {
+            points.add(new Point2D(0, 2 * radius));
+            points.add(new Point2D(2 * radius, 2 * radius));
+        } else {
+            switch ((int) (fromDegree / 90)) {
+                case 0 -> {
+                    //Quad 3 - 0 at N
+                    points.add(new Point2D(2 * radius, 2 * radius));
+                }
+                case 1 -> {
+                    //Quad 2 - 0 at N
+                    points.add(new Point2D(0, 2 * radius));
+                }
             }
         }
+
+
         //Makes a polygon
         Point2D[] allPoints = new Point2D[points.size()];
         allPoints = points.toArray(allPoints);
