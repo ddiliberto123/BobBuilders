@@ -106,7 +106,7 @@ public class CustomEntityFactory implements EntityFactory {
         PhysicsComponent physics = new PhysicsComponent();
         FixtureDef fix = new FixtureDef().density(0.1f).friction(10f);
         physics.setFixtureDef(fix);
-        Rectangle rectangle = new Rectangle(150000, 500);
+        Rectangle rectangle = new Rectangle(150000, 5000);
         rectangle.setFill(Color.WHITE);
         return entityBuilder()
                 .from(data)
@@ -120,7 +120,7 @@ public class CustomEntityFactory implements EntityFactory {
         PhysicsComponent physics = new PhysicsComponent();
         FixtureDef fix = new FixtureDef().density(0.5f).friction(100);
         physics.setFixtureDef(fix);
-        Rectangle rectangle = new Rectangle(100000, 500);
+        Rectangle rectangle = new Rectangle(100000, 5000);
         rectangle.setFill(Color.MIDNIGHTBLUE);
         return entityBuilder()
                 .from(data)
