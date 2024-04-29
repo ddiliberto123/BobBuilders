@@ -176,9 +176,6 @@ public class FallingPenguinGame extends GameApplication {
         getGameScene().addUINode(climbing_rate);
 
 
-
-
-
         //Applies a gravitational force onto the penguin
         PhysicsComponent physics = penguin.getComponent(PhysicsComponent.class);
         Vec2 forceful = new Vec2(0, -9.8);
@@ -293,25 +290,32 @@ public class FallingPenguinGame extends GameApplication {
         speedText.setText("speed:" + Math.round(penguin_velocity())+" km/h");
         //Altimeter
         altimeter.rotateBy(((altimeter_height()*360)/6000)+90);
-        altituteText.setText("altitude:" + (-1*penguin.getY()+2974)/10+" m");
+        altituteText.setText("altitude:" + (-1*penguin.getY()+2974)+" m");
+
         if(penguin_y_velocity() < 0){
-            climbing_rate.setText("C.Rate: " + "positive");
+            climbing_rate.setText("C.Rate: " + "+");
             climbing_rate.setStroke(Color.GREEN);
         }
         else if(penguin_y_velocity()>0){
-            climbing_rate.setText("C.Rate: "+ "negative");
+            climbing_rate.setText("C.Rate: "+ "-");
             climbing_rate.setStroke(Color.RED);
         }
         else if (penguin_y_velocity() == 0) {
             climbing_rate.setStroke(Color.GRAY);
-            climbing_rate.setText("C.Rate: " + "  n/a  ");
+            climbing_rate.setText("C.Rate: ");
         }
 
 
 
         //Restarts game when penguin reaches the bottom
-        if (penguin.getY() >= 2970) {
+        if (penguin.getY() >= 2970 && (penguin.getX() > 100000)) {
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
+
+            if(Physics.penguin_velocity() > 60){
+                physics.setVelocityX(Math.cos(Math.toRadians(get_penguin_angle()))*60);
+                physics.setVelocityY(Math.sin(Math.toRadians(get_penguin_angle()))*60);
+            }
+            jetpackTimeElapsed = 0;
         }
         if(penguin.getX() >= 500 && penguin.getY() >= 2974){
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
@@ -333,7 +337,7 @@ public class FallingPenguinGame extends GameApplication {
         //Temporary until full floor is constructed
         if (penguin.getX() > 1000) {
             if (!physics.isMoving() && beginAnimation) {
-                double currencyToAdd = penguin.getX();
+                double currencyToAdd = 1000000 + penguin.getX();
 
                 //Applies Drag without having a glider equiped
 //                physics.applyBodyForceToCenter(Drag(angle));
