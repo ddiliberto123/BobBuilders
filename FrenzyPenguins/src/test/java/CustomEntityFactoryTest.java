@@ -1,6 +1,10 @@
+import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.core.util.Platform;
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
 import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
+import org.BobBuilders.FrenzyPenguins.FallingPenguinGame;
 import org.BobBuilders.FrenzyPenguins.util.Constant;
 import org.BobBuilders.FrenzyPenguins.util.EntitySpawner;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +15,7 @@ public class CustomEntityFactoryTest {
     CustomEntityFactory customEntityFactory;
 
     @BeforeAll
-    public void initialization(){
+    public static void initialization(){
         CustomEntityFactory customEntityFactory = new CustomEntityFactory();
     }
 

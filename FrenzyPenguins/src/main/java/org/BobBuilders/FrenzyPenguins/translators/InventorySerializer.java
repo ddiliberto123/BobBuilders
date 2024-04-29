@@ -22,6 +22,9 @@ public class InventorySerializer extends StdSerializer<Inventory> {
 
     @Override
     public void serialize(Inventory inventory, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        if (inventory == null | gen == null || provider == null) {
+            throw new RuntimeException("Parser is broken");
+        }
         gen.writeStartObject();
         gen.writeStringField("rampLevel", String.valueOf(inventory.getRampLevel()));
         gen.writeStringField("jetpackLevel", String.valueOf(inventory.getJetpackLevel()));

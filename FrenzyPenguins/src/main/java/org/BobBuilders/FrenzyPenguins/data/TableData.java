@@ -23,6 +23,9 @@ public class TableData {
     private CheckBox delete;
 
     public TableData(int userId){
+        if (userId <= 0){
+            throw new RuntimeException("Invalid UserID");
+        }
         try (Connection con = Database.connect()){
             this.userId = userId;
             PreparedStatement preparedStatement = con.prepareStatement(Database.USERNAME_REQUEST);

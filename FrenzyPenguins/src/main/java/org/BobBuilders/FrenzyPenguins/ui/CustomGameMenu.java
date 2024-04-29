@@ -354,18 +354,7 @@ public class CustomGameMenu extends FXGLMenu {
                     }
                 }
             });
-//            double jetpackCost = 1000 * Math.pow(equipmentLevelProperty.getValue(),2) + 5000;
-//            double gliderCost = 800 * Math.pow(equipmentLevelProperty.getValue(),2) + 3000;
-//            double slideCost = 500 * Math.pow(equipmentLevelProperty.getValue(),2) + 2000;
             this.action = () -> {
-//                if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > (this.equipmentLevelProperty.getValue() + 1) * 10000) {
-//                    this.inventory.addPoints((this.equipmentLevelProperty.getValue() + 1) * -10000);
-//                    this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
-//                    //User exists
-//                    if (User.getInstance().getUserId() != 0) {
-//                        Database.save(User.getInstance().getUserId(), this.inventory);
-//                    }
-//                }
                 if (this.equipmentLevelProperty.getValue() < 10) {
                     if (equipmentLevelProperty.equals(this.inventory.getJetPackLevelProperty())) {
                         double jetpackCost = 1000 * Math.pow(equipmentLevelProperty.getValue() + 1,2) + 5000;

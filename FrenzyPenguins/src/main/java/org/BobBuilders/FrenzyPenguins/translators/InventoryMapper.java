@@ -17,6 +17,9 @@ public class InventoryMapper {
      * @return the string version of the {@code Inventory}
      */
     public static String convert(Inventory inventory) {
+        if (inventory == null) {
+            throw new RuntimeException("Inventory is null in converter");
+        }
         try {
             return mapper.writeValueAsString(inventory);
         } catch (JsonProcessingException e) {
@@ -30,6 +33,9 @@ public class InventoryMapper {
      * @return the {@code Inventory} version of the string
      */
     public static Inventory unconvert(String s) {
+        if (s.isEmpty() || s == null) {
+            throw new RuntimeException("String is null in converter");
+        }
         try {
             return mapper.readValue(s, Inventory.class);
         } catch (JsonProcessingException e) {

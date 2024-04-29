@@ -10,10 +10,6 @@ Controls: Use keys to control the penguin's movement.<br>
   A and D keys: Change teh angle at which the penguin falls.<br>
   Space key: Activate the jetpack, one of the purchaseable items in the store.<br>
 
-Features: <br>
-  Speedometer and Altimeter: Monitor the penguin's speed and altityde in real-time.<br>
-  Clouds and Snow: Encounter randomly spawned snow and clouds while in the menu or in game.<br>
-
 Store:
 As you travel further with the penguin, you gain more points. You can use those points to purchase and/or upgrade the following.<br>
   Jetpack: The jetpack applies a force in teh direction in which the penguin faces. The higher the jetpack level, the stronger the force.<br>
@@ -42,12 +38,25 @@ The project will be developped using the following: <br>
 --- 
 
 ## Current Features Implemented:
-
+Speedometer and Altimeter: Monitor the penguin's speed and altityde in real-time.<br>
+Clouds and Snow: Encounter randomly spawned snow and clouds while in the menu or in game.<br>
 General game mechanics, such as:
 - points
 - store
 - lift
 - friction
 - gravity
+
+# Physics Components:
+Lift method: Computes the lift acting on the penguin based on its angle of rotation. It takes the re-established components, such as air density and the penguin's velocity to calculate and combine both lift and drag.<br>
+Buoyancy method: Simulates buoyancy acting on the penguin as it moves horizontally. This method also includes a cap to prevent excessively large buoyancy forces that could lead to glitches. 
+
+# Admin Account:
+username: caesar
+password: julius
+
+# Regular Account:
+username: joe
+password: steve
 
 Database functional
