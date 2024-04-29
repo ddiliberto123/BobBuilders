@@ -416,20 +416,20 @@ public class CustomGameMenu extends FXGLMenu {
     }
 
     protected void updateButtons() {
-        this.purchaseJetpackBtn = new customMenuButton("Buy Jetpack - 10000$", () -> {
+        this.purchaseJetpackBtn = new customMenuButton("Buy Jetpack - 5000$", () -> {
             if (this.inventory.getPointsPropertyValue() >= 5000) {
                 this.inventory.setJetpackLevel(1);
                 this.inventory.addPoints(-5000);
                 updateButtons();
             }
         });
-        this.purchaseGliderBtn = new customMenuButton(" Buy Glider - 2000$", () -> {
+        this.purchaseGliderBtn = new customMenuButton(" Buy Glider - 3000$", () -> {
             if (this.inventory.getPointsPropertyValue() >= 3000) {
                 this.inventory.setGliderLevel(1);
                 this.inventory.addPoints(-3000);
             }
         });
-        this.purchaseSlideBtn = new customMenuButton("Buy Snowboard - 3000$", () -> {
+        this.purchaseSlideBtn = new customMenuButton("Buy Snowboard - 2000$", () -> {
             if (this.inventory.getPointsPropertyValue() >= 2000) {
                 this.inventory.setSlideLevel(1);
                 this.inventory.addPoints(-2000);
