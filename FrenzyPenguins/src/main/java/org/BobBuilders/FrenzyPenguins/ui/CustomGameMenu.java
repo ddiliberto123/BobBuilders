@@ -4,6 +4,8 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,6 +19,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.*;
 import org.BobBuilders.FrenzyPenguins.util.Database;
 
@@ -451,11 +454,12 @@ public class CustomGameMenu extends FXGLMenu {
                     // Set the new Y position
                     snowflakeImage.setTranslateY(newY);
 
-                    // Remove the animation when the snowflake is out of the screen
-                    if (newY >= getAppHeight()) {
-                        getRoot().getChildren().remove(snowflakeImage);
-                        this.stop(); // Stop the animation
-                    }
+                    //Deletes the snowflakes after 90 seconds to ensure that the game doesn't start lagging
+                    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(90), event -> {
+                        snowStack.getChildren().remove(snowflakeImage);
+                    }));
+                    timeline.setCycleCount(1);
+                    timeline.play();
                 }
             };
             // Start the animation

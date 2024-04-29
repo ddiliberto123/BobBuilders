@@ -3,8 +3,11 @@ package org.BobBuilders.FrenzyPenguins.ui;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.FXGLForKtKt;
 import com.almasb.fxgl.ui.FXGLButton;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -23,6 +26,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.CustomEntityFactory;
 import org.BobBuilders.FrenzyPenguins.Inventory;
 import org.BobBuilders.FrenzyPenguins.User;
@@ -341,6 +345,13 @@ public class CustomMainMenu extends FXGLMenu {
             }
 
             snowStack.getChildren().add(snowflakeImage);
+
+            //Deletes the snowflakes after 90 seconds to ensure that the game doesn't start lagging
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(90), event -> {
+                snowStack.getChildren().remove(snowflakeImage);
+            }));
+            timeline.setCycleCount(1);
+            timeline.play();
             AnimationTimer animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
@@ -611,7 +622,7 @@ public class CustomMainMenu extends FXGLMenu {
         });
 
         bottomButtons.getChildren().addAll(back, delete);
-        //Needed to allign the table again
+        //Needed to align the table again
         bottomButtons.setSpacing(400);
         textfieldHbox.setTranslateX(200);
         bottomButtons.setTranslateX(200);

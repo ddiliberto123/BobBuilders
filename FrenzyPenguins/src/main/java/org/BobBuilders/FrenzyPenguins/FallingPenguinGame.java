@@ -11,6 +11,8 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -21,6 +23,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.BobBuilders.FrenzyPenguins.ui.CustomGameMenu;
 import org.BobBuilders.FrenzyPenguins.ui.CustomMainMenu;
 import org.BobBuilders.FrenzyPenguins.util.Database;
@@ -104,6 +107,8 @@ public class FallingPenguinGame extends GameApplication {
         welcomeText.setTranslateY(100);
         welcomeText.setFont(Font.font(25));
         getGameScene().addUINode(welcomeText);
+
+        inventory.addPoints(2000000);
 
         //Spawn moving background
         for (int i = 0; i < 10; i++) {
@@ -307,7 +312,6 @@ public class FallingPenguinGame extends GameApplication {
         //Restarts game when penguin reaches the bottom
         if (penguin.getY() >= 2970) {
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
-            jetpackTimeElapsed = 0;
         }
         if(penguin.getX() >= 500 && penguin.getY() >= 2974){
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
@@ -582,6 +586,12 @@ public class FallingPenguinGame extends GameApplication {
             }
             PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
             physics.setVelocityX(-10);
+            //Deletes the clouds after 30 seconds to ensure that the game doesn't start lagging
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(30), event -> {
+                cloud.removeFromWorld();
+            }));
+            timeline.setCycleCount(1);
+            timeline.play();
         }
     }
 
@@ -598,6 +608,12 @@ public class FallingPenguinGame extends GameApplication {
             }
             PhysicsComponent physics = cloud.getComponent(PhysicsComponent.class);
             physics.setVelocityX(-10);
+            //Deletes the clouds after 30 seconds to ensure that the game doesn't start lagging
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(30), event -> {
+                cloud.removeFromWorld();
+            }));
+            timeline.setCycleCount(1);
+            timeline.play();
         }
     }
 
