@@ -307,6 +307,9 @@ public class CustomMainMenu extends FXGLMenu {
         else if(loginStackPane.isVisible()){
             mainMenuImage.setVisible(false);
         }
+        else if(vboxAdminMenu.isVisible()){
+            mainMenuImage.setVisible(false);
+        }
         else{
             mainMenuImage.setVisible(true);
         }
