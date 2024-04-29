@@ -333,18 +333,66 @@ public class CustomGameMenu extends FXGLMenu {
                     }
                 } else {
                     if (equipmentLevelProperty.equals(this.inventory.getRampLevelProperty())) {
+                        double jetpackCost = 1000 * Math.pow(this.inventory.getRampLevel() + 1,2) + 5000;
                         text.setText("Upgrade Ramp to level " + (newValue.intValue() + 1) +
-                                "\n" + (newValue.intValue() + 1) * 10000 + "$");
+                                "\n" + jetpackCost + "$");
+                    } else if (equipmentLevelProperty.equals(this.inventory.getJetPackLevelProperty())) {
+                        double jetpackCost = 1000 * Math.pow(this.inventory.getJetpackLevel() + 1,2) + 5000;
+                        text.setText("Upgrade to level " + (newValue.intValue() + 1) +
+                                "\n" + jetpackCost + "$");
+                    } else if (equipmentLevelProperty.equals(this.inventory.getGliderLevelProperty())) {
+                        double gliderCost = 800 * Math.pow(this.inventory.getGliderLevel() + 1,2) + 3000;
+                        text.setText("Upgrade to level " + (newValue.intValue() + 1) +
+                                "\n" + gliderCost + "$");
+                    } else if (equipmentLevelProperty.equals(this.inventory.getSlideLevelProperty())) {
+                        double slideCost = 500 * Math.pow(this.inventory.getSlideLevel() + 1,2) + 2000;
+                        text.setText("Upgrade to level " + (newValue.intValue() + 1) +
+                                "\n" + slideCost + "$");
                     } else {
                         text.setText("Upgrade to level " + (newValue.intValue() + 1) +
                                 "\n" + (newValue.intValue() + 1) * 10000 + "$");
                     }
                 }
             });
+//            double jetpackCost = 1000 * Math.pow(equipmentLevelProperty.getValue(),2) + 5000;
+//            double gliderCost = 800 * Math.pow(equipmentLevelProperty.getValue(),2) + 3000;
+//            double slideCost = 500 * Math.pow(equipmentLevelProperty.getValue(),2) + 2000;
             this.action = () -> {
-                if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > (this.equipmentLevelProperty.getValue() + 1) * 10000) {
-                    this.inventory.addPoints((this.equipmentLevelProperty.getValue() + 1) * -10000);
-                    this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
+//                if (this.equipmentLevelProperty.getValue() < 10 && this.inventory.getPointsPropertyValue() > (this.equipmentLevelProperty.getValue() + 1) * 10000) {
+//                    this.inventory.addPoints((this.equipmentLevelProperty.getValue() + 1) * -10000);
+//                    this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
+//                    //User exists
+//                    if (User.getInstance().getUserId() != 0) {
+//                        Database.save(User.getInstance().getUserId(), this.inventory);
+//                    }
+//                }
+                if (this.equipmentLevelProperty.getValue() < 10) {
+                    if (equipmentLevelProperty.equals(this.inventory.getJetPackLevelProperty())) {
+                        double jetpackCost = 1000 * Math.pow(equipmentLevelProperty.getValue() + 1,2) + 5000;
+                        if (this.inventory.getPointsPropertyValue() > jetpackCost) {
+                            this.inventory.addPoints((int) -jetpackCost);
+                            this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
+                        }
+                    } else if (equipmentLevelProperty.equals(this.inventory.getGliderLevelProperty())) {
+                        double gliderCost = 800 * Math.pow(equipmentLevelProperty.getValue(),2) + 3000;
+                        if (this.inventory.getPointsPropertyValue() > gliderCost) {
+                            this.inventory.addPoints((int) -gliderCost);
+                            this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
+                        }
+                    } else if (equipmentLevelProperty.equals(this.inventory.getSlideLevelProperty())) {
+                        double slideCost = 500 * Math.pow(equipmentLevelProperty.getValue(),2) + 2000;
+                        if (this.inventory.getPointsPropertyValue() > slideCost) {
+                            this.inventory.addPoints((int) -slideCost);
+                            this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
+                        }
+                    } else if (equipmentLevelProperty.equals(this.inventory.getRampLevelProperty())) {
+                        double jetpackCost = 500 * Math.pow(equipmentLevelProperty.getValue(),2) + 2000;
+                        if (this.inventory.getPointsPropertyValue() > jetpackCost) {
+                            this.inventory.addPoints((int) -jetpackCost);
+                            this.equipmentLevelProperty.set(this.equipmentLevelProperty.getValue() + 1);
+                        }
+                    }
+
                     //User exists
                     if (User.getInstance().getUserId() != 0) {
                         Database.save(User.getInstance().getUserId(), this.inventory);
@@ -380,22 +428,22 @@ public class CustomGameMenu extends FXGLMenu {
 
     protected void updateButtons() {
         this.purchaseJetpackBtn = new customMenuButton("Buy Jetpack - 10000$", () -> {
-            if (this.inventory.getPointsPropertyValue() >= 10000) {
+            if (this.inventory.getPointsPropertyValue() >= 5000) {
                 this.inventory.setJetpackLevel(1);
-                this.inventory.addPoints(-10000);
+                this.inventory.addPoints(-5000);
                 updateButtons();
             }
         });
         this.purchaseGliderBtn = new customMenuButton(" Buy Glider - 2000$", () -> {
-            if (this.inventory.getPointsPropertyValue() >= 2000) {
+            if (this.inventory.getPointsPropertyValue() >= 3000) {
                 this.inventory.setGliderLevel(1);
-                this.inventory.addPoints(-2000);
+                this.inventory.addPoints(-3000);
             }
         });
         this.purchaseSlideBtn = new customMenuButton("Buy Snowboard - 3000$", () -> {
-            if (this.inventory.getPointsPropertyValue() >= 3000) {
+            if (this.inventory.getPointsPropertyValue() >= 2000) {
                 this.inventory.setSlideLevel(1);
-                this.inventory.addPoints(-3000);
+                this.inventory.addPoints(-2000);
                 updateButtons();
             }
         });
