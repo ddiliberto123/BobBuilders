@@ -243,14 +243,6 @@ public class FallingPenguinGame extends GameApplication {
             }
         }
 
-
-        //Constantly updates the x coordinates displayed in distanceText
-        //Constantly updates the x coordinates displayed in distanceText
-        distanceText.setText("Position x: (" + penguin.getX() + ") Position y: (" + penguin.getY() + ") " +
-                "Velocity x: (" + penguin_x_velocity() + ") Velocity y: (" + penguin_y_velocity() + ")" +
-                "Angle: (" + Math.round(get_penguin_angle()) + ")" +
-                "FPS: (" + 1 / tpf() + ")");
-
         speedText.setVisible(false);altituteText.setVisible(false);cluster.setVisible(false);climbing_rate.setVisible(false);
 
         //background_1st.setY(penguin.getY());
@@ -303,8 +295,6 @@ public class FallingPenguinGame extends GameApplication {
             climbing_rate.setText("C.Rate: ");
         }
 
-
-
         //Restarts game when penguin reaches the bottom
         if (penguin.getY() >= 2970 && (penguin.getX() > 100000)) {
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
@@ -318,7 +308,6 @@ public class FallingPenguinGame extends GameApplication {
         if(penguin.getX() >= 500 && penguin.getY() >= 2974){
             physics.applyBodyForceToCenter(B_mockup(get_penguin_angle()));
         }
-
 
         if(penguin.getY() > (3000 - 50)){
             floorTimer += tpf;
@@ -336,9 +325,6 @@ public class FallingPenguinGame extends GameApplication {
         if (penguin.getX() > 1000) {
             if (!physics.isMoving() && beginAnimation) {
                 double currencyToAdd = penguin.getX() * .5;
-
-                //Applies Drag without having a glider equiped
-//                physics.applyBodyForceToCenter(Drag(angle));
                 beginAnimation = false;
                 jetpackTimeElapsed = 0;
                 this.inventory = Inventory.getInstance();
@@ -399,7 +385,6 @@ public class FallingPenguinGame extends GameApplication {
 
                 }
                 cloud1SpawnInterval = random.nextDouble();
-                System.out.println(cloud1SpawnInterval);
                 //Resets time interval between 0 and 0.99 seconds
                 cloud1SpawnTimer = 0;
             }
@@ -551,7 +536,6 @@ public class FallingPenguinGame extends GameApplication {
     }
     public static double wing_area(){
         //This is temporary, the wing_area should be taken from the area of the gliders
-        //System.out.println("width: " + penguin.getWidth()*penguin.getHeight());
         return (penguin.getWidth() * penguin.getHeight()) / 10;
     }
 

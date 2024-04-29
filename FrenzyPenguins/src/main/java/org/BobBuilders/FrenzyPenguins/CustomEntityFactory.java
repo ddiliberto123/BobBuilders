@@ -394,11 +394,6 @@ public class CustomEntityFactory implements EntityFactory {
     }
     @Spawns("speed_curve")
     public Entity speed_curve(SpawnData data) {
-//        try {
-//            width = Double.parseDouble(data.get(Constant.WIDTH).toString());
-//            height = Double.parseDouble(data.get(Constant.HEIGHT).toString());
-//        } catch (NumberFormatException | NullPointerException ex) {
-//            System.out.println("Width or Height formatting not defined correctly, defaulting to 1");
 
         Arc arc = new Arc();
         arc.setCenterX(300.0f);

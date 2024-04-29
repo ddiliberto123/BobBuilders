@@ -108,18 +108,10 @@ public class CustomMainMenu extends FXGLMenu {
             }
         });
 
-        customMenuButton btnOptions = new customMenuButton("Options", () -> {
-            vboxMainMenu.setVisible(false);
-            vboxOptions.setVisible(true);
-        });
         customMenuButton btnQuit = new customMenuButton("Quit", this::fireExit);
         customMenuButton btnBrightness = new customMenuButton("Brightness", () -> {
         });
         customMenuButton btnVolume = new customMenuButton("Volume", () -> {
-        });
-        customMenuButton btnOptionsReturn = new customMenuButton("Return to Main Menu", () -> {
-            vboxMainMenu.setVisible(true);
-            vboxOptions.setVisible(false);
         });
         customMenuButton btnAccountReturn = new customMenuButton("Return to Main Menu", () -> {
             vboxMainMenu.setVisible(true);
@@ -161,7 +153,6 @@ public class CustomMainMenu extends FXGLMenu {
         vboxMainMenu = new VBox(10,
                 btnPlayGame,
                 btnAccount,
-                btnOptions,
                 btnQuit,
                 new Text(""),
                 new LineSeparator(),
@@ -173,7 +164,6 @@ public class CustomMainMenu extends FXGLMenu {
         vboxOptions = new VBox(10,
                 btnBrightness,
                 btnVolume,
-                btnOptionsReturn,
                 new Text(""),
                 new LineSeparator(),
                 optionsUsernameText);
@@ -202,10 +192,6 @@ public class CustomMainMenu extends FXGLMenu {
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 loginStackPane.setVisible(true);
-                System.out.println(this.inventory);
-                System.out.println(Inventory.createInstance());
-                System.out.println(!this.inventory.equals(Inventory.createInstance()));
-                System.out.println(!this.inventory.equals(Database.loadInventory(userId)));
                 if (!this.inventory.equals(Objects.requireNonNull(Database.loadInventory(userId))) && !this.inventory.equals(Inventory.createInstance())) {
                     vboxLoggedIn.setDisable(true);
                     loginStackPane.setVisible(true);
@@ -564,7 +550,6 @@ public class CustomMainMenu extends FXGLMenu {
 
         //Defining the Table
         this.tableList = Database.loadTable(this.table,this.searchField);
-        System.out.println(tableList);
 
         HBox bottomButtons = new HBox();
         customMenuButton back = new customMenuButton("Back", () -> {
