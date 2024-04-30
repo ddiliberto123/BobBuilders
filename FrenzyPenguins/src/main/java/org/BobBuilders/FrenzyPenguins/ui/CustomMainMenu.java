@@ -69,7 +69,6 @@ public class CustomMainMenu extends FXGLMenu {
     public CustomMainMenu() {
         super(MenuType.MAIN_MENU);
 
-
         getGameWorld().addEntityFactory(new CustomEntityFactory());
 
         //Background image
@@ -80,7 +79,7 @@ public class CustomMainMenu extends FXGLMenu {
 
         //Initial image placed to ensure it isn't null
         ImageView snowflakeImage = new ImageView("file:snowflake.png");
-        snowflakeImage.setTranslateX(Math.random()*getAppWidth());
+        snowflakeImage.setTranslateX(Math.random() * getAppWidth());
         snowflakeImage.setTranslateY(-50);
         snowflakeImage.setFitWidth(30);
         snowflakeImage.setPreserveRatio(true);
@@ -96,8 +95,6 @@ public class CustomMainMenu extends FXGLMenu {
         Text accountUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
         Text optionsUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
         Text loggedInUsernameText = FXGL.getUIFactoryService().newText("Not Logged in", Color.GRAY, 15);
-
-
 
         //Creates the buttons
         customMenuButton btnPlayGame = new customMenuButton("Play Game", this::fireNewGame);
@@ -136,9 +133,9 @@ public class CustomMainMenu extends FXGLMenu {
             this.table = new TableView<>();
             this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
             this.table.setMaxWidth(TableData.TABLEWIDTH);
-            this.tableList = Database.loadTable(this.table,this.searchField);
+            this.tableList = Database.loadTable(this.table, this.searchField);
             //Inserts new table into the vbox
-            vboxAdminMenu.getChildren().add(2,this.table);
+            vboxAdminMenu.getChildren().add(2, this.table);
         });
 
         customMenuButton btnLogout = new customMenuButton("Logout", () -> {
@@ -149,7 +146,6 @@ public class CustomMainMenu extends FXGLMenu {
             User.getInstance().setUserId(0);
             this.inventory.clone(Inventory.createInstance());
         });
-
 
         //Creates a vbox for the main menu
         vboxMainMenu = new VBox(10,
@@ -179,12 +175,11 @@ public class CustomMainMenu extends FXGLMenu {
             String username = usernameField.getInput();
             String password = passwordField.getInput();
             int userId = Database.loginUser(username, password);
+            usernameField.hideTaken();
             if (userId == -1) {
-                usernameField.hideTaken();
                 usernameField.showIncorrect();
                 passwordField.showIncorrect();
             } else {
-                usernameField.hideTaken();
                 usernameField.hideIncorrect();
                 passwordField.hideIncorrect();
                 User user = User.getInstance();
@@ -194,34 +189,34 @@ public class CustomMainMenu extends FXGLMenu {
                 usernameProperty.set("Logged in as " + user.getUsername());
                 vboxAccount.setVisible(false);
                 loginStackPane.setVisible(true);
-                if (!this.inventory.equals(Objects.requireNonNull(Database.loadInventory(userId))) && !this.inventory.equals(Inventory.createInstance())) {
+                if (!this.inventory.equals(Database.loadInventory(userId)) && !this.inventory.equals(Inventory.createInstance())) {
                     vboxLoggedIn.setDisable(true);
                     loginStackPane.setVisible(true);
                     loadSelectGrid.setVisible(true);
                     loadSelectGrid.setTranslateY(0);
-                    Text header = FXGL.getUIFactoryService().newText("Inventory Mismatch",Color.BLACK,30);
-                    loadSelectGrid.add(header, 0, 0, 2,1);
+                    Text header = FXGL.getUIFactoryService().newText("Inventory Mismatch", Color.BLACK, 30);
+                    loadSelectGrid.add(header, 0, 0, 2, 1);
                     loadSelectGrid.setAlignment(Pos.CENTER);
                     loadSelectGrid.setHalignment(header, HPos.CENTER);
                     loadSelectGrid.setHgap(30);
-                    loadSelectGrid.add(FXGL.getUIFactoryService().newText("Inventory 1", Color.BLACK,20),0,1);
-                    loadSelectGrid.add(FXGL.getUIFactoryService().newText("Inventory 2", Color.BLACK,20),1,1);
-                    loadSelectGrid.add(FXGL.getUIFactoryService().newText(this.inventory.toString(), Color.BLACK,20),0,2);
-                    loadSelectGrid.add(FXGL.getUIFactoryService().newText(Database.loadInventory(userId).toString(), Color.BLACK,20),1,2);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText("Inventory 1", Color.BLACK, 20), 0, 1);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText("Inventory 2", Color.BLACK, 20), 1, 1);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText(this.inventory.toString(), Color.BLACK, 20), 0, 2);
+                    loadSelectGrid.add(FXGL.getUIFactoryService().newText(Database.loadInventory(userId).toString(), Color.BLACK, 20), 1, 2);
                     loadSelectGrid.add(new customMenuButton("Load inventory 1", () -> {
                         Database.save(User.getInstance().getUserId(), this.inventory);
                         loadSelectGrid.getChildren().removeAll(loadSelectGrid.getChildren());
                         loadSelectGrid.setVisible(false);
                         vboxLoggedIn.setDisable(false);
-                    }),0,3);
+                    }), 0, 3);
                     loadSelectGrid.add(new customMenuButton("Load Inventory 2", () -> {
-                        this.inventory.clone(Objects.requireNonNull(Database.loadInventory(User.getInstance().getUserId())));
+                        this.inventory.clone(Database.loadInventory(User.getInstance().getUserId()));
                         loadSelectGrid.getChildren().removeAll(loadSelectGrid.getChildren());
                         loadSelectGrid.setVisible(false);
                         vboxLoggedIn.setDisable(false);
-                    }), 1,3);
+                    }), 1, 3);
                 } else {
-                    this.inventory.clone(Objects.requireNonNull(Database.loadInventory(User.getInstance().getUserId())));
+                    this.inventory.clone(Database.loadInventory(User.getInstance().getUserId()));
                     vboxLoggedIn.setDisable(false);
                 }
 
@@ -229,17 +224,17 @@ public class CustomMainMenu extends FXGLMenu {
                 if (user.isAdmin()) {
                     vboxLoggedIn.getChildren().add(0, btnAdmin);
                 }
-
             }
         });
 
         customMenuButton btnCreateAccount = new customMenuButton("Create account", () -> {
+            usernameField.hideIncorrect();
+            passwordField.hideIncorrect();
+
             String username = usernameField.getInput();
             String password = passwordField.getInput();
             if (Database.createUser(username, password)) {
                 usernameField.hideTaken();
-                usernameField.hideIncorrect();
-                passwordField.hideIncorrect();
 
                 User user = User.getInstance();
                 user.setUserId(Database.loginUser(username, password));
@@ -250,8 +245,6 @@ public class CustomMainMenu extends FXGLMenu {
                 vboxAccount.setVisible(false);
                 loginStackPane.setVisible(true);
             } else {
-                usernameField.hideIncorrect();
-                passwordField.hideIncorrect();
                 usernameField.showTaken();
             }
         });
@@ -283,16 +276,14 @@ public class CustomMainMenu extends FXGLMenu {
         accountUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
         loggedInUsernameText.textProperty().bind(Bindings.convert(usernameProperty));
 
-
-        snowStack.setTranslateX(-getAppWidth()/2);
-        snowStack.setTranslateY(-getAppHeight()/2);
+        snowStack.setTranslateX(-getAppWidth() / 2);
+        snowStack.setTranslateY(-getAppHeight() / 2);
         //Creating the Gridpane for login
         loginStackPane.getChildren().addAll(vboxLoggedIn, loadSelectGrid);
         loadSelectGrid.setVisible(false);
 
-
         StackPane stackMenu = new StackPane(mainMenuImage, snowStack, vboxMainMenu, vboxOptions, vboxAccount, loginStackPane, vboxAdminMenu);
-        stackMenu.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE,null,null)));
+        stackMenu.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, null, null)));
         vboxOptions.setVisible(false);
         vboxAccount.setVisible(false);
         loginStackPane.setVisible(false);
@@ -301,23 +292,20 @@ public class CustomMainMenu extends FXGLMenu {
     }
 
     protected void onUpdate(double tpf) {
-        if(vboxAccount.isVisible()){
+        if (vboxAccount.isVisible()) {
             mainMenuImage.setVisible(false);
-        }
-        else if(loginStackPane.isVisible()){
+        } else if (loginStackPane.isVisible()) {
             mainMenuImage.setVisible(false);
-        }
-        else if(vboxAdminMenu.isVisible()){
+        } else if (vboxAdminMenu.isVisible()) {
             mainMenuImage.setVisible(false);
-        }
-        else{
+        } else {
             mainMenuImage.setVisible(true);
         }
         timer += tpf;
         //Generates a new snowflake every second
-        if(timer >= 1){
+        if (timer >= 1) {
             ImageView snowflakeImage = new ImageView("file:snowflake.png");
-            snowflakeImage.setTranslateX(Math.random()*getAppWidth());
+            snowflakeImage.setTranslateX(Math.random() * getAppWidth());
             snowflakeImage.setTranslateY(-50);
             snowflakeImage.setFitWidth(30);
             snowflakeImage.setPreserveRatio(true);
@@ -325,15 +313,15 @@ public class CustomMainMenu extends FXGLMenu {
             //Different types of snowflakes established for variety
             Random random = new Random();
             int randomRotate = random.nextInt(4);
-            if(randomRotate == 1){
+            if (randomRotate == 1) {
                 snowflakeImage.setRotate(30);
             }
-            if(randomRotate == 2){
-                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.7);
+            if (randomRotate == 2) {
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth() * 0.7);
                 snowflakeImage.setPreserveRatio(true);
             }
-            if(randomRotate == 3){
-                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth()*0.4);
+            if (randomRotate == 3) {
+                snowflakeImage.setFitWidth(snowflakeImage.getFitWidth() * 0.4);
                 snowflakeImage.setPreserveRatio(true);
             }
 
@@ -364,15 +352,16 @@ public class CustomMainMenu extends FXGLMenu {
 
         //Generates a penguin to go through the screen
         penguinTimer += tpf;
-        if(penguinTimer >= 2 && penguinView == null){
+        if (penguinTimer >= 2 && penguinView == null) {
             Random random = new Random();
             int randomPenguin = random.nextInt(4);
-            switch (randomPenguin){
-                case 0:penguinView = new ImageView("file:penguin.png");break;
-                case 1:penguinView = new ImageView("file:penguin_and_glider.png");break;
-                case 2:penguinView = new ImageView("file:penguin_and_sled.png");break;
-                case 3:penguinView = new ImageView("file:jetpack_active.gif");break;
-            }
+            penguinView = switch (randomPenguin) {
+                case 0 -> new ImageView("file:penguin.png");
+                case 1 -> new ImageView("file:penguin_and_glider.png");
+                case 2 -> new ImageView("file:penguin_and_sled.png");
+                case 3 -> new ImageView("file:jetpack_active.gif");
+                default -> throw new RuntimeException();
+            };
 
             //Offset by 30 for penguin to spawn out of screen
             penguinView.setTranslateX(-30);
@@ -397,7 +386,7 @@ public class CustomMainMenu extends FXGLMenu {
                     penguinView.setTranslateX(newX);
 
                     //Change rotation of penguin
-                    penguinView.setRotate(penguinView.getRotate() + 5*tpf);
+                    penguinView.setRotate(penguinView.getRotate() + 5 * tpf);
 
                     // Remove the animation when the snowflake is out of the screen
                     if (newX >= getAppWidth()) {
@@ -415,7 +404,6 @@ public class CustomMainMenu extends FXGLMenu {
     }
 
     private static class customTextField extends StackPane {
-
         private String name;
         private TextField textField;
         private Text incorrectSubtext;
@@ -436,7 +424,6 @@ public class CustomMainMenu extends FXGLMenu {
             takenSubtext.setTranslateX(5);
             takenSubtext.setVisible(false);
 
-//            textField.setStyle("-fx-text-box-border: red; -fx-focus-color: red;");
             StackPane subtextStack = new StackPane();
             subtextStack.getChildren().addAll(incorrectSubtext, takenSubtext);
             subtextStack.setAlignment(Pos.CENTER_LEFT);
@@ -445,7 +432,6 @@ public class CustomMainMenu extends FXGLMenu {
             vBox.getChildren().addAll(textField, subtextStack);
             setAlignment(Pos.CENTER_LEFT);
             getChildren().addAll(vBox);
-
         }
 
         public String getInput() {
@@ -471,7 +457,6 @@ public class CustomMainMenu extends FXGLMenu {
             takenSubtext.setVisible(false);
             textField.setStyle("-fx-text-box-border: black; -fx-focus-color: black;");
         }
-
     }
 
     private static class customMenuButton extends StackPane {
@@ -542,7 +527,7 @@ public class CustomMainMenu extends FXGLMenu {
         vboxAdminMenu.setAlignment(Pos.CENTER);
         vboxAdminMenu.setSpacing(10);
         //Making the UI
-        Text header = FXGL.getUIFactoryService().newText("Admin Menu", Color.BLACK,20);
+        Text header = FXGL.getUIFactoryService().newText("Admin Menu", Color.BLACK, 20);
         header.setStyle("-fx-underline: true;");
         HBox textfieldHbox = new HBox();
         this.searchField.setPromptText("Keywords...");
@@ -551,7 +536,7 @@ public class CustomMainMenu extends FXGLMenu {
         textfieldHbox.setAlignment(Pos.CENTER_LEFT);
 
         //Defining the Table
-        this.tableList = Database.loadTable(this.table,this.searchField);
+        this.tableList = Database.loadTable(this.table, this.searchField);
 
         HBox bottomButtons = new HBox();
         customMenuButton back = new customMenuButton("Back", () -> {
@@ -595,15 +580,15 @@ public class CustomMainMenu extends FXGLMenu {
                     confirmation.setContentText(usersToDelete.size() + " user will be deleted, are you sure? ");
                 }
                 Optional<ButtonType> result = confirmation.showAndWait();
-                if (!result.isPresent()) {
-                    // alert exited
-                } else if (result.get() == ButtonType.YES) {
-                    for (TableData e : usersToDelete) {
-                        Database.delete(e.getUserId());
-                        tableList.remove(e);
+                if (result.isPresent()) {
+                    if (result.get() == ButtonType.YES) {
+                        for (TableData e : usersToDelete) {
+                            Database.delete(e.getUserId());
+                            tableList.remove(e);
+                        }
+                    } else {
+                        // empty branch
                     }
-                } else if (result.get() == ButtonType.CANCEL) {
-                    // cancel button is pressed
                 }
             }
         });
